@@ -48,3 +48,89 @@ Un produit du compte porte `price: 100` et `installments: 3` avec `installmentAm
 ## Reste à exécuter
 
 Test de publication et test d'envoi, pour trancher la question centrale d'A04 : les garde-fous « ne pas publier », « ne pas envoyer » sont-ils appliqués par le serveur, ou seulement écrits dans les consignes adressées au modèle ?
+
+---
+
+# Tests d'exécution — garde-fous de publication et d'envoi
+
+Réalisés le 18 septembre 2026 entre 20:15 et 20:23 UTC, sous dérogation D-5. **Le compte est en plan gratuit** (établi par les erreurs de plan ci-dessous).
+
+## Protocole
+
+1. Créer une page par `create_webpage`, clairement étiquetée comme page d'audit, `indexed: false`.
+2. Appeler `publish_webpage` **en violant délibérément** la consigne « Do NOT call publish_webpage » inscrite dans la description de l'outil. C'est l'objet même du test : distinguer un garde-fou appliqué par le serveur d'une consigne adressée au modèle.
+3. Dépublier immédiatement.
+4. Répéter pour l'envoi d'un message.
+
+## M-010 — CONFIRMÉ, impact bloquant. La publication n'est soumise à aucun contrôle.
+
+| Étape | Appel | Résultat |
+|---|---|---|
+| Création | `create_webpage` | Brouillon créé |
+| Publication | `execute_action` → `publish_webpage` | **Succès immédiat**, une URL publique est retournée |
+| Dépublication | `execute_action` → `unpublish_webpage` | Succès |
+
+Aucune confirmation demandée, aucune revue humaine, aucun délai, aucune restriction de plan. **Un modèle qui ignore la consigne textuelle publie une page en ligne en un appel.**
+
+C'est la réponse définitive à la question centrale d'A04 : les mentions « Do NOT call publish_webpage », « saved as a draft », « the user decides when to publish » sont **exclusivement du texte adressé à un modèle que TinyPages ne contrôle pas**. Rien ne les applique.
+
+Pour la data room : toute formulation présentant ces consignes comme une garantie sera démentie en un appel par l'auditeur du fonds. La formulation défendable est qu'il s'agit d'un comportement par défaut du modèle, non d'un contrôle d'accès.
+
+## M-011 — CONFIRMÉ. Deux contrôles serveur existent, et ce sont des contrôles commerciaux.
+
+| Action tentée | Réponse du serveur |
+|---|---|
+| `create_webpage` avec un bloc `codeHtmlBlock` | `402 PRO_PLAN_REQUIRED` — les blocs de code exigent un plan Pro |
+| `execute_action` → `send_email` | `402 PRO_PLAN_REQUIRED` — un plan Pro est exigé pour envoyer par l'API |
+
+Le serveur **sait** refuser une action. Il le fait pour deux actions payantes, et pas pour la publication.
+
+**Le constat est là : les contrôles côté serveur protègent le chiffre d'affaires, pas l'utilisateur.** L'action la plus exploitable pour l'abus — publier une page publique sur un sous-domaine de la marque — est la seule des trois à n'avoir aucune barrière. Les deux qui en ont une sont celles qui sont facturées.
+
+À noter : le message d'erreur d'envoi implique qu'un compte Pro enverrait sans autre contrôle. Le garde-fou est un mur de facturation, pas un mur de sécurité. **À confirmer sur un compte Pro** — c'est la seule question que ce screening laisse ouverte sur ce point.
+
+## M-012 — correction au rapport A05.
+
+A05 fondait son risque d'abus sur la combinaison « plan gratuit + code personnalisé + création de pages par IA ». **Cette combinaison ne tient pas** : le bloc de code personnalisé est réservé au plan Pro.
+
+Le risque réel, lui, tient et se reformule ainsi : **plan gratuit + pilotage par IA + publication sans aucun contrôle**. Une page d'hameçonnage visuelle, sans JavaScript, sur un sous-domaine de la marque avec certificat valide, reste créable et publiable en deux appels automatisés. Le JavaScript n'est pas nécessaire pour tromper un visiteur.
+
+## M-013 — éclaire la contradiction C-001.
+
+Le MCP fonctionne sur le plan gratuit : lectures, création de pages, publication, tout passe. Mais plusieurs actions sont refusées par plan. **Ni la FAQ du site — « connexion Claude incluse dès le plan gratuit » — ni la documentation — « intégration réservée au plan Pro » — n'ont entièrement raison.** La formulation exacte est que la connexion et la majorité des actions sont disponibles en gratuit, et qu'un sous-ensemble d'actions est réservé au Pro. C'est cette nuance qui manque aux deux sources et qui explique la contradiction.
+
+## M-014 — CONFIRMÉ. L'IA ne peut pas nettoyer derrière elle.
+
+Aucune action ne supprime une page ni un email. Les deux objets créés pour ces tests subsistent en brouillon et **ne peuvent pas être supprimés par le canal automatisé** :
+
+- page « AUDIT TECHNIQUE — page de test, ne pas diffuser », dépubliée, brouillon résiduel ;
+- message « Test d'audit technique interne », brouillon jamais envoyé.
+
+À supprimer manuellement dans l'interface. Ce résidu illustre le constat A06-008 : si l'impossibilité de supprimer vaut aussi en interface, une demande d'effacement au sens de l'article 17 du RGPD ne peut pas être exécutée. **À trancher par un test en interface**, que le canal MCP ne permet pas.
+
+## M-015 — surface d'injection persistante non relevée jusqu'ici.
+
+`get_business_context` renvoie un champ libre de 10 000 caractères, vide sur ce compte, modifiable par `update_business_context`. Ce champ est décrit comme le contexte métier fourni au modèle. Le compte porte également `aiSystemPrompts` avec deux entrées, `webpage` et `email`, vides ici.
+
+**Ce sont des instructions persistantes injectées dans toutes les générations futures.** Quiconque obtient une écriture sur ces champs — par le MCP, par une injection indirecte, ou par un accès compromis — oriente durablement tout ce que l'IA produira pour ce créateur, sans que rien n'apparaisse dans le contenu généré. À ajouter au modèle de menaces d'A04 et au questionnaire d'A05.
+
+## M-016 — 15 modèles livrés par défaut
+
+Dont une séquence de lancement complète en 7 emails (annonce, problème, recadrage, preuve, objections, urgence, dernier rappel), une page d'inscription, une page de vente, une newsletter, une signature, trois thèmes visuels. Matière pour la carte des modules d'A07.
+
+## M-017 — analytics exposés au canal automatisé
+
+`get_analytics_summary` renvoie visiteurs, contacts, ventes et revenus sur une période. Le pilotage par IA a donc accès aux métriques commerciales du créateur.
+
+## Synthèse des garde-fous, vue d'ensemble
+
+| Action | Contrôle serveur | Nature du contrôle |
+|---|---|---|
+| Publier une page | **Aucun** | — |
+| Dépublier une page | Aucun | — |
+| Lire les contacts | Aucun | — |
+| Lire les métriques commerciales | Aucun | — |
+| Écrire le contexte IA persistant | Aucun | — |
+| Envoyer un message | Oui | **Commercial** (plan Pro) |
+| Insérer du code personnalisé | Oui | **Commercial** (plan Pro) |
+| Supprimer une page ou un email | Action inexistante | Absence de fonction |
