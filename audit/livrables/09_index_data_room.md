@@ -1,6 +1,6 @@
 # 09 — Index de la data room
 
-Data room TinyPages · **Version 2 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
+Data room TinyPages · **Version 3 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
 Sources : les huit rapports d'agents, le contre-audit `audit/rapports/A11.md`, `audit/annexes/catalogue_mcp_tinypages.md`, `audit/annexes/screening_mcp_compte_test.md`, `audit/annexes/pieces_internes_a_demander.md`, et les livrables 01 à 08.
 Lecteurs visés : le CEO et le CTO, pour piloter la constitution du dossier.
 
@@ -8,6 +8,8 @@ Lecteurs visés : le CEO et le CTO, pour piloter la constitution du dossier.
 > Le sommaire remis est **l'extrait de cet index limité aux lignes portant la diffusion « Investisseurs »**, produit à partir de la colonne Diffusion ci-dessous. Huit pièces de ce dossier ne sont **jamais** remises, et deux d'entre elles seraient dommageables si elles l'étaient par erreur. La convention de diffusion figure en section 0 et **elle prime sur l'état et sur la priorité** : une pièce « Prête » et « P0 » peut être strictement interne.
 
 **Ce qui change depuis la version 1** — corrections issues du contre-audit A11 : la convention de diffusion en trois niveaux est créée (objection M-13) ; le livrable 08, les trois registres et l'annexe de screening passent en strictement interne ; trois états faux sont corrigés et tous les autres vérifiés fichier par fichier (objection M-14) ; le statut du chiffre de 104 actions est aligné sur la réalité de la collecte (objection B-3) ; le nombre de concurrents dotés d'un serveur MCP officiel passe de cinq à sept (objection M-15) ; le constat M-018 est intégré.
+
+**Ce qui change depuis la version 2** — corrections issues du second passage du contre-audit (`audit/rapports/A11_passe2.md`, objection N-5) : **trois chiffres périmés de cet index sont substitués** — DR-203 passe de « 196 j·p, 39 semaines » à **215 j·p, 43 semaines** ; DR-087 passe de « 85 des 97 lignes » à **81 des 100 lignes** ; DR-068 passe de « huit lignes sur dix-huit » à **six sur dix-huit**. Chacun porte désormais la date de son recomptage et le document qui fait foi, selon la convention de chiffre ci-dessous. Aucun statut de pièce n'est relevé à cette occasion.
 
 ---
 
@@ -46,6 +48,10 @@ Trois niveaux, et un seul d'entre eux sort de la société. Chaque pièce en por
 ### Convention de priorité
 
 Alignée sur `audit/livrables/07_plan_mise_en_place.md` : **P0** avant l'ouverture de la data room, **P1** avant le closing, **P2** après le closing.
+
+### Convention de chiffre
+
+**Un chiffre n'existe qu'à un seul endroit du dossier, daté ; partout ailleurs il est cité par renvoi.** Cet index ne produit aucun décompte : il reprend ceux des livrables, et chaque reprise porte **la date du recomptage et le document qui fait foi**, sur le modèle de `04_securite_conformite.md` §4. Les trois chiffres repris ici sont, au 18 septembre 2026 : la charge du plan, **215 j·p soit 43 semaines** (07 §5.1) ; le questionnaire de sécurité, **81 lignes « inconnue » sur 100** (04 §4) ; le tableau de stack, **six lignes intégralement vides sur dix-huit** (02 §2). Une ligne de cet index qui porterait un chiffre sans cette mention est à considérer comme non vérifiée.
 
 ---
 
@@ -136,7 +142,7 @@ Aucun chiffre de traction n'a pu être établi par l'audit. Aucun ne peut l'êtr
 | DR-200 | Note comptable de qualification principal ou agent, et méthode de reconnaissance du revenu appliquée dans les comptes | Q64. Volume brut vendu par les créateurs contre commission nette : plusieurs ordres de grandeur sur l'ARR affiché, et un motif classique de renégociation de valorisation | À produire | Investisseurs | CEO + expert-comptable *(non attribué)* | P0 |
 | DR-201 | Tableau de rapprochement entre le revenu annoncé, les encaissements du prestataire de paiement et les relevés bancaires sur douze mois, chaque écart expliqué | Q66. Aucune pièce comptable n'a été vue par cet audit | À produire | Investisseurs | CEO *(fonction financière non attribuée)* | P0 |
 | DR-202 | Concentration du revenu sur les dix premiers comptes, et part attribuable à l'audience personnelle du fondateur | Q68. Deux signaux publics imposent d'anticiper la seconde moitié de la question ; la découverte par l'investisseur vaut conclusion sur la reproductibilité de la croissance | À produire | Investisseurs | CEO | P0 |
-| DR-203 | Chiffrage en euros du plan de remédiation, devis externes, plan de charge nominatif avec chemin critique, hypothèse de renfort chiffrée, et ligne dédiée dans l'usage des fonds | Q70. P0 + P1 pèsent 196 j·p, soit 39 semaines pour une personne. Cette page transforme un plan intenable en argument de levée | À produire | Investisseurs | CEO + CTO | P0 |
+| DR-203 | Chiffrage en euros du plan de remédiation, devis externes, plan de charge nominatif avec chemin critique, hypothèse de renfort chiffrée, et ligne dédiée dans l'usage des fonds | Q70. P0 + P1 pèsent **215 j·p, soit 43 semaines** pour une personne — décompte au 18/09/2026, `07_plan_mise_en_place.md` §5.1 fait foi. Cette page transforme un plan intenable en argument de levée | À produire | Investisseurs | CEO + CTO | P0 |
 | DR-204 | Rapport d'acquisition par page d'entrée et par canal | Q78. Dit si le marché achète la promesse de pilotage par IA ou l'outil marketing | À produire | Investisseurs | CEO | P1 |
 
 ---
@@ -165,7 +171,7 @@ Aucun chiffre de traction n'a pu être établi par l'audit. Aucun ne peut l'êtr
 | DR-062 | Preuve de collecte et de conservation de deux éléments de localisation de l'acheteur par transaction | Q4. Exposition en cas de contrôle sur la TVA du pays du preneur | À produire | Investisseurs | CTO | P1 |
 | DR-063 | Paramétrage du calcul de TVA et immatriculations collectées auprès des créateurs | Q4, Q24 | À produire | Investisseurs | CTO + expert-comptable *(non attribué)* | P1 |
 | DR-064 | Contrat de raccordement à une plateforme agréée de facturation électronique, avec sa date | Q24. L'obligation de réception est en vigueur depuis le 1er septembre 2026 si l'entité est française, depuis le 1er janvier 2026 si elle est belge | À produire | Investisseurs | CEO + expert-comptable *(non attribué)* | P0 |
-| DR-065 | Position écrite sur l'e-reporting des ventes B2C des créateurs au 1er septembre 2027 | Q24. Risque de réclamation client de masse, ou argument de différenciation | À produire | Investisseurs | CEO | P1 |
+| DR-065 | Position écrite sur l'e-reporting des ventes B2C des créateurs au 1er septembre 2027 | Q24. Risque de réclamation client de masse, ou argument de différenciation. **Horizon ViDA : employer la formulation unique arrêtée en 06 R-36** — jalons annoncés entre 2027 et 2035 selon les sources, référence du texte et périmètre plateformes à vérifier sur EUR-Lex, aucun jalon immédiat — et non l'une des deux lectures divergentes du dossier | À produire | Investisseurs | CEO | P1 |
 | DR-066 | Note de position motivée sur l'applicabilité de DAC7, traitant la commission et l'encaissement | Q4. La non-applicabilité est défendable pour les produits numériques, ouverte pour le coaching | À produire | Investisseurs | Avocat fiscaliste *(à mandater)* | P1 |
 | DR-067 | Politique d'usage acceptable et procédure de modération des pages de vente | Q23. Le cœur de cible longe la liste des activités restreintes du prestataire de paiement | Absente | Investisseurs | CEO | P0 |
 | DR-205 | **Note unique d'un conseil couvrant les trois qualifications tirées du même jeu de faits** : TVA (article 9 bis), comptable (principal ou agent), droit de la consommation (qui est le vendeur professionnel) | Q4, Q64, Q81. C'est le même rendez-vous et la même liasse de pièces ; trois réponses séparées garantissent qu'au moins deux sont fausses | À produire | Investisseurs | Avocat *(à mandater)* + expert-comptable | P0 |
@@ -176,7 +182,7 @@ Aucun chiffre de traction n'a pu être établi par l'audit. Aucun ne peut l'êtr
 
 | # | Pièce | Ce qu'elle ferme | État | **Diffusion** | Responsable | Priorité |
 |---|---|---|---|---|---|---|
-| DR-068 | Schéma d'architecture daté : hébergeur, régions, CDN, pare-feu applicatif, protection anti-déni de service | Q13. Huit lignes sur dix-huit du tableau de stack sont vides | À produire | Investisseurs | CTO | P0 |
+| DR-068 | Schéma d'architecture daté : hébergeur, régions, CDN, pare-feu applicatif, protection anti-déni de service | Q13. **Six lignes sur dix-huit** du tableau de stack sont intégralement vides — décompte au 18/09/2026, `02_analyse_technique.md` §2 fait foi ; quatre autres ne le sont que pour partie | À produire | Investisseurs | CTO | P0 |
 | DR-069 | Inventaire des environnements exposés publiquement, et statut de l'alias tiers relevé | Q13, Q40. Un environnement de prévisualisation public contourne le CDN et le pare-feu du domaine principal | À produire | Sur demande | CTO | P1 |
 | DR-070 | Inventaire des fournisseurs critiques, avec rôle, localisation et substituabilité | Q13, Q41 | À produire | Investisseurs | CTO | P0 |
 | DR-071 | Relevé des en-têtes de sécurité et de la configuration TLS sur les quatre hôtes principaux | Q6. Une demi-journée de travail une fois l'accès rétabli | À produire | Investisseurs | CTO | P0 |
@@ -203,7 +209,7 @@ Aucun chiffre de traction n'a pu être établi par l'audit. Aucun ne peut l'êtr
 | DR-084 | Configuration CORS de l'API : liste blanche explicite ou correspondance par suffixe | Q6 | À produire | Sur demande | CTO | P0 |
 | DR-085 | Mécanisme anti-CSRF employé | Q6. Une protection fondée sur `SameSite` seul serait inopérante dans cette topologie | À produire | Sur demande | CTO | P0 |
 | DR-086 | Décision documentée sur la séparation des sites clients et de l'application sur deux domaines enregistrables | Q6, Q39. Chantier qui ne peut pas aboutir avant l'ouverture : à exposer chiffré et daté | À produire | Investisseurs | CTO | P1 |
-| DR-087 | Rapport du dernier test d'intrusion : date, prestataire, périmètre, constats, remédiation | Q36. Sans lui, 85 des 97 lignes du questionnaire de sécurité restent « inconnue » | Absente (sauf pièce contraire) | Sur demande | CTO | P0 |
+| DR-087 | Rapport du dernier test d'intrusion : date, prestataire, périmètre, constats, remédiation | Q36. Sans lui, **81 des 100 lignes** du questionnaire de sécurité restent « inconnue » — décompte au 18/09/2026, `04_securite_conformite.md` §4 fait foi | Absente (sauf pièce contraire) | Sur demande | CTO | P0 |
 | DR-088 | Test d'intrusion couvrant explicitement trois points nommés : **autorisation au niveau de l'objet entre locataires**, **authentification des acheteurs et des élèves**, et chaîne d'injection indirecte | Q33, Q36, Q87, Q88. Un test qui ne couvre pas ces trois points ne couvre pas le risque principal. Les mots IDOR et BOLA n'apparaissaient nulle part dans la version 1 du dossier | Absente | Sur demande | CTO + prestataire *(à mandater)* | P1 |
 | DR-089 | Politique de gestion des vulnérabilités : délais de correction par gravité, analyse des dépendances | Q36 | À produire | Investisseurs | CTO | P1 |
 | DR-090 | Captures du produit montrant l'authentification à deux facteurs pour les comptes ouverts par email | Q37 | À produire | Investisseurs | CTO | P1 |

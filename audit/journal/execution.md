@@ -10,7 +10,7 @@ Tenu par l'orchestrateur. Une ligne par étape.
 Évalué par A00 le 18 septembre 2026 à 21:20 UTC, après le contre-audit A11. **Une case n'est cochée que si la vérification a réellement été faite.**
 
 - [x] **Contradictions résolues ou exposées avec un responsable.** 26 contradictions au registre, chacune avec sa résolution ou son statut ouvert et son responsable. C-001, C-002 et C-006 tranchées par le screening MCP. C-026, qui portait sur la chaîne de garde de la preuve, régularisée dans `00_parametres.md`.
-- [x] **Chaque risque a une mitigation et un responsable.** 42 risques cotés au livrable 06, aucun orphelin.
+- [x] **Chaque risque a une mitigation et un responsable.** 48 risques cotés au livrable 06 — décompte au 18/09/2026, 06 §2 bis fait foi —, aucun orphelin.
 - [x] **Aucun superlatif non prouvé ; faits, estimations et plans séparés.** Corrigé en version 2 de la synthèse après l'objection B-1 du contre-audit, qui a relevé une phrase de quitus sans base.
 - [ ] **100 % des affirmations factuelles sourcées ; chiffres recoupés.** *Non atteint à ce jour.* Le contre-audit a établi qu'une lecture de catalogue était présentée comme une exécution dans trois livrables (B-3), et qu'une action jamais appelée figurait comme résultat de test (B-6). La seconde a été résolue par exécution effective. La première est en cours de correction. **À recocher après vérification indépendante.**
 - [ ] **Terminologie, dates et chiffres cohérents entre livrables.** *Non atteint à ce jour.* Divergences relevées par le contre-audit et en cours de traitement : jalons ViDA, nombre de concurrents dotés d'un MCP officiel, durée de P0 pour une personne, décompte du questionnaire de sécurité, collision de numérotation des actions P0 entre deux livrables.
@@ -66,3 +66,23 @@ Tenu par l'orchestrateur. Une ligne par étape.
 | 2026-09-18 20:50 UTC | A00 | Délégation phase 3 | 6 agents lancés sur les registres et les livrables 02 à 09. | audit/livrables/ |
 | 2026-09-18 21:05 UTC | A00 | Relance de deux agents | Les livrables 02, 03 et 05 ayant été rédigés avant les tests d'exécution, leurs auteurs sont relancés avec M-010 à M-015 pour corriger leurs propres fichiers. | — |
 | 2026-09-18 21:10 UTC | A00 | Méthodologie | Dispositif, contraintes, dérogations, anomalies, corrections apportées aux rapports, et ce que le dossier ne prouve pas. | annexes/methodologie.md |
+
+## Phase 4 — reprise après contre-audit
+
+| Horodatage | Agent | Action | Résultat | Fichiers produits |
+|---|---|---|---|---|
+| 2026-09-18 21:20 UTC | A00 | Délégation des corrections | 4 agents sur les 8 livrables, pour les 6 bloquantes et les 15 majeures | audit/livrables/ |
+| 2026-09-18 21:22 UTC | A11 | **Second passage lancé** | — | — |
+| 2026-09-18 21:33 UTC | A11 | Second passage rendu | **B-1 et B-2 closes. B-3, B-5 et B-6 substantiellement closes. B-4 toujours ouverte. Une bloquante nouvelle : N-1.** Plus 8 majeures et 4 mineures nouvelles. | audit/rapports/A11_passe2.md |
+| 2026-09-18 21:40 UTC | A00 | **Traitement de N-1** | La synthèse qualifiait d'« écrite » une autorisation accordée oralement et consignée a posteriori par son bénéficiaire. Corrigé. C'était le vice du premier passage reproduit par l'orchestrateur lui-même, dans le document de tête. | 01 |
+| 2026-09-18 21:40 UTC | A00 | N-2, N-3, N-6, N-9 | Extrait versable des actions exécutées créé ; décompte tranché à 17 actions et 22 appels ; méthodologie reprise ; 7 bandeaux de diffusion posés sur les fichiers internes | annexes, registres |
+| 2026-09-18 21:45 UTC | A00 | Délégation N-4, N-5, N-7, N-8 | 2 agents : registres remis à niveau, chiffres périmés substitués, ligne IDOR ouverte au registre et au plan | registres, 05 à 09 |
+| 2026-09-18 21:55 UTC | A00 | Fermeture des renvois croisés | P0 aligné à 54 j·p, compte de risques à 48, trois traces au lieu de deux dans le dernier document en retard | 01, 05, risques.md, journal |
+
+## Décision sur la version anglaise
+
+`LANGUE = FR + EN`. **La version anglaise n'est pas produite à ce stade, et c'est délibéré.**
+
+Le second contre-audit établit que le dossier n'est pas diffusable, et que la première action du plan est `P0-21`, le rejeu de la collecte avec un accès réseau ouvert. Ce rejeu refermera une large part des « Non déterminé » et modifiera substantiellement les neuf livrables. Traduire aujourd'hui reviendrait à produire une seconde version périmée le jour même, et à doubler le coût de chaque correction ultérieure.
+
+**La version anglaise est donc conditionnée à la version 2 des livrables**, celle qui suivra le rejeu. Elle est inscrite au plan et à l'index de la data room. Si un investisseur anglophone doit être servi avant, le document à traduire en priorité est la synthèse exécutive seule, qui porte l'essentiel et tient en deux pages.
