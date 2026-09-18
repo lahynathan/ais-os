@@ -134,3 +134,59 @@ Dont une séquence de lancement complète en 7 emails (annonce, problème, recad
 | Envoyer un message | Oui | **Commercial** (plan Pro) |
 | Insérer du code personnalisé | Oui | **Commercial** (plan Pro) |
 | Supprimer une page ou un email | Action inexistante | Absence de fonction |
+
+---
+
+# M-018 — CONFIRMÉ. Le contexte IA persistant s'écrit sans aucun contrôle, et ne s'efface pas.
+
+Test ajouté le 18 septembre 2026 à 21:05 UTC, en réponse à l'objection B-6 du contre-audit, qui relevait à juste titre qu'une ligne « aucun contrôle » figurait dans un tableau de résultats de test pour une action **jamais appelée**. L'objection était fondée. Plutôt que de rétrograder la ligne, l'action a été exécutée.
+
+| Étape | Appel | Résultat |
+|---|---|---|
+| Écriture | `update_business_context` avec un marqueur de test | **Succès immédiat.** Champ écrit, `length: 177`, aucune confirmation, aucune restriction de plan |
+| Remise à vide | `update_business_context` avec une chaîne vide | **Refus.** « expected string to have >=1 characters » |
+| Réduction | `update_business_context` avec `-` | Succès, `length: 1` |
+
+Deux constats, tous deux CONFIRMÉS :
+
+1. **Le champ de contexte métier, injecté dans toutes les générations futures, est écrit par le canal automatisé sans aucun contrôle serveur**, sur un compte gratuit. La ligne « Écrire le contexte IA persistant — contrôle serveur : aucun » du tableau de synthèse est donc exacte, et elle repose désormais sur une exécution.
+2. **Ce champ ne peut pas être remis à vide par le canal automatisé.** L'IA peut y écrire, elle ne peut pas défaire son écriture. C'est une variante de M-014, et elle est plus gênante : une injection persistante écrite par erreur ou par malveillance ne peut pas être retirée par le même canal.
+
+**Trace laissée :** le champ porte la valeur `-` au lieu de sa valeur d'origine, qui était vide. À remettre à vide dans l'interface.
+
+---
+
+# Liste nominative des actions réellement exécutées
+
+Exigée par l'objection B-3 du contre-audit. **17 actions distinctes ont été appelées sur les 104 du catalogue.** Le reste de l'inventaire est un relevé de noms publié par le serveur lui-même : source primaire, mais déclarative. Aucune des 87 autres actions n'a été confrontée à son schéma ni à son comportement.
+
+| # | Action | Résultat |
+|---|---|---|
+| 1 | `get_account` | Succès |
+| 2 | `list_accounts` | Succès, un compte, aucun sous-compte |
+| 3 | `list_contacts` | Succès, un contact |
+| 4 | `list_webpages` | Succès, 7 pages |
+| 5 | `list_products` | Succès, un produit |
+| 6 | `list_emails` | Succès, un brouillon |
+| 7 | `get_webpage` | Succès, appelé trois fois |
+| 8 | `get_business_context` | Succès, champ vide |
+| 9 | `get_analytics_summary` | Succès |
+| 10 | `list_forms` | Succès, aucun formulaire |
+| 11 | `list_templates` | Succès, 15 modèles |
+| 12 | `create_webpage` avec `codeHtmlBlock` | **Refus 402** `PRO_PLAN_REQUIRED` |
+| 13 | `create_webpage` sans bloc de code | Succès, brouillon créé |
+| 14 | `publish_webpage` | **Succès, page mise en ligne** |
+| 15 | `unpublish_webpage` | Succès |
+| 16 | `create_email` | Succès, brouillon créé |
+| 17 | `send_email` | **Refus 402** `PRO_PLAN_REQUIRED` |
+| 18 | `update_business_context` | Succès en écriture, **refus** sur la remise à vide |
+
+Formulation à employer dans les livrables, et nulle part une autre : **« inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action »**, et pour les dix-sept ci-dessus, « exécuté ».
+
+## Traces à effacer manuellement dans l'interface
+
+1. Page « AUDIT TECHNIQUE — page de test, ne pas diffuser », brouillon, dépubliée.
+2. Message « Test d'audit technique interne », brouillon, jamais envoyé.
+3. Champ de contexte métier du compte, à remettre à vide (il porte `-`).
+
+Aucune de ces trois traces ne peut être effacée par le canal automatisé. C'est, en soi, le meilleur résumé de M-014 et M-018.
