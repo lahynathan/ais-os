@@ -33,7 +33,7 @@ flowchart TB
     end
 
     subgraph CLI["Clients IA et automatisation"]
-        CLA["Claude web, desktop, mobile, Claude Code — PROBABLE, annoncé, non testé"]
+        CLA["Claude — CONFIRMÉ pour le client utilisé par l'audit · les autres déclinaisons annoncées restent non testées"]
         AUT["ChatGPT mode développeur, OpenCode, Codex — PROBABLE, annoncé, non testé"]
         ZAP["Zapier et Make.com — PROBABLE, modules tiers repérés"]
     end
@@ -118,7 +118,7 @@ Cinq flux étaient à documenter. Un seul a été exercé.
 
 Chaîne observée : client MCP → autorisation → `search_actions` pour obtenir l'identifiant et le schéma d'une action → `execute_action` pour l'exécuter → back-end TinyPages → objet créé ou lu sur le compte. Les 24 outils directs court-circuitent la première étape.
 
-Trois propriétés de ce flux sont confirmées et structurantes :
+Cinq propriétés de ce flux sont confirmées, dont trois par exécution le 18/09/2026 :
 
 - **M-006.** Toute action hors des 24 outils directs passe par le même point d'entrée `execute_action`. Un client MCP demande le consentement **par outil** : une seule autorisation permanente sur `execute_action` couvre les 80 actions du catalogue interne, dont les 10 actions de publication, les 3 de suppression et les 2 d'envoi. Le consentement granulaire du client est structurellement contourné. **CONFIRMÉ** pour la structure ; le comportement réel du client n'a pas été testé.
 - **M-001.** Le catalogue contient `send_email` et `schedule_email`, ainsi que `publish_webpage`, `publish_blog_post`, `publish_lesson`, `publish_all_lessons`, `publish_form`, `publish_automation_email` et quatre actions de dépublication. **CONFIRMÉ** pour l'existence de ces actions.
@@ -318,7 +318,7 @@ Aucune de ces lignes n'est estimée. Les estimer à partir des sources disponibl
 
 | Domaine | Ce qui est établi | Niveau de preuve dominant |
 |---|---|---|
-| Surface d'action exposée à l'IA | Inventaire complet de 104 actions, leur classification, trois propriétés structurantes | **CONFIRMÉ** |
+| Surface d'action exposée à l'IA | Inventaire complet de 104 actions, leur classification et leurs propriétés structurantes | **CONFIRMÉ** |
 | Garde-fous d'exécution | La publication s'exécute sans contrôle ; deux actions seulement sont refusées, pour motif de plan | **CONFIRMÉ** |
 | Limites de plan réelles | Bloc de code personnalisé et envoi d'emails réservés au plan payant, sur un compte gratuit testé | **CONFIRMÉ** pour ces deux actions ; le reste de la grille demeure non vérifié |
 | État par défaut d'un compte à sa création | Cinq pages publiées automatiquement, deux documents légaux vides et indexés, capture d'emails active, double opt-in désactivé | **CONFIRMÉ** sur un compte, à une date |

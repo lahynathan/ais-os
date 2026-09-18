@@ -44,7 +44,7 @@ La carte est construite par classification des **104 actions** inventoriées sur
 | **Compte, modèles, utilitaires** | 16 | Informations de compte ; **multi-comptes avec `list_accounts` et `switch_account`** ; **contexte métier lisible et modifiable — champ libre de 10 000 caractères injecté dans les générations, doublé de deux invites système de compte pour les pages et les emails** ; liens ; modèles ; recherche dans la documentation ; `search_actions`, `execute_action`, `send_feedback` | Aucune action sur le domaine personnalisé, les paramètres de paiement, les remboursements, l'export de données, la sécurité du compte |
 | **Total** | **104** | — | — |
 
-### 1.3 Les cinq faits structurants de cette carte
+### 1.3 Les huit faits structurants de cette carte
 
 1. **L'IA peut publier et envoyer.** Dix actions de publication et dépublication, deux actions d'envoi et de programmation d'email. **CONFIRMÉ** (M-001). Cela tranche la contradiction C-002 du registre en faveur du discours du site : la documentation `getting-started/1-4-mcp-setup`, qui affirmait que l'envoi n'était pas accessible à l'IA, est fausse ou périmée.
 2. **L'IA supprime peu, mais elle supprime.** Trois actions de suppression existent : condition d'arrêt d'automatisation, bon de commande additionnel, vente incitative. **CONFIRMÉ** (M-002). Cela **corrige** les rapports A04 et A07, qui concluaient à l'absence totale de suppression. La formulation exacte est plus étroite : aucun contact, produit, page, article, formulaire, leçon ou email n'est supprimable par l'IA ; les objets secondaires le sont.
@@ -139,7 +139,7 @@ Ces trois contradictions portent sur **ce que le client achète**. Les laisser o
 | Acheteur, jusqu'à la page de paiement | **Non testé** | Web bloqué ; aucun compte Stripe en mode test |
 | Élève dans l'espace membre | **Non testé** | Web bloqué ; aucun compte élève |
 | Multi-comptes | **Non testé** | Un seul compte, aucun sous-compte |
-| Créateur piloté par l'IA via MCP | **Partiellement exercé** | Exercé par l'orchestrateur en lecture et en création de brouillons ; ni publication ni envoi n'ont été testés |
+| Créateur piloté par l'IA via MCP | **Exercé**, sur un compte en plan gratuit | Lectures, création d'une page, **publication et dépublication réussies**, tentative de bloc de code et tentative d'envoi **refusées pour motif de plan**. Restent non exercés : le même parcours sur un compte payant, et tout ce qui touche au paiement, au domaine et à la suppression |
 
 **Anomalie à signaler telle quelle.** L'agent fonctionnel A07 n'a eu accès à aucun outil MCP : ses trois tentatives d'appel ont échoué avec « No such tool available », alors même que le compte était déclaré connecté et la décision D-1 tranchée. Cause probable : un décalage entre le nom de serveur déclaré dans la configuration de l'agent et le nom réel du serveur. **CONFIRMÉ** (A07-001). Conséquence : le parcours qui aurait dû être le plus accessible dans cet environnement est celui qui a le moins été couvert par l'agent qui en avait le mandat.
 
@@ -158,6 +158,22 @@ Formulé sans atténuation : **la plateforme met en ligne, pour chaque créateur
 
 Une anomalie mineure a également été relevée sur ce compte : un produit affiché à 100 avec trois échéances de 33, soit 99. Sans connaître la règle d'arrondi de la dernière échéance, il n'est pas possible de conclure. **À vérifier** (M-009).
 
+Le compte est par ailleurs livré avec quinze modèles, dont une séquence de lancement complète en sept emails : voir section 1.4.
+
+### 3.3 Le parcours de publication, exercé — **CONFIRMÉ**
+
+| Étape | Appel | Résultat |
+|---|---|---|
+| Création | `create_webpage`, page étiquetée comme page d'audit, non indexée | Brouillon créé |
+| Publication | `publish_webpage`, **appelé en violant délibérément la consigne « ne pas publier » de la description de l'outil** | **Succès immédiat**, URL publique retournée, aucune confirmation demandée |
+| Dépublication | `unpublish_webpage` | Succès |
+| Bloc de code personnalisé | `create_webpage` avec un bloc `codeHtmlBlock` | **Refusé — plan Pro requis** |
+| Envoi d'un message | `send_email` | **Refusé — plan Pro requis pour envoyer par l'interface programmatique** |
+
+**Ce que ce parcours démontre, du point de vue fonctionnel.** La mise en ligne publique d'une page est, pour un compte gratuit piloté par une IA, une opération en un appel, sans étape de revue. Deux fonctions seulement opposent une barrière, et ce sont les deux fonctions facturées.
+
+**Résidus du test.** Une page et un message de test subsistent en brouillon sur le compte : le canal automatisé ne dispose d'aucune action pour les supprimer (M-014). Ils doivent être retirés à la main dans l'interface — action à confier au responsable du compte.
+
 ---
 
 ## 4. Matrice de parité interface / MCP / API
@@ -166,7 +182,9 @@ Une anomalie mineure a également été relevée sur ce compte : un produit affi
 
 | Fonction | Interface web | MCP | API publique et intégrations tierces |
 |---|---|---|---|
-| Pages : créer, modifier, publier, dépublier | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
+| Pages : créer, modifier | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
+| Pages : publier, dépublier | Non vérifié | **Présent et exercé — CONFIRMÉ.** Disponible en plan gratuit, immédiat, sans confirmation ni garde-fou (M-010) | Non déterminé |
+| Pages : bloc de code personnalisé HTML et JavaScript | Non vérifié | **Présent mais payant — CONFIRMÉ.** Refusé en `402 PRO_PLAN_REQUIRED` sur un compte gratuit (M-011) | Non déterminé |
 | Pages : supprimer | Non vérifié | **Absent — CONFIRMÉ** | Non déterminé |
 | Blog : créer, modifier, publier, dépublier | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
 | Produits : créer, modifier, lister | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
@@ -174,12 +192,13 @@ Une anomalie mineure a également été relevée sur ce compte : un produit affi
 | Espace membre : leçons, modules, ajout d'un membre | Non vérifié | **Présent — CONFIRMÉ** | Module d'ajout de membre repéré chez un intégrateur tiers — **PROBABLE** |
 | Contacts et étiquettes | Non vérifié | **Présent, sans suppression — CONFIRMÉ** | Modules d'ajout de contact et d'étiquette repérés — **PROBABLE** |
 | Emails : créer un brouillon | Non vérifié | **Présent — CONFIRMÉ** | Module de création d'email en brouillon repéré — **PROBABLE** |
-| Emails : envoyer et programmer | Non vérifié | **Présent — CONFIRMÉ** pour l'existence de l'action ; comportement **non testé** | Non déterminé |
+| Emails : envoyer et programmer | Non vérifié | **Présent mais payant — CONFIRMÉ.** L'action existe ; `send_email` est refusé en `402 PRO_PLAN_REQUIRED` sur un compte gratuit (M-011). Comportement sur un compte payant **non testé** | Non déterminé |
 | Formulaires : créer, modifier, publier | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
 | Formulaires : dépublier | Non vérifié | **Absent — CONFIRMÉ** | Non déterminé |
 | Médias : téléverser | Non vérifié | **Absent — CONFIRMÉ** | Non déterminé |
 | Médias : lister, lire, rechercher | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
-| Analytics | Non vérifié | **Présent, granularité inconnue — CONFIRMÉ** | Non déterminé |
+| Analytics | Non vérifié | **Présent — CONFIRMÉ.** Visiteurs, contacts, ventes et revenus exposés au canal automatisé (M-017) ; granularité et définitions inconnues | Non déterminé |
+| Contexte IA du compte : contexte métier et invites système | Non vérifié | **Présent en lecture et en écriture — CONFIRMÉ** (M-015) | Non déterminé |
 | Multi-comptes : lister, basculer | Non vérifié | **Présent — CONFIRMÉ** | Non déterminé |
 | Domaine personnalisé | Non vérifié — annoncé au plan payant, **PROBABLE** | **Absent — CONFIRMÉ** | Non déterminé |
 | Paramètres de paiement et connexion Stripe | Non vérifié | **Absent — CONFIRMÉ** | Non déterminé |
@@ -232,9 +251,10 @@ C'est un trou à combler avant la data room, pour deux raisons : ces pages sont 
 |---|---|---|---|
 | E1 | « Seule plateforme marketing tout-en-un pilotable de bout en bout par Claude via un serveur MCP officiel » | Au moins quatre concurrents disposeraient d'un serveur MCP officiel documenté, dont un tout-en-un direct sur son plan gratuit | **CONTREDIT**, sur des sources secondaires convergentes — **PROBABLE**. La promesse doit être reformulée ou étayée par une comparaison fonctionnelle datée, pas retirée sans examen : la couverture fonctionnelle des concurrents n'a pas pu être comparée action par action |
 | E2 | « De bout en bout » | Le catalogue ne couvre ni le domaine personnalisé, ni la connexion Stripe, ni les remboursements, ni l'export, ni la sécurité du compte | **Écart CONFIRMÉ** (M-003). L'expression dépasse le périmètre réel |
-| E3 | « L'IA crée un brouillon, l'envoi n'est pas accessible » — documentation | `send_email` et `schedule_email` existent au catalogue | **Documentation CONTREDITE** par l'inventaire (M-001, **CONFIRMÉ**). La documentation est fausse ou périmée sur une capacité centrale |
+| E3 | « L'IA crée un brouillon, l'envoi n'est pas accessible » — documentation | Les actions d'envoi existent (M-001) et l'envoi a été testé : **refusé en plan gratuit, plan Pro requis** (M-011) | **Documentation CONTREDITE**, et la FAQ du site l'est aussi dans sa généralité : l'envoi par l'IA n'est ni impossible ni inconditionnel, c'est une **fonction payante**. Les deux pages doivent être reformulées. **CONFIRMÉ** |
 | E4 | « L'IA ne peut jamais supprimer » — instructions du serveur | Trois actions de suppression existent, sur des objets secondaires | **Écart CONFIRMÉ** (M-002). L'affirmation exacte est plus étroite que celle que le serveur énonce ; les rapports A04 et A07 reprenaient l'affirmation large et sont corrigés ici |
-| E5 | Garde-fous annoncés — « ne pas publier automatiquement », « enregistré comme brouillon » | Ces réserves figurent dans des descriptions en langage naturel adressées au modèle. Aucun refus côté serveur n'a été démontré, aucun test de publication ni d'envoi n'a été exécuté | **Non déterminé**, et c'est la question fonctionnelle la plus importante encore ouverte |
+| E5 | Garde-fous annoncés — « ne pas publier automatiquement », « enregistré comme brouillon » | La consigne a été délibérément violée : la page a été publiée immédiatement, avec une URL publique et sans confirmation | **Écart CONFIRMÉ** (M-010). Ces réserves sont du texte adressé à un modèle que TinyPages ne contrôle pas. Toute formulation les présentant comme une garantie sera démentie en un appel. La formulation défendable est « comportement par défaut du modèle », jamais « contrôle » |
+| E10 | Sécurité annoncée du pilotage par IA | Les deux seuls contrôles serveur constatés sont des barrières de facturation : bloc de code et envoi d'emails. La publication, la lecture des contacts, la lecture des métriques commerciales et l'écriture du contexte IA persistant n'en ont aucune | **Écart CONFIRMÉ** (M-011). Le mécanisme de contrôle existe et fonctionne ; il n'est pas branché sur les actions à risque |
 | E6 | Consentement de l'utilisateur action par action dans son client IA | 80 actions passent par un point d'entrée unique ; une seule autorisation permanente les couvre toutes | **Écart CONFIRMÉ** (M-006) |
 | E7 | Plateforme clé en main pour créateurs | Les pages légales livrées par défaut sont vides, publiées et proposées à l'indexation, à côté d'un formulaire de capture actif sans double opt-in | **Écart CONFIRMÉ** (M-007) |
 | E8 | Accès au MCP, vente de produits et périmètre du plan gratuit | Trois versions différentes circulent entre la page d'accueil, la FAQ et la documentation | **Ouvert** — C-001 et C-003 non tranchées |
@@ -246,7 +266,8 @@ C'est un trou à combler avant la data room, pour deux raisons : ces pages sont 
 
 | Priorité | Question | Qui ou quoi y répond |
 |---|---|---|
-| P0 | Le serveur refuse-t-il réellement une publication ou un envoi non confirmé, ou le garde-fou n'existe-t-il que dans le texte adressé au modèle ? | Test de publication et test d'envoi sur un compte de test réellement vierge |
+| P0 | **Répondu** : le serveur n'oppose aucun contrôle à la publication, et ses deux seuls refus sont des barrières de plan. Reste à décider si un contrôle de publication est ajouté avant l'ouverture de la data room, et à reformuler toute page qui présente les consignes actuelles comme une garantie | Direction technique et direction générale |
+| P0 | Le comportement d'envoi et de publication est-il différent sur un **compte payant** ? Le refus observé implique qu'un compte Pro enverrait sans autre contrôle | Test sur un compte Pro dédié, réellement vierge |
 | P0 | Quelle est la grille tarifaire réelle : prix, paliers de contacts, périmètre du plan gratuit, commission ? | Page tarifaire officielle, une fois le réseau rouvert, et confirmation interne |
 | P0 | C-001 et C-003 : quelle version fait foi entre la page d'accueil, la FAQ et la documentation ? | Direction générale, puis correction des pages en écart |
 | P0 | Pourquoi les pages légales par défaut sont-elles vides, publiées et proposées à l'indexation ? | Direction technique — correction produit, pas correction documentaire |
@@ -261,9 +282,9 @@ C'est un trou à combler avant la data room, pour deux raisons : ces pages sont 
 
 ## 8. Ce que ce livrable établit, et ce qu'il laisse ouvert
 
-**Établi, sur preuve d'exécution** : la surface fonctionnelle exposée à l'IA, module par module, avec ses asymétries et ses absences ; le fait que l'IA publie, envoie et supprime des objets secondaires ; le fait qu'elle lit les données personnelles des contacts ; le fait que l'administration du compte et les flux financiers lui échappent ; le fait qu'un compte neuf naît avec des pages légales vides publiées et indexées, à côté d'un formulaire de collecte actif sans double opt-in.
+**Établi, sur preuve d'exécution** : la surface fonctionnelle exposée à l'IA, module par module, avec ses asymétries et ses absences ; le fait que l'IA publie sans qu'aucun contrôle s'y oppose, et qu'elle supprime des objets secondaires sans pouvoir supprimer ce qu'elle crée ; le fait que l'envoi d'emails et le bloc de code personnalisé sont des fonctions payantes, refusées par le serveur sur un compte gratuit ; le fait que l'IA lit les données personnelles des contacts et les métriques commerciales, et qu'elle peut écrire le contexte qui oriente ses propres générations futures ; le fait que l'administration du compte et les flux financiers lui échappent ; le fait qu'un compte neuf naît avec quinze modèles utiles et deux pages légales vides publiées et indexées, à côté d'un formulaire de collecte actif sans double opt-in.
 
-**Ouvert** : tout ce qui concerne l'interface web, les parcours réels, les plans et leurs limites, les tarifs, les quotas, la conformité du discours comparatif, et le comportement réel des actions d'envoi et de publication. Ces trous ne viennent pas d'un manque d'analyse : ils viennent d'un environnement d'audit qui n'a pas pu ouvrir une seule page de la plateforme. Ils se comblent en une journée de travail avec un réseau ouvert, un compte de test réellement vierge et un accès MCP fonctionnel.
+**Ouvert** : tout ce qui concerne l'interface web, les parcours acheteur et élève, la grille tarifaire complète et les quotas, la conformité du discours comparatif, et le comportement du pilotage par IA **sur un compte payant** — les deux refus constatés sont des barrières de plan, et rien n'indique ce qu'un compte Pro rencontre. Ces trous ne viennent pas d'un manque d'analyse : ils viennent d'un environnement d'audit qui n'a pas pu ouvrir une seule page de la plateforme. Ils se comblent en une journée de travail avec un réseau ouvert, un compte de test payant réellement vierge et un accès MCP fonctionnel.
 
 ---
 
