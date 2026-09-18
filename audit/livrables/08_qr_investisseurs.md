@@ -527,8 +527,8 @@ Ce sont celles dont la réponse est aujourd'hui difficile, incomplète ou défav
 ## Ce que ce document laisse ouvert
 
 - **Onze des cinquante questions portent une réponse principalement défavorable** : Q1, Q2, Q3, Q5, Q7, Q12, Q30, Q34, Q39, Q40, Q46. Aucune n'est dissimulable : chacune se vérifie en quelques minutes par un tiers, soit en ouvrant un compte gratuit, soit en connectant le serveur MCP, soit en lisant deux pages publiques.
-- **Vingt-huit questions appellent une pièce qui n'existe pas encore dans la data room.** Elles sont reprises, sans exception, dans `audit/livrables/09_index_data_room.md`.
-- **Trois questions dépendent d'une pièce qui n'a aucun propriétaire à ce jour** : Q4, Q11 et Q41 supposent un avocat, et le paramètre `RESPONSABLES` porte « avocat : à mandater ». Q10 et Q20 supposent une fonction financière qui n'est attribuée à personne.
+- **Les cinquante questions appellent une pièce justificative, et aucune de ces pièces n'est aujourd'hui disponible dans la data room.** Elles sont reprises, sans exception, dans `audit/livrables/09_index_data_room.md`, qui en compte 189 au total et n'en donne que 17 comme prêtes — toutes produites par l'audit lui-même.
+- **Plusieurs questions dépendent d'un rôle qui n'est pourvu par personne à ce jour.** Q4, Q11, Q24, Q41, Q43 et Q44 supposent un conseil juridique ou fiscal, et le paramètre `RESPONSABLES` porte « avocat : à mandater ». Q10, Q16, Q20 et Q25 supposent une fonction financière qu'aucun paramètre de l'audit ne désigne.
 - **Ce document a été produit sans aucun accès interne, avec l'egress réseau fermé et sans test actif.** Les réponses « Non déterminé à ce jour » ne signifient pas que TinyPages ne sait pas répondre : elles signifient que l'audit n'a pas pu l'établir. La plupart se ferment en une journée de travail interne. C'est précisément l'objet du document 09.
 
 ---

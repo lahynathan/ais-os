@@ -321,18 +321,20 @@ Ces règles ne sont pas des pièces, mais elles conditionnent la recevabilité d
 
 ## 13. Décompte
 
+Décompte effectué sur les 189 lignes de cet index, le 18 septembre 2026.
+
 | État | Nombre de pièces | Part |
 |---|---|---|
-| Prête | 18 | 10 % |
-| À produire | 143 | 76 % |
-| Absente | 28 | 15 % |
+| Prête | 17 | 9 % |
+| À produire | 142 | 75 % |
+| Absente | 30 | 16 % |
 | **Total** | **189** | **100 %** |
 
-Répartition des états « absente » : 14 portent la mention *(sauf pièce contraire)* — l'audit présume l'absence sans l'avoir établie sur tous les canaux — et 14 sont des absences établies ou des chantiers dont l'objet n'existe pas aujourd'hui.
+Répartition des états « absente » : **14** portent la mention *(sauf pièce contraire)* — l'audit présume l'absence sans avoir pu l'établir sur tous les canaux — et **16** sont des absences établies ou des chantiers dont l'objet n'existe pas aujourd'hui. Douze de ces trente pièces sont en P0.
 
-**Comment lire ce décompte.** Les 18 pièces prêtes ont toutes été produites par l'audit lui-même : ce sont des analyses, pas des pièces de société. **Aucune pièce d'entreprise n'a été vue par cet audit.** Les 143 pièces « à produire » existent probablement en partie déjà, chez le CTO, dans une console fournisseur ou chez l'expert-comptable : les extraire est une affaire d'heures, pas de semaines. Les 28 pièces « absente » sont d'une autre nature : elles supposent un chantier, et sept d'entre elles sont des chantiers P0 — confirmation serveur avant publication, outils nommés pour les actions irréversibles, journal des actions de l'IA, gabarits juridiques remplis, double opt-in par défaut, marquage des contenus générés, politique d'usage acceptable et canal de signalement.
+**Comment lire ce décompte.** Les 17 pièces prêtes ont toutes été produites par l'audit lui-même : ce sont des analyses, pas des pièces de société. **Aucune pièce d'entreprise n'a été vue par cet audit.** Les 142 pièces « à produire » existent probablement en partie déjà, dans une console fournisseur, dans le dépôt de code ou chez le comptable : les extraire est le plus souvent une affaire d'heures, pas de semaines. Les 30 pièces « absente » sont d'une autre nature : elles supposent un chantier. Les douze qui sont en P0 sont les suivantes — confirmation appliquée côté serveur avant publication et envoi (DR-110), outils nommés pour les 15 actions irréversibles (DR-111), journal des actions de l'IA (DR-112), instructions serveur corrigées avec différentiel avant publication (DR-124), gabarits juridiques remplis et non indexés tant qu'ils sont vides (DR-154), double opt-in par défaut (DR-155), marquage lisible par machine des contenus générés (DR-161, échéance du 2 décembre 2026), paquet hébergeur au titre du règlement sur les services numériques (DR-158), page publique de signalement d'abus (DR-100), politique d'usage acceptable et modération des pages de vente (DR-067), limites de débit sur la création et la publication (DR-097), et rapport de test d'intrusion (DR-087).
 
-**Ce que ce décompte ne dit pas.** Il ne mesure pas la qualité du produit. Il mesure l'écart entre ce que TinyPages sait de lui-même et ce qu'il peut montrer. Un auditeur mandaté arrivera dans la même position que cet audit : sans accès interne, il ne verra que ce qui lui est remis. Les 76 % de pièces à produire sont donc la charge de travail réelle avant l'ouverture, et elle se concentre sur une seule personne.
+**Ce que ce décompte ne dit pas.** Il ne mesure pas la qualité du produit. Il mesure l'écart entre ce que TinyPages sait de lui-même et ce qu'il peut montrer. Un auditeur mandaté arrivera dans la même position que cet audit : sans accès interne, il ne verra que ce qui lui est remis. Les 75 % de pièces à produire sont donc la charge de travail réelle avant l'ouverture, et elle se concentre aujourd'hui sur une seule personne.
 
 ---
 
