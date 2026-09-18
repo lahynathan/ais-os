@@ -1,3 +1,7 @@
+> ⛔ **STRICTEMENT INTERNE — NE JAMAIS REMETTRE AUX INVESTISSEURS, SOUS AUCUNE FORME.**
+> Ce document porte le nom réel, le sous-domaine et l'adresse personnelle du dirigeant, ainsi que l'état de son compte. L'extrait versable de la liste des actions exécutées est `annexes/actions_mcp_executees.md`.
+> Convention de diffusion : `audit/livrables/09_index_data_room.md`.
+
 # Screening du compte de test via MCP — relevés d'exécution
 
 Réalisé par A00 le 18 septembre 2026, sous dérogation D-5 accordée par le CEO (édition, publication et envoi autorisés sur le compte de test).
@@ -158,7 +162,11 @@ Deux constats, tous deux CONFIRMÉS :
 
 # Liste nominative des actions réellement exécutées
 
-Exigée par l'objection B-3 du contre-audit. **17 actions distinctes ont été appelées sur les 104 du catalogue, en 18 appels** — `create_webpage` a été appelé deux fois, une fois refusé et une fois accepté. Le tableau ci-dessous compte les appels, pas les actions distinctes. Le reste de l'inventaire est un relevé de noms publié par le serveur lui-même : source primaire, mais déclarative. Aucune des 87 autres actions n'a été confrontée à son schéma ni à son comportement.
+Exigée par l'objection B-3 du contre-audit, décompte tranché le 18/09/2026 à 21:40 UTC après l'objection N-3 du second passage.
+
+**Décompte qui fait foi, et qui ne doit être recalculé nulle part ailleurs : 17 actions distinctes, appelées en 22 appels, sur les 104 du catalogue.**
+
+L'écart entre les trois nombres s'explique ainsi : le tableau ci-dessous comporte **18 lignes** parce que `create_webpage` y figure deux fois, une fois refusé et une fois accepté ; et le nombre total d'appels est de **22** parce que `get_webpage` a été appelé trois fois et `update_business_context` trois fois. Toute autre valeur circulant dans le dossier est périmée. Le reste de l'inventaire est un relevé de noms publié par le serveur lui-même : source primaire, mais déclarative. Aucune des 87 autres actions n'a été confrontée à son schéma ni à son comportement.
 
 | # | Action | Résultat |
 |---|---|---|
@@ -179,7 +187,7 @@ Exigée par l'objection B-3 du contre-audit. **17 actions distinctes ont été a
 | 15 | `unpublish_webpage` | Succès |
 | 16 | `create_email` | Succès, brouillon créé |
 | 17 | `send_email` | **Refus 402** `PRO_PLAN_REQUIRED` |
-| 18 | `update_business_context` | Succès en écriture, **refus** sur la remise à vide |
+| 18 | `update_business_context` | Trois appels : succès en écriture, **refus** sur la remise à vide, succès sur la réduction à `-` |
 
 Formulation à employer dans les livrables, et nulle part une autre : **« inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action »**, et pour les dix-sept ci-dessus, « exécuté ».
 

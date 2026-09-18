@@ -1,3 +1,7 @@
+> ⛔ **STRICTEMENT INTERNE — NE JAMAIS REMETTRE AUX INVESTISSEURS, SOUS AUCUNE FORME.**
+> Document de pilotage interne. Expose ce que l'audit ne sait pas et ce qu'il faut réclamer.
+> Convention de diffusion : `audit/livrables/09_index_data_room.md`.
+
 # Pièces internes à demander
 
 Établi par A00 en phase 2. `ACCES_INTERNES = aucun` : l'agent A10 n'a pas tourné, et aucune preuve interne n'est entrée dans le dossier.

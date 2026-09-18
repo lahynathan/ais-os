@@ -1,3 +1,7 @@
+> ⛔ **STRICTEMENT INTERNE — NE JAMAIS REMETTRE AUX INVESTISSEURS, SOUS AUCUNE FORME.**
+> Registre de travail. Porte l'identité du dirigeant et le détail de son compte.
+> Convention de diffusion : `audit/livrables/09_index_data_room.md`.
+
 # Questions ouvertes
 
 Tenu par l'orchestrateur uniquement.

@@ -10,7 +10,7 @@ Date de référence : 18 septembre 2026. Version 2, révisée après contre-audi
 >
 > L'audit s'est déroulé sans accès réseau aux sites de TinyPages ni à aucune source officielle externe, et sans aucune pièce interne. **Aucune page de TinyPages n'a été ouverte. Aucune pièce d'entreprise n'a été vue.**
 >
-> Une seule source primaire a été exploitée : le serveur MCP de production, interrogé sur le compte du dirigeant avec autorisation écrite. **17 actions y ont été réellement exécutées, sur un catalogue de 104.** Les 87 autres sont un inventaire de noms publié par le serveur lui-même — source primaire, mais déclarative : c'est TinyPages qui décrit TinyPages, et aucune de ces actions n'a été confrontée à son schéma.
+> Une seule source primaire a été exploitée : le serveur MCP de production, **interrogé sur le compte de production du dirigeant, sous une dérogation qu'il a accordée oralement et qui n'a été consignée par écrit que le soir même, a posteriori, par le bénéficiaire de la dérogation lui-même.** Ce n'est pas une autorisation écrite préalable. La dérogation formelle et le rejeu du protocole sur un locataire dédié restent à produire, et tant qu'ils ne le sont pas, la recevabilité de cette preuve est attaquable. **17 actions distinctes y ont été réellement exécutées, en 22 appels, sur un catalogue de 104** (liste nominative versable : `annexes/actions_mcp_executees.md`). Les 87 autres sont un inventaire de noms publié par le serveur lui-même — source primaire, mais déclarative : c'est TinyPages qui décrit TinyPages, et aucune de ces actions n'a été confrontée à son schéma.
 >
 > Tout le reste plafonne au statut PROBABLE. La méthode, ses quatre dérogations et ses écarts assumés sont détaillés dans `annexes/methodologie.md`.
 >
@@ -43,7 +43,7 @@ Un seul lien de ce schéma a été exercé. Tout le reste est déduit ou annonc�
 
 - **L'étendue du pilotage par IA est large et le catalogue est documenté.** 104 actions couvrant pages, produits, espace membre, contacts, emails, automatisations, formulaires, coupons, analytics.
 - **Le serveur applique déjà des vérifications par action et par compte.** Les refus `402` observés le prouvent. **Le point d'application existe** : sécuriser les actions sensibles est une extension d'un mécanisme en place, pas une construction de zéro. C'est ce qui rend le plan crédible.
-- **Le produit est cohérent et livré.** Un compte neuf reçoit 5 pages, 15 modèles dont une séquence de lancement en 7 emails, et un espace membre fonctionnel.
+- **Le produit est cohérent et livré.** Un compte neuf reçoit 15 modèles dont une séquence de lancement en 7 emails, et un espace membre fonctionnel. Il reçoit aussi 5 pages publiées d'office — mais deux d'entre elles sont des documents juridiques vides, ce qui est le risque 3 ci-dessous et non un point fort.
 - **Le dossier établit par test le constat qui le dessert le plus.** C'est une qualité, pas un aveu : un investisseur finance une équipe qui sait dire « nous avons testé, ça ne tient pas, voici le plan ».
 
 > **Périmètre de cette section.** Elle ne porte que sur ce qui a pu être observé, c'est-à-dire le canal MCP. **Aucune conclusion ne peut être tirée de cet audit sur les comptes, les contrats, les engagements, les litiges ou la situation financière de la société : aucune de ces pièces n'a été consultée.**

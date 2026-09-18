@@ -1,5 +1,9 @@
 # Méthodologie de l'audit
 
+> ## Nature de ces travaux
+>
+> **Auto-évaluation produite en interne pour TinyPages, sans intervention d'un tiers indépendant.** Le commanditaire, l'audité, le relecteur, l'auteur des dérogations et l'unique responsable de toutes les remédiations sont la même personne. **Ces documents ne constituent pas un rapport d'audit au sens professionnel du terme.** Les deux points les plus critiques — le harnais IA et l'isolement multi-locataire — doivent faire l'objet d'un mandat externe dont le rapport sera joint.
+
 Établi par A00. Date de référence : 18 septembre 2026. Ce document dit comment le dossier a été produit, avec quels moyens, et surtout ce que ces moyens ne permettaient pas. Il est écrit pour être lu par l'auditeur technique mandaté par le fonds.
 
 ## 1. Dispositif
@@ -60,13 +64,13 @@ Un audit qui s'écarte de ses propres règles doit le dire lui-même, sinon c'es
 | D-1 | Le compte MCP connecté est déclaré compte de test dédié | CEO | Autorise A04 et A07 à interroger le MCP |
 | D-2 | Phase 1 en mode dégradé, WebSearch seul | CEO | Plafonne tous les constats non-MCP à PROBABLE |
 | D-3 | Aucun accès interne | CEO | A10 non lancé |
-| D-5 | Édition, publication et envoi autorisés sur le compte de test | CEO | Permet les tests d'exécution M-010 à M-017 |
+| D-5 | Édition, publication et envoi autorisés sur le compte de test | CEO | Permet les tests d'exécution **M-010 à M-018**. Accordée oralement, consignée par écrit a posteriori par le bénéficiaire lui-même : ce n'est pas une autorisation écrite préalable, et la dérogation formelle reste à produire |
 
 **Réserve majeure sur D-1 et D-5.** L'inspection du compte a montré qu'il ne s'agit pas d'un banc d'essai anonyme : il porte le nom réel et l'adresse personnelle réelle du dirigeant, contient son adresse comme unique contact, et a été utilisé pour créer des brouillons pendant la session d'audit. Le garde-fou de `CLAUDE.md` — « le MCP n'est jamais connecté à un compte réel pendant l'audit » — n'est donc respecté qu'imparfaitement.
 
 Cela n'invalide pas les constats `M-`, qui portent sur le comportement par défaut de la plateforme et non sur des données clientes. Mais les tests restants, et tout pentest, exigent un locataire dédié.
 
-**Traces laissées par l'audit.** Deux brouillons subsistent sur le compte : une page « AUDIT TECHNIQUE — page de test, ne pas diffuser », publiée puis dépubliée, et un message « Test d'audit technique interne », jamais envoyé. Aucune action du catalogue ne permet de les supprimer. À supprimer manuellement.
+**Traces laissées par l'audit.** **Trois traces** subsistent sur le compte : une page « AUDIT TECHNIQUE — page de test, ne pas diffuser », publiée puis dépubliée ; un message « Test d'audit technique interne », jamais envoyé ; et le champ de contexte métier du compte, qui porte un caractère au lieu d'être vide depuis le test M-018 du 18/09/2026 à 21:05 UTC. **Aucune des trois n'est effaçable par le canal automatisé.** À supprimer manuellement dans l'interface.
 
 ## 5. Anomalies d'exécution rencontrées
 
@@ -106,7 +110,7 @@ L'orchestrateur a rectifié quatre affirmations avant consolidation. Elles sont 
 - Rien sur le comportement réel de la plateforme en interface : tous les parcours sont non testés.
 - Rien sur le comportement d'un compte Pro : le seul compte inspecté est en plan gratuit.
 
-Un auditeur qui recevrait ce dossier comme une due diligence complète serait induit en erreur. C'est **une cartographie externe rigoureuse assortie d'un sondage technique ciblé**, et la liste des pièces à produire est dans `audit/livrables/09_index_data_room.md`.
+Un auditeur qui recevrait ce dossier comme une due diligence complète serait induit en erreur. C'est **une note de cadrage assortie d'un sondage technique ciblé** — la même formulation que la synthèse exécutive, et la plus sévère des deux est la juste, et la liste des pièces à produire est dans `audit/livrables/09_index_data_room.md`.
 
 ## 9. Relecture obligatoire avant diffusion
 
