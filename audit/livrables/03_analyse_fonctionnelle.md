@@ -8,7 +8,9 @@ Data room TinyPages · Date de référence : 18 septembre 2026 · Rédigé par l
 >
 > **Aucun parcours utilisateur n'a été déroulé.** La politique réseau de l'environnement a refusé toute sortie HTTP (403 du proxy au CONNECT, 18/09/2026) : ni le site, ni l'application, ni la documentation, ni une page de vente, ni un espace membre n'ont pu être ouverts. Aucune capture d'écran n'existe. Aucun compte Stripe en mode test n'était disponible, donc aucun parcours d'achat n'a été observé, même jusqu'à la page de paiement.
 >
-> **Ce qui tient lieu de preuve dans ce document** : l'inventaire exécuté du serveur MCP TinyPages sur le compte connecté — 104 actions exposées à l'IA — et le relevé de l'état par défaut d'un compte à sa création. Constats préfixés **M-**, statut **CONFIRMÉ**, consignés dans `audit/annexes/catalogue_mcp_tinypages.md` et `audit/annexes/screening_mcp_compte_test.md`. **La carte des modules de ce livrable est construite sur cet inventaire**, parce que c'est la seule ossature vérifiée dont dispose l'audit.
+> **Ce qui tient lieu de preuve dans ce document** : l'inventaire exécuté du serveur MCP TinyPages sur le compte connecté — 104 actions exposées à l'IA — le relevé de l'état par défaut d'un compte à sa création, et les **tests d'exécution du 18/09/2026 entre 20:15 et 20:23 UTC** menés sous dérogation du dirigeant, qui ont éprouvé la publication et l'envoi. Constats préfixés **M-**, statut **CONFIRMÉ**, consignés dans `audit/annexes/catalogue_mcp_tinypages.md` et `audit/annexes/screening_mcp_compte_test.md`. **La carte des modules de ce livrable est construite sur cet inventaire**, parce que c'est la seule ossature vérifiée dont dispose l'audit.
+>
+> **Le compte testé est en plan gratuit**, établi par deux refus du serveur en HTTP 402. Ces refus sont les seules limites de plan que cet audit a pu constater. Le reste de la grille tarifaire — prix, paliers, quotas, commission — n'a jamais été vérifié et demeure au mieux PROBABLE.
 >
 > **Ce que l'inventaire MCP ne prouve pas.** Il prouve qu'une action **existe et porte tel nom**. Il ne prouve pas ce qu'elle fait réellement, ni ce que l'interface web propose en plus ou en moins. Une fonction absente du catalogue MCP peut parfaitement exister dans l'interface : l'absence est donc notée comme absence **côté MCP**, jamais comme absence produit.
 >
@@ -30,16 +32,16 @@ La carte est construite par classification des **104 actions** inventoriées sur
 
 | Module | Actions MCP | Ce que l'inventaire établit | Ce qu'il n'établit pas |
 |---|---|---|---|
-| **Emails et automatisations** | 21 | Création, mise à jour, lecture, recherche d'emails ; emails d'automatisation publiables et dépubliables ; statistiques d'email ; listes de destinataires ; conditions d'arrêt d'automatisation créables et supprimables ; **`send_email` et `schedule_email` existent** | Aucune action `create_automation` : les séquences elles-mêmes ne semblent pas créables par l'IA, seulement leurs emails. Le comportement réel d'un envoi n'a pas été testé |
+| **Emails et automatisations** | 21 | Création, mise à jour, lecture, recherche d'emails ; emails d'automatisation publiables et dépubliables ; statistiques d'email ; listes de destinataires ; conditions d'arrêt d'automatisation créables et supprimables ; **`send_email` et `schedule_email` existent** ; **l'envoi est une fonction payante** : `send_email` est refusé en `402 PRO_PLAN_REQUIRED` sur le compte gratuit testé | Aucune action `create_automation` : les séquences elles-mêmes ne semblent pas créables par l'IA, seulement leurs emails. Le comportement de l'envoi **sur un compte payant** n'a pas été testé |
 | **Produits et monétisation** | 17 | Produits créables, modifiables, listables ; statistiques produit ; coupons ; bons de commande additionnels et ventes incitatives, y compris leur suppression ; échéances evergreen | Aucune suppression de produit. Aucun paramétrage de prix multi-devises identifié |
 | **Espace membre et formation** | 11 | Leçons créables, modifiables, publiables une à une ou toutes ensemble ; modules de cours lisibles et modifiables ; ajout d'un membre à un produit ; liste des membres | Aucun retrait de membre. Aucun certificat de complétion. Aucune notion de progression ou de suivi d'élève dans l'inventaire |
 | **Formulaires** | 10 | Formulaires créables, modifiables, publiables ; pages et destinations de formulaire ; lecture des soumissions | **`publish_form` existe, `unpublish_form` n'existe pas** : l'IA peut mettre un formulaire en ligne sans pouvoir l'en retirer |
 | **Contacts et étiquettes** | 8 | Création, mise à jour, liste et recherche de contacts ; étiquettes créables, recherchables, ajoutables et retirables | Aucune suppression de contact. Aucune action de désinscription, d'export, ni de traitement d'une demande de droits RGPD |
-| **Pages web** | 7 | Pages et pages de vente créables, modifiables, lisibles, listables, publiables et dépubliables | Aucune suppression de page |
+| **Pages web** | 7 | Pages et pages de vente créables, modifiables, lisibles, listables, publiables et dépubliables. **Publication testée** : immédiate, sans confirmation, disponible en plan gratuit. **Le bloc de code personnalisé `codeHtmlBlock` est en revanche une fonction payante** : la création d'une page qui en contient est refusée en `402 PRO_PLAN_REQUIRED` | Aucune suppression de page : une page créée par l'IA ne peut être retirée du compte que dans l'interface |
 | **Blog** | 6 | Articles créables, modifiables, lisibles, listables, publiables et dépubliables | Aucune suppression d'article |
 | **Médias** | 6 | Images et vidéos lisibles, listables, recherchables | **Aucun téléversement** : l'IA ne peut pas ajouter d'image ni de vidéo, seulement utiliser l'existant |
-| **Analytics** | 2 | Résumé de performance et ventes | Granularité, période, définition des métriques : inconnues |
-| **Compte, modèles, utilitaires** | 16 | Informations de compte ; **multi-comptes avec `list_accounts` et `switch_account`** ; contexte métier lisible et modifiable ; liens ; modèles ; recherche dans la documentation ; `search_actions`, `execute_action`, `send_feedback` | Aucune action sur le domaine personnalisé, les paramètres de paiement, les remboursements, l'export de données, la sécurité du compte |
+| **Analytics** | 2 | Résumé de performance et ventes. `get_analytics_summary` renvoie **visiteurs, contacts, ventes et revenus** sur une période : le pilotage par IA a accès aux métriques commerciales du créateur | Définition exacte des métriques, granularité et profondeur d'historique : inconnues |
+| **Compte, modèles, utilitaires** | 16 | Informations de compte ; **multi-comptes avec `list_accounts` et `switch_account`** ; **contexte métier lisible et modifiable — champ libre de 10 000 caractères injecté dans les générations, doublé de deux invites système de compte pour les pages et les emails** ; liens ; modèles ; recherche dans la documentation ; `search_actions`, `execute_action`, `send_feedback` | Aucune action sur le domaine personnalisé, les paramètres de paiement, les remboursements, l'export de données, la sécurité du compte |
 | **Total** | **104** | — | — |
 
 ### 1.3 Les cinq faits structurants de cette carte
@@ -49,8 +51,24 @@ La carte est construite par classification des **104 actions** inventoriées sur
 3. **Le pilotage s'arrête avant l'administration et avant l'argent.** Aucune action ne couvre le domaine personnalisé, la connexion Stripe, les remboursements, l'export des données, les réglages de sécurité, ni la gestion des abonnés au-delà de l'ajout d'un membre. **CONFIRMÉ** (M-003).
 4. **L'IA lit les données personnelles des contacts.** Contacts, soumissions de formulaires, destinataires d'emails, membres de produits : tous lisibles. **CONFIRMÉ** (M-004). Ces champs sont alimentés par des tiers non authentifiés, ce qui en fait une surface d'injection indirecte — traitée dans le livrable 05.
 5. **Le multi-comptes est réel et pilotable par l'IA.** `list_accounts` et `switch_account` existent. **CONFIRMÉ** (M-005). Le compte observé ne portait qu'un seul compte et aucun sous-compte, donc le cloisonnement n'a pas pu être éprouvé (M-008).
+6. **La publication ne demande rien à personne.** `publish_webpage` a été appelé en violant délibérément la consigne « ne pas publier » inscrite dans la description de l'outil : la page a été publiée immédiatement, avec une URL publique, sans confirmation ni restriction de plan. **CONFIRMÉ** (M-010). Les garde-fous annoncés sont du texte adressé au modèle, rien ne les applique.
+7. **Deux fonctions sont payantes, et ce sont les deux seules que le serveur protège.** Le bloc de code personnalisé et l'envoi d'emails par le canal automatisé sont refusés en `402 PRO_PLAN_REQUIRED` sur un compte gratuit. **CONFIRMÉ** (M-011). Le serveur sait donc refuser : il le fait pour ce qui est facturé, pas pour ce qui est risqué.
+8. **L'IA ne peut pas nettoyer derrière elle.** Les deux objets créés pendant les tests — une page et un message — subsistent en brouillon et ne peuvent être supprimés que dans l'interface. **CONFIRMÉ** (M-014).
 
-### 1.4 Fonctions absentes du catalogue MCP
+### 1.4 Ce que le compte contient à son ouverture — **CONFIRMÉ**
+
+Relevé sur le compte testé, par exécution.
+
+| Élément livré par défaut | Détail |
+|---|---|
+| Cinq pages créées **et publiées automatiquement** | Accueil, À propos, Produits, Politique de confidentialité, Conditions d'utilisation. Les deux dernières sont **vides — réduites à leur titre — et proposées à l'indexation** (M-007) |
+| Quinze modèles | Dont une **séquence de lancement complète en 7 emails** — annonce, problème, recadrage, preuve, objections, urgence, dernier rappel — une page d'inscription, une page de vente, une newsletter, une signature et trois thèmes visuels (M-016) |
+| Configuration d'envoi | Double opt-in désactivé ; un contact déjà enregistré comme abonné, créé à l'ouverture du compte (M-007) |
+| Contexte IA du compte | Champ de contexte métier de 10 000 caractères et deux invites système, pour les pages et pour les emails, vides à l'ouverture (M-015) |
+
+**Lecture fonctionnelle.** L'ossature éditoriale livrée est substantielle : un créateur démarre avec une séquence de vente complète et trois thèmes. C'est un vrai point de valeur produit. Il est adossé, dans le même geste d'installation, à deux documents juridiques vides publiés en son nom.
+
+### 1.5 Fonctions absentes du catalogue MCP
 
 Absence **côté MCP uniquement**. Leur présence dans l'interface web n'a pas pu être vérifiée.
 
@@ -69,11 +87,28 @@ Absence **côté MCP uniquement**. Leur présence dans l'interface web n'a pas p
 
 ## 2. Plans et limites
 
+### 2.1 Limites de plan réellement constatées — **CONFIRMÉ**
+
+Le compte testé est en **plan gratuit**. Ce n'était pas une donnée déclarée : c'est une déduction de deux refus du serveur. Voici, à ce jour, la totalité de ce que l'audit a pu établir des limites de plan par l'exécution.
+
+| Action | Résultat sur le compte gratuit | Lecture |
+|---|---|---|
+| Connexion au serveur MCP, lectures, recherches | Acceptées | Le pilotage par IA fonctionne en plan gratuit |
+| `create_webpage`, `update_webpage` | Acceptées | Création de contenu disponible en gratuit |
+| `publish_webpage`, `unpublish_webpage` | **Acceptées, immédiates, sans confirmation** | La publication n'est ni payante ni contrôlée (M-010) |
+| `create_webpage` avec un bloc `codeHtmlBlock` | **Refusé — `402 PRO_PLAN_REQUIRED`** | Le bloc de code personnalisé est une **fonction payante** (M-011) |
+| `send_email` | **Refusé — `402 PRO_PLAN_REQUIRED`**, un plan Pro est exigé pour envoyer par l'interface programmatique | L'envoi par le canal automatisé est une **fonction payante** (M-011). Le comportement sur un compte payant n'a pas été testé |
+| Suppression d'une page ou d'un email | Action inexistante, quel que soit le plan | Absence de fonction, pas restriction de plan (M-014) |
+
+Ce tableau ne dit rien des quotas — nombre de pages, de produits, de contacts, d'emails par mois — qui restent **Non déterminés**.
+
+### 2.2 Grille tarifaire annoncée — non vérifiée
+
 **Aucune grille tarifaire n'a pu être ouverte.** Ce qui suit provient de résumés de moteur de recherche portant sur des pages jamais consultées. Rien de ce tableau ne doit être présenté à un investisseur comme un fait établi.
 
 | Élément | Ce qui est rapporté | Statut |
 |---|---|---|
-| Existence d'un plan gratuit et d'un plan payant dit « Pro » | Rapportée par plusieurs sources secondaires | **PROBABLE** |
+| Existence d'un plan gratuit et d'un plan payant dit « Pro » | Rapportée par plusieurs sources secondaires, et **corroborée par l'exécution** : le compte testé est en plan gratuit et le serveur oppose un code d'erreur nommant explicitement un plan Pro | **CONFIRMÉ** pour l'existence des deux niveaux ; leur contenu exact reste non vérifié |
 | Prix du plan Pro | Un montant de 99 $ par mois est cité par des sources secondaires | **PROBABLE** — non vérifié sur la grille officielle, jamais ouverte |
 | Contenu annoncé du plan Pro | Blog, domaine personnalisé, séquences d'emails, diffusions, espace membre, fonctions IA, support prioritaire, produits, modèles, hébergement vidéo | **PROBABLE** (A07-006) |
 | Paliers de contacts en plus du tarif de base | Paliers évoqués depuis 1 000 contacts inclus jusqu'à 50 000 | **PROBABLE** (A07-007) — les seuils exacts et leurs prix n'ont pas été vérifiés |
@@ -86,8 +121,8 @@ Absence **côté MCP uniquement**. Leur présence dans l'interface web n'a pas p
 
 | ID | Sujet | Source A | Source B | État |
 |---|---|---|---|---|
-| C-001 | Accès au MCP selon le plan | La FAQ du site indiquerait une connexion incluse dès le plan gratuit | La documentation réserverait l'intégration au plan Pro | **Ouvert.** Aucune des deux pages n'a pu être ouverte cette session |
-| C-002 | Envoi d'emails par l'IA | La FAQ du site : l'IA envoie ou programme une newsletter sur demande | La documentation : l'IA crée un brouillon, l'envoi n'est pas accessible | **Tranché en faveur du site**, sur l'existence des actions `send_email` et `schedule_email` (**CONFIRMÉ**, M-001). Le comportement réel d'un envoi reste non testé |
+| C-001 | Accès au MCP selon le plan | La FAQ du site indiquerait une connexion incluse dès le plan gratuit | La documentation réserverait l'intégration au plan Pro | **Éclairée, aucune des deux sources n'a entièrement raison** (M-013, **CONFIRMÉ**) : la connexion et la majorité des actions fonctionnent en plan gratuit, mais un sous-ensemble d'actions est réservé au plan payant. C'est cette nuance qui manque aux deux pages. Les deux formulations restent à corriger |
+| C-002 | Envoi d'emails par l'IA | La FAQ du site : l'IA envoie ou programme une newsletter sur demande | La documentation : l'IA crée un brouillon, l'envoi n'est pas accessible | **Tranché, et la réponse exacte n'est celle d'aucune des deux.** Les actions `send_email` et `schedule_email` existent (**CONFIRMÉ**, M-001) et **l'envoi a été testé** : il est **refusé en plan gratuit**, avec un message indiquant qu'un plan Pro est requis pour envoyer par l'interface programmatique (**CONFIRMÉ**, M-011). L'envoi par l'IA est donc une fonction payante, non une fonction absente. **Le comportement sur un compte Pro n'a pas été testé** |
 | C-003 | Vente de produits en plan gratuit | La page d'accueil : première offre créée et vendue gratuitement | La FAQ et la documentation : produits et email marketing réservés au plan payant, commission de 15 % en plan gratuit | **Ouvert.** Une source secondaire supplémentaire penche du côté « plan payant » (A07-006), sans trancher |
 
 Ces trois contradictions portent sur **ce que le client achète**. Les laisser ouvertes dans une data room est un écart en soi.
