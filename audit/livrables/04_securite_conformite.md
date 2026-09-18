@@ -20,7 +20,9 @@ Ce chapitre n'est pas une précaution de style. Il conditionne la lecture de tou
 4. Une recherche négative n'est pas une preuve d'absence. « Aucune page de sécurité trouvée » veut dire qu'aucun matériel public n'est indexé et atteignable, pas qu'il n'en existe aucun.
 5. **Toute conclusion juridique ou fiscale de ce document est à valider par un avocat.** Le paramètre RESPONSABLES porte « avocat : à mandater ». Rien ici ne constitue un avis juridique et rien n'est opposable à un tiers en l'état.
 
-**Le seul canal ayant produit des constats CONFIRMÉS est le serveur MCP, sur le compte connecté** (annexe `screening_mcp_compte_test.md`, dérogation D-5). Tous les faits établis de ce volet viennent de là, et d'eux seuls : M-007 sur les pages légales vides publiées par défaut (§ 1.3), puis M-010 à M-017 sur les garde-fous réellement appliqués par le serveur (§ 1.4). Ils sont peu nombreux, ils sont reproductibles, et ce sont les seuls que ce document présente comme des constats sur TinyPages.
+**Le seul canal ayant produit des constats CONFIRMÉS est le serveur MCP, sur le compte connecté** (annexe `screening_mcp_compte_test.md`, dérogation D-5). Tous les faits établis de ce volet viennent de là, et d'eux seuls : M-007 sur les pages légales vides publiées par défaut (§ 1.3), puis M-010 à M-018 sur les garde-fous réellement appliqués par le serveur (§ 1.4). Ils sont peu nombreux, ils sont reproductibles, et ce sont les seuls que ce document présente comme des constats sur TinyPages.
+
+**Ce qui a été exécuté, et ce qui ne l'a pas été.** Le catalogue de 104 actions du serveur MCP est un **inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action**. Sur ces 104 actions, **17 actions distinctes ont été réellement appelées** pendant l'audit ; la liste nominative, avec la réponse obtenue pour chacune, figure dans l'annexe `screening_mcp_compte_test.md`. Les 87 autres n'ont été confrontées ni à leur schéma ni à leur comportement. Aucune formule de ce document ne doit présenter le catalogue comme un inventaire exécuté ou vérifié.
 
 **Réserve sur la nature de ce compte.** Il était décrit comme « compte de test dédié » et déclaré vierge. Les relevés montrent autre chose : nom réel du CEO, sous-domaine à son nom, adresse personnelle réelle en `replyToEmail`, un contact existant correspondant à cette adresse, des brouillons créés pendant la session. Les relevés restent valides, car ils portent sur le **comportement par défaut de la plateforme** et non sur des données clientes, mais le garde-fou « jamais de compte réel » n'est respecté qu'imparfaitement. À signaler au contre-audit.
 
@@ -46,11 +48,11 @@ Ce chapitre n'est pas une précaution de style. Il conditionne la lecture de tou
 
 Pour un dossier construit au niveau d'exigence d'une Série A, l'absence de matériel public de sécurité est en soi un écart, indépendamment de la qualité réelle de la plateforme. Un auditeur mandaté ouvre en premier : la page sécurité, le `security.txt`, la page de statut, la politique de divulgation, la liste des sous-traitants. Aucun de ces éléments n'a été trouvé. Plusieurs se produisent en quelques heures et coûtent presque rien : c'est un défaut de documentation avant d'être un défaut technique, et les deux ne se corrigent pas dans le même délai.
 
-Le questionnaire de sécurité prérempli (section 4) chiffre ce point : **88 % des lignes restent « inconnue »**. La colonne « à confirmer » se ferme en une demi-journée dès que l'egress est rouvert, avec les commandes déjà écrites en section 6 du rapport A05. La colonne « inconnue » dépend entièrement de pièces internes qu'il faut réclamer maintenant.
+Le questionnaire de sécurité prérempli (section 4) chiffre ce point : **81 % des lignes restent « inconnue »** (décompte recompté au 18/09/2026, après le screening MCP — voir § 4). La colonne « à confirmer » se ferme en une demi-journée dès que l'egress est rouvert, avec les commandes déjà écrites en section 6 du rapport A05. La colonne « inconnue » dépend entièrement de pièces internes qu'il faut réclamer maintenant.
 
 ### 1.3 Premier fait établi : M-007, les pages légales vides publiées sur chaque compte
 
-**Statut : CONFIRMÉ. Impact : élevé. Source : exécution réelle d'actions du catalogue MCP sur le compte connecté, 18/09/2026.**
+**Statut : CONFIRMÉ. Impact : élevé. Source : exécution réelle d'actions de lecture du catalogue MCP sur le compte connecté, 18/09/2026 (`get_account`, `list_webpages`, `get_webpage`, `list_contacts`) — actions figurant à la liste nominative des 17 actions exécutées, en annexe.**
 
 À la création d'un compte, TinyPages crée et **publie automatiquement** cinq pages. Deux sont des documents juridiques, et leur contenu intégral est le suivant :
 
@@ -78,13 +80,16 @@ Quatre conséquences, toutes à faire trancher :
 
 Des tests d'exécution ont été menés le 18/09/2026 sur le compte connecté, sous dérogation D-5, en appelant délibérément des actions que la description des outils demande au modèle de ne pas appeler. L'objet du test est précisément de **distinguer un garde-fou appliqué par le serveur d'une consigne adressée au modèle**. Les résultats sont CONFIRMÉS et ils commandent une partie de l'analyse de sécurité qui suit.
 
+**Chaque ligne du tableau ci-dessous correspond à un appel réellement émis**, et à lui seul. Le tableau ne se déduit pas du catalogue : il relève ce que le serveur a répondu. Les 17 actions exécutées sont listées nominativement en annexe ; le reste du catalogue n'a pas été exercé et ne figure pas ici.
+
 | Action | Contrôle côté serveur | Nature du contrôle |
 |---|---|---|
 | Publier une page | **Aucun** | — |
 | Dépublier une page | Aucun | — |
 | Lire les contacts | Aucun | — |
 | Lire les métriques commerciales (visiteurs, ventes, revenus) | Aucun | — |
-| Écrire le contexte IA persistant | Aucun | — |
+| Écrire le contexte IA persistant | **Aucun** | — — exécuté le 18/09/2026 à 21:05 UTC (M-018) |
+| **Remettre à vide le contexte IA persistant** | **Oui** | **Refus du serveur** : « expected string to have >=1 characters ». L'IA écrit ce champ, elle ne peut pas défaire son écriture (M-018) |
 | Envoyer un message | Oui | **Commercial** (`402 PRO_PLAN_REQUIRED`) |
 | Insérer du code personnalisé | Oui | **Commercial** (`402 PRO_PLAN_REQUIRED`) |
 | Supprimer une page ou un email | Action inexistante | Absence de fonction |
@@ -97,9 +102,27 @@ Des tests d'exécution ont été menés le 18/09/2026 sur le compte connecté, s
 
 **M-015, surface d'injection persistante.** `get_business_context` expose un champ libre de 10 000 caractères, modifiable par `update_business_context`, décrit comme le contexte métier fourni au modèle ; le compte porte aussi `aiSystemPrompts` avec deux entrées (`webpage`, `email`). **Ce sont des instructions persistantes injectées dans toutes les générations futures.** Qui obtient une écriture sur ces champs, par le MCP, par une injection indirecte ou par un accès compromis, oriente durablement tout ce que l'IA produira pour ce créateur, **sans que rien n'apparaisse dans le contenu généré**. À verser au modèle de menaces du volet IA et au questionnaire de sécurité (MT-19 ci-dessous).
 
+**M-018, CONFIRMÉ. Le contexte IA persistant s'écrit sans contrôle, et ne s'efface pas.** `update_business_context` a été exécuté le 18/09/2026 à 21:05 UTC, sur le compte connecté, en plan gratuit. Deux résultats, tous deux établis par cette exécution :
+
+1. **L'écriture est acceptée sans aucun contrôle serveur** — succès immédiat, champ écrit (`length: 177`), aucune confirmation demandée, aucune restriction de plan. La ligne « Écrire le contexte IA persistant — contrôle serveur : aucun » du tableau ci-dessus ne repose donc plus sur la seule existence de l'action au catalogue : elle repose sur un appel et sur sa réponse.
+2. **La remise à vide est refusée par le serveur** — « expected string to have >=1 characters ». Une réduction à un caractère (`-`) passe, un retour à l'état d'origine non. **L'IA peut écrire ce champ, elle ne peut pas défaire son écriture.** C'est le second constat, et c'est le plus gênant des deux : une instruction persistante écrite par erreur ou par malveillance ne peut pas être retirée par le canal qui l'a écrite. C'est une variante de M-014, appliquée cette fois à un champ qui oriente toutes les générations futures du compte. Le seul contrôle serveur rencontré sur ce champ protège donc son remplissage, pas le créateur.
+
+**Trace laissée par ce test :** le champ porte la valeur `-` au lieu de sa valeur d'origine, qui était vide ; il est à remettre à vide dans l'interface, avec les deux brouillons résiduels.
+
 **M-017.** Le canal automatisé lit les métriques commerciales du créateur (visiteurs, contacts, ventes, revenus) sans contrôle particulier. À croiser avec la portée des jetons OAuth (IAM-10).
 
 **Deux constats mineurs du même screening.** M-008 : `list_accounts` renvoie un seul compte et `subAccounts: []`, la mécanique multi-comptes existe mais son cloisonnement n'a pas pu être éprouvé faute d'un second compte. M-009, à vérifier : un produit porte `price: 100`, `installments: 3` et `installmentAmount: 33`, soit 99 ; anecdotique seul, révélateur si la règle d'arrondi de la dernière échéance n'est pas gérée.
+
+### 1.5 Un constat de méthode qui est aussi un constat de sécurité : le serveur oriente les sessions d'audit
+
+Les instructions publiées par le serveur MCP TinyPages sont **chargées dans le contexte de toute session cliente connectée, y compris lorsque aucun outil TinyPages n'est appelé**. Le contre-audit du 18/09/2026 en apporte la démonstration directe : son auteur n'a émis aucun appel TinyPages, et le bloc d'instructions du serveur figurait néanmoins dans son contexte. Ce bloc assigne un rôle au modèle (« You are a TinyPages assistant »), lui interdit d'exposer les noms d'outils, les `action_id` et la mécanique interne, lui interdit de mentionner des outils tiers, et lui impose une consigne de style.
+
+**La conclusion doit être écrite sans adoucissement : TinyPages ne peut pas être audité par un agent connecté sans que le produit tente d'orienter l'auditeur.** Ces règles entrent en conflit direct avec un mandat d'audit ou de revue de sécurité, qui exige précisément de nommer les outils, de décrire la plomberie et de citer les concurrents. Elles ont été traitées, ici comme dans le livrable 05, comme des données à évaluer et jamais comme des instructions.
+
+Deux conséquences pour la data room :
+
+1. **C'est l'argument le plus concret en faveur du chantier de réduction des instructions serveur** (07, P0-14). Un auditeur de sécurité d'Anthropic ou d'OpenAI qualifiera ce bloc de *tool poisoning* ; il n'est pas nécessaire d'aller jusque-là pour constater qu'un serveur qui pousse une consigne de gouvernance du modèle hôte contamine aussi les sessions de revue.
+2. **Tout rapport de pentest ou de revue produit par un agent connecté doit consigner ce bloc et déclarer l'avoir écarté.** Sans cette mention, un lecteur ne peut pas distinguer une conclusion d'auditeur d'une conclusion orientée par le produit.
 
 ---
 
@@ -202,6 +225,8 @@ TinyPages cumule trois casquettes réglementaires distinctes, et aucune n'est v�
 | Hébergeur (Vercel ?) | Infrastructure | Sous-traitant | **Hypothèse.** Un alias `tinypages.vercel.app` existe, sans valeur probante | Hébergeur, CDN, WAF, régions de stockage |
 | Fournisseur du modèle IA | Coach IA, pilotage MCP | **Sous-traitant ultérieur** au sens de l'art. 28(2) et (4) | Non identifié publiquement | Identité, contrat, clause de non-entraînement, localisation |
 | Code personnalisé d'un créateur | Bloc HTML/JS sur une page publiée | **Sous-traitant non déclaré potentiel**, avec transfert hors UE non encadré | Mécanisme décrit, implémentation non vérifiée | CSP interne, journalisation des domaines contactés |
+| **Éditeur du client IA du créateur** (Anthropic, OpenAI ou autre, selon le client que le créateur connecte au MCP) | Exécution du pilotage par IA demandé par le créateur | **Non déterminé, et c'est le problème.** Ni sous-traitant ni sous-traitant ultérieur de TinyPages en l'état : le créateur contracte lui-même, à titre personnel, avec cet éditeur. La qualification de ce transfert n'est traitée dans aucun document du dossier | **Aucune pièce.** Le flux est établi par le catalogue (§ 1.4, accès de l'IA aux contacts, aux soumissions de formulaires et au chiffre d'affaires) ; sa qualification ne l'est pas | Qui est responsable de ce transfert, ce qui est dit au créateur au moment de l'autorisation, ce qu'en dit le futur DPA. Voir § 3.2, point 6 |
+| **Serveur MCP TinyPages hébergé par Zapier** | Second serveur MCP, distinct du serveur officiel, exposant TinyPages à des clients IA | **Non déterminé.** Sous-traitant non déclaré si des données de créateurs y transitent et qu'il n'est pas de TinyPages ; fournisseur à inventorier s'il est de TinyPages | Existence rapportée par des sources secondaires (PROBABLE). Ni contrat, ni statut, ni flux d'identifiants établis | Est-il autorisé, qui l'exploite, par quel canal passent les identifiants, existe-t-il un contrat. Voir § 3.2, point 7 |
 
 **Deux pièges de cartographie à ne pas reproduire dans la politique de confidentialité :**
 
@@ -215,6 +240,14 @@ TinyPages cumule trois casquettes réglementaires distinctes, et aucune n'est v�
 3. **Une analyse d'impact des transferts par fournisseur américain.** Le Data Privacy Framework a été confirmé par le Tribunal de l'UE le 3 septembre 2025 (affaire Latombe), mais un pourvoi a été formé le 31 octobre 2025 et l'affaire est pendante devant la CJUE. Un scénario d'invalidation reste ouvert : ne pas s'appuyer sur le seul DPF, doubler par les clauses contractuelles types 2021/914.
 4. **Une matrice des rôles par traitement**, une ligne par traitement, un rôle justifié. Pièce de data room attendue.
 5. **Une réponse écrite à la question de la finalité propre.** Les données des contacts des créateurs servent-elles à autre chose qu'à exécuter le service : statistiques produit, amélioration, évaluation ou entraînement de modèles, prospection croisée ? Toute réponse positive fait sortir TinyPages du rôle de sous-traitant pour ces usages et exige une base légale propre et une information.
+6. **La qualification du flux vers l'éditeur du client IA du créateur — angle mort ouvert ici, et traité nulle part ailleurs dans le dossier.** Le dossier qualifie correctement le fournisseur du modèle **intégré au produit** (coach IA, `aiSystemPrompts`) de sous-traitant ultérieur. Il n'examine nulle part le second flux, qui est pourtant le flux central du produit : **lorsqu'un créateur connecte son compte Claude ou ChatGPT personnel, ses contacts, ses soumissions de formulaires, ses listes de destinataires et son chiffre d'affaires sortent chez Anthropic ou OpenAI**, sous le contrat que ce créateur a souscrit à titre personnel, avec des règles de rétention et d'entraînement **qui dépendent de son plan** et sur lesquelles TinyPages n'a aucune prise. Que le flux existe est établi : § 1.4 et le catalogue montrent que le canal automatisé lit les contacts, les soumissions de formulaires et les métriques commerciales. Ce qui n'est pas établi, ce sont les quatre réponses qui commandent la qualification, et aucune n'est dans le dossier :
+   - **Qui est responsable de ce transfert ?** Le créateur, qui décide de connecter son client ? TinyPages, qui construit la surface et en fait sa proposition de valeur ? Une lecture défendable — **à valider par un avocat** — est que le créateur est responsable de traitement pour ce transfert et TinyPages son sous-traitant, l'éditeur du client n'étant contractuellement lié qu'au créateur. Statut : **Non déterminé.**
+   - **Qui est sous-traitant de qui ?** Si l'éditeur du client n'est le sous-traitant de personne dans la chaîne TinyPages, alors une partie du traitement échappe entièrement à la cascade de l'article 28(4), et le créateur en est seul garant sans nécessairement le savoir.
+   - **Qu'est-ce qui est dit au créateur ?** Existe-t-il, à l'écran d'autorisation OAuth, une information sur les données qui vont sortir, sur leur destinataire et sur les règles d'entraînement du plan souscrit ? Aucun écran n'a pu être ouvert. Statut : **Non déterminé.**
+   - **Que dit le futur DPA créateurs ?** S'il ne mentionne pas ce flux, il est incomplet le jour de sa signature.
+   
+   **Ce qui se fait vite et n'est pas un chantier :** une mention d'information au moment de l'autorisation — **P0-23 du plan 07, 1 j·p, phase P0** —, une clause dédiée au DPA créateurs — **P1-11** —, une ligne à la page « sous-traitants », et une recommandation de portée en lecture seule limitant ce qui sort (la portée elle-même est un chantier, **P1-08** ; la recommandation non). À lire avec la matrice réglementaire ci-dessous et à faire couvrir par le mandat de l'avocat conformité.
+7. **Le statut du connecteur MCP TinyPages hébergé par Zapier.** Ce serveur est cité trois fois dans le dossier — toujours comme un argument affaiblissant l'exclusivité revendiquée par le discours commercial, **jamais comme un chemin de données**. C'est une erreur de cadrage, et elle se corrige par trois questions écrites : **est-il autorisé** par TinyPages, ou publié par un tiers sous la marque ? **Par quel canal d'identifiants passe-t-il** — jeton API du créateur, OAuth, identifiants stockés chez Zapier ? **Zapier est-il déclaré sous-traitant**, avec un contrat et une ligne à la page « sous-traitants » ? Si des données de créateurs transitent par un tiers non déclaré, c'est un sous-traitant manquant à l'inventaire **et** une surface d'API hors du périmètre de tout pentest. Si TinyPages l'a publié lui-même, il doit figurer à l'inventaire des fournisseurs et au périmètre du pentest. Statut aujourd'hui : **Non déterminé** sur les trois questions. Y répondre est **P0-24 du plan 07, 1 j·p, phase P0** — un appel suffit ; le contrat ou la demande de retrait est **P1-28**.
 
 **Signal à lever en priorité.** Les instructions du serveur MCP énoncent « You cannot delete contacts, products, webpages, blog posts, forms, lessons, or emails », et les tests d'exécution le confirment pour le canal automatisé : **aucune action ne supprime une page ni un email, les objets créés pour les tests subsistent en brouillon** (M-014, CONFIRMÉ). Ce qui est établi, c'est donc l'absence de fonction de suppression **par le canal IA**. Ce qui ne l'est pas, c'est l'interface : rien ne dit que la restriction y vaut aussi. Si elle y valait, le créateur ne pourrait pas exécuter une demande d'effacement et TinyPages ne pourrait pas l'assister comme l'exige l'art. 28(3)(e). Statut HYPOTHÈSE pour l'interface, **à trancher par un test en interface sous 7 jours**, que le canal MCP ne permet pas. Ce point ne doit pas circuler hors de cet audit tant qu'il n'est pas tranché.
 
@@ -226,9 +259,9 @@ Structure calquée sur les domaines de la Cloud Controls Matrix v4, base commune
 
 **Colonne État :** *observée* (relevé effectué dans cette session), *à confirmer* (élément d'indice, non relevé), *inconnue* (aucun élément).
 
-Le questionnaire d'origine compte **97 lignes** (A05, section 7). Il est repris ici condensé : les **12 lignes qui portent un état autre que « inconnue » sont conservées telles quelles**, les lignes « inconnue » sont regroupées par domaine quand elles appellent la même pièce et le même destinataire. Le décompte de fin porte sur les 97 lignes d'origine.
+Le questionnaire d'origine compte **97 lignes** (A05, section 7). Ce livrable y ajoute trois lignes issues du screening MCP (MT-17, MT-18, MT-19), soit **100 lignes**. Il est repris ici condensé : les **19 lignes qui portent un état autre que « inconnue » sont conservées telles quelles**, les lignes « inconnue » sont regroupées par domaine quand elles appellent la même pièce et le même destinataire. Le décompte de fin a été refait ligne à ligne sur ce tableau, en développant chaque ligne groupée en ses lignes d'origine.
 
-Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un relevé réseau. La seule ligne « observée » porte sur un fait documentaire. C'est le résultat attendu, et la colonne de droite est la véritable commande de travail pour le CTO.
+Rappel : en mode dégradé, **aucune ligne ne peut porter « observée » sur un relevé réseau**. Les huit lignes qui portent « observée » viennent soit du screening MCP, seul canal actif de l'audit, soit d'un fait documentaire (GRC-02). C'est le résultat attendu, et la colonne de droite est la véritable commande de travail pour le CTO.
 
 | Réf | Question | Réponse préremplie | État | Pièce qui tranche |
 |---|---|---|---|---|
@@ -281,7 +314,7 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 | **MT-04 / MT-05** | Liste de mots réservés pour les identifiants de sous-domaine ; politique de non-réutilisation après départ | — | inconnue | CTO, § 2.5 |
 | **MT-06 / MT-07** | Vérification de propriété d'un domaine personnalisé et maintien après résiliation ; **un hôte peut-il être revendiqué par un second compte sans nouvelle vérification ?** | — | inconnue | CTO. MT-07 est la question la plus directe pour tester le risque de reprise |
 | **MT-08** | Émission de certificat conditionnée à la vérification, ou à la simple résolution DNS | — | inconnue | CTO |
-| **MT-09** | Isolation des données entre créateurs au niveau de la base : clé de locataire, sécurité au niveau des lignes, tests automatisés | — | inconnue | CTO. Attendu : un test qui échoue si une requête franchit la frontière de locataire |
+| **MT-09** | Isolation des données entre créateurs au niveau de la base : clé de locataire, sécurité au niveau des lignes, tests automatisés. **Peut-on, via l'API ou le MCP, lire ou modifier un objet d'un autre locataire en fournissant son identifiant (IDOR / BOLA) ?** | **Non testé.** Le test exigeait un second locataire, qui n'a pas été créé : `list_accounts` ne renvoie qu'un compte et `subAccounts: []` (M-008) | inconnue | CTO. Attendu : un test qui échoue si une requête franchit la frontière de locataire. **Test T-0 du protocole de pentest, livrable 05 § 5.5** |
 | **MT-10** | Les acheteurs et élèves ont-ils une identité globale réutilisée entre créateurs ? | — | inconnue | Produit. **Point de conception potentiellement majeur** : identité globale + JavaScript libre par créateur = un créateur peut viser les acheteurs des autres |
 | **MT-11** | Limites anti-abus sur le plan gratuit | **Aucune sur la publication.** `publish_webpage` réussit immédiatement sur un compte gratuit, sans confirmation ni délai (M-010). Les seuls refus serveur observés sont commerciaux (M-011) | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.4, § 2.6 |
 | **MT-12** | Détection de contenu frauduleux, automatisée ou sur signalement | Aucune détection observée à la publication | **à confirmer** (une modération asynchrone reste possible) | CTO |
@@ -293,18 +326,26 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 
 ### Décompte
 
-Décompte d'origine, sur les **97 lignes** du questionnaire produit par A05 :
+**Décompte au 18 septembre 2026, après le screening MCP.** Il a été **recompté ligne à ligne sur le tableau ci-dessus**, chaque ligne groupée étant développée en ses lignes d'origine. Le décompte d'A05 — 1 observée, 11 à confirmer, 85 inconnue, soit 88 % — **est périmé et ne doit plus être cité**.
 
-| État | Lignes |
-|---|---|
-| observée | 1 |
-| à confirmer | 11 |
-| inconnue | 85 |
-| **Total** | **97** |
+Le questionnaire porte désormais **100 lignes** : les 97 produites par A05, plus les 3 ouvertes par ce livrable (MT-17, MT-18, MT-19).
 
-Le décompte est en soi un constat : **88 % d'un questionnaire de sécurité standard reste sans réponse**. Un fonds n'y lira pas d'abord une faiblesse technique, il y lira un défaut de documentation. Les deux se corrigent, mais pas dans le même délai.
+| État | Lignes | Part |
+|---|---|---|
+| observée | 8 | 8 % |
+| à confirmer | 11 | 11 % |
+| inconnue | 81 | 81 % |
+| **Total** | **100** | **100 %** |
 
-Mise à jour après le screening MCP : **sept lignes passent de « inconnue » ou « à confirmer » à « observée »** (AIS-02 partiellement, AIS-04, LOG-02 partiellement, MT-11, MT-17, MT-18, MT-19). C'est une mauvaise nouvelle, pas une bonne : **chacune de ces lignes est un écart, pas une réponse rassurante**. Le premier bloc de faits établis du dossier décrit une plateforme dont les garde-fous de publication sont textuels et dont les seuls contrôles serveur sont commerciaux.
+**Les 8 lignes « observée », nommément :** AIS-02, AIS-04, GRC-02, LOG-02, MT-11, MT-17, MT-18, MT-19. **Deux ne le sont que pour partie** — AIS-02 est observée pour l'existence du bloc de code et son conditionnement au plan Pro, à confirmer pour l'implémentation de la sandbox ; LOG-02 est observée pour l'absence d'annulation, inconnue pour le journal. Comptées strictement, **6 lignes sont observées de bout en bout**.
+
+**Ce que le screening MCP a changé, exactement :** 4 lignes des 97 d'origine sont passées à « observée » (AIS-02, AIS-04, LOG-02, MT-11) et 3 lignes nouvelles ont été ouvertes, d'emblée observées (MT-17, MT-18, MT-19). La huitième, GRC-02, repose sur un fait documentaire et non sur un relevé.
+
+Le décompte reste un constat en soi : **81 % d'un questionnaire de sécurité standard reste sans réponse**, et 11 % de plus n'est qu'à confirmer. Un fonds n'y lira pas d'abord une faiblesse technique, il y lira un défaut de documentation. Les deux se corrigent, mais pas dans le même délai.
+
+**Et les huit lignes observées sont une mauvaise nouvelle, pas une bonne** : chacune est un écart, pas une réponse rassurante. Le premier bloc de faits établis du dossier décrit une plateforme dont les garde-fous de publication sont textuels et dont les seuls contrôles serveur sont commerciaux.
+
+> **Note de propagation.** Ce décompte n'a été recompté que pour ce livrable. Le chiffre périmé « 85 des 97 » et le « 88 % » figurent encore ailleurs dans le dossier ; ils y sont à corriger sur la base du présent recomptage, et aucun chiffre non recompté ne doit être propagé dans l'intervalle.
 
 ---
 
@@ -316,6 +357,8 @@ Mise à jour après le screening MCP : **sept lignes passent de « inconnue » o
 |---|---|---|---|---|---|---|
 | **RGPD, rôles** (règl. (UE) 2016/679, art. 4, 24, 26, 28) | Oui | Qualifier le rôle par traitement ; sous-traitant pour les données des contacts des créateurs, responsable pour ses propres clients ; aucune finalité propre non déclarée | Non observé | Non déterminé | Matrice des rôles par traitement | 30 j |
 | **RGPD, contrat de sous-traitance** (art. 28(3)) | Oui | DPA écrit proposé à chaque créateur, mentions obligatoires complètes ; des CGU peuvent suffire si elles les portent toutes | Non observé | Non déterminé, **absence probable en l'état d'une jeune plateforme** | Produire le DPA créateurs et l'exposer publiquement ; délai chiffré de 24 à 48 h pour l'alerte violation | 30 j |
+| **RGPD, flux vers l'éditeur du client IA du créateur** (art. 28, 44 à 49, 13 et 14) | Oui, dès qu'un créateur connecte un client IA au serveur MCP | Qualifier ce transfert et le contractualiser ; informer le créateur avant l'autorisation de ce qui sort, vers qui, et de la rétention et de l'entraînement applicables à **son** plan ; clause dédiée au DPA créateurs ; ligne à la page « sous-traitants » ; encadrement du transfert hors Union | **Non observé.** Le flux est établi par le catalogue (§ 1.4) ; sa qualification, l'écran d'autorisation et l'information au créateur n'ont pas pu être vus | **Non déterminé.** Angle mort ouvert par ce livrable, § 3.2 point 6 : le dossier ne qualifiait que le modèle intégré au produit | Note de qualification du flux ; mention d'information à l'écran d'autorisation ; clause de DPA ; recommandation de portée en lecture seule. **À couvrir par le mandat de l'avocat conformité** | 30 j pour la mention et la clause ; qualification avec le DPA |
+| **RGPD, connecteur MCP TinyPages hébergé par Zapier** (art. 28, 32) | Oui si des données de créateurs y transitent | Statut écrit du connecteur ; contrat de sous-traitance si Zapier traite des données pour le compte de TinyPages ou de ses créateurs ; inscription à l'inventaire des fournisseurs et au périmètre du pentest ; ou demande de retrait | **Non observé.** Existence rapportée par sources secondaires, statut non établi | **Non déterminé**, § 3.2 point 7 | Trancher le statut par écrit, puis contrat ou retrait | 30 j |
 | **RGPD, information des personnes** (art. 12 à 14) | Oui | Information complète, concise, accessible, au moment de la collecte | **Écart CONFIRMÉ sur le gabarit livré** : politique de confidentialité publiée vide sur chaque compte, indexée, adossée à un formulaire de capture d'emails actif (M-007) | **Confirmé et directement actionnable** | Ne plus publier une page juridique vide : gabarit réellement rempli, ou page non publiée et `indexed: false` tant qu'elle est vide ; prévenir les comptes existants | **15 j** |
 | **RGPD, consentement et preuve** (art. 7(1)) | Oui | Preuve du consentement conservée : identité, horodatage, texte, source. Le double opt-in n'est pas une obligation universelle, la preuve l'est | Non observé pour le stockage. **Observé** : `doubleOptin: false` par défaut, contact enregistré `isSubscribed: true` | Non déterminé | Établir ce que stocke le modèle de contact et ce que restitue l'export ; proposer le double opt-in à l'activation du bloc de capture | 30 j |
 | **RGPD, sous-traitants ultérieurs** (art. 28(2) et (4)) | Oui | Liste publiée et datée ; information préalable des changements avec droit d'opposition ; obligations en cascade ; **fournisseur du modèle IA inclus** | Non observé | Non déterminé | Page « sous-traitants » versionnée, notification par email | 30 j |
@@ -417,12 +460,14 @@ Par ordre de dépendance, parce que les premières conditionnent les suivantes.
 
 1. **L'entité juridique** : extrait d'immatriculation, statuts, pays d'établissement, table de capitalisation, mentions légales. Tant qu'elle n'est pas établie, l'applicabilité de la facturation électronique, du représentant UE et de l'autorité chef de file reste indéterminée, et la contradiction sur l'identité du fondateur reste ouverte.
 2. **Les trois faits du tunnel d'achat** : qui apparaît sur le reçu et la facture, qui fixe les CGV, qui décide de la mise à disposition du fichier. Ils commandent le risque le plus lourd du dossier.
-3. **Le DPA créateurs**, ou les CGU qui en tiennent lieu, et la liste des sous-traitants avec leur rôle et leur localisation.
+3. **Le DPA créateurs**, ou les CGU qui en tiennent lieu, et la liste des sous-traitants avec leur rôle et leur localisation. **Doit couvrir les deux flux IA, pas un seul** : le modèle intégré au produit, et le flux vers l'éditeur du client IA que le créateur connecte (§ 3.2 point 6). Un DPA qui ne mentionne que le premier est incomplet le jour de sa signature.
 4. **Le schéma d'architecture** : hébergeur, CDN, WAF, régions de stockage, isolation des données entre créateurs au niveau de la base.
-5. **Le dernier test d'intrusion** : périmètre (couvrait-il l'isolement multi-tenant ?), date, prestataire, constats, état de remédiation. Sans cette pièce, le questionnaire de sécurité reste majoritairement « inconnue ».
+5. **Le dernier test d'intrusion** : périmètre (couvrait-il l'isolement multi-tenant, et en particulier l'autorisation objet par objet — IDOR / BOLA ?), date, prestataire, constats, état de remédiation. Sans cette pièce, le questionnaire de sécurité reste majoritairement « inconnue ». Ce test **n'a pas pu être exécuté pendant l'audit faute d'un second locataire** ; il est en tête du protocole de pentest du livrable 05 § 5.5 (T-0).
 6. **Les réponses produit vérifiables sur un compte de test** : suppression définitive d'un contact **depuis l'interface** (le canal IA ne le permet pas, M-014), export complet, MFA, attributs des cookies, attribut `sandbox` du bloc de code. Et, sur un **compte Pro**, la seule question laissée ouverte par le screening : l'envoi d'emails est-il soumis à un contrôle autre que le mur de facturation ?
 7. **Les cessions de droits** des fondateurs et des prestataires, et l'état des dépôts de marque.
 8. **L'historique d'incidents, de réclamations d'abus et de retraits de contenu depuis le lancement.** La question sera posée telle quelle en due diligence : une réponse préparée vaut mieux qu'une découverte.
+9. **L'écran d'autorisation du serveur MCP**, tel qu'il s'affiche au créateur, et le texte d'information qui l'accompagne. C'est la seule pièce qui dit ce que le créateur sait, au moment où il l'autorise, des données qui vont sortir chez l'éditeur de son client IA (§ 3.2 point 6).
+10. **Le statut écrit du connecteur MCP TinyPages hébergé par Zapier** : autorisé ou non, exploité par qui, alimenté par quels identifiants, sous quel contrat (§ 3.2 point 7). Trois lignes suffisent à répondre ; leur absence est, elle, une information.
 
 ---
 

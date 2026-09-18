@@ -8,7 +8,11 @@ Data room TinyPages · Date de référence : 18 septembre 2026 · Rédigé par l
 >
 > **Ce document ne repose presque sur aucune observation directe de la plateforme.** L'audit a tourné en mode dégradé : la politique réseau de l'environnement a refusé toute sortie HTTP vers les domaines utiles (403 du proxy au CONNECT, relevé le 18/09/2026). **Aucune page de TinyPages n'a été ouverte** — ni le site, ni l'application, ni la documentation. `dig` et `whois` étaient absents du conteneur. Wayback Machine, crt.sh, PageSpeed Insights et les documentations des fournisseurs : inaccessibles.
 >
-> **Ce qui est CONFIRMÉ** — et rien d'autre : ce qui provient de l'exécution réelle du serveur MCP TinyPages sur le compte connecté, consigné dans `audit/annexes/catalogue_mcp_tinypages.md` et `audit/annexes/screening_mcp_compte_test.md`, constats préfixés **M-**. Cela couvre l'inventaire des 104 actions exposées à l'IA, l'état par défaut d'un compte à sa création et, depuis les tests d'exécution du 18/09/2026 entre 20:15 et 20:23 UTC menés sous dérogation du dirigeant, **le comportement réel des actions de publication et d'envoi**.
+> **Ce qui est CONFIRMÉ** — et rien d'autre : ce qui provient du serveur MCP TinyPages sur le compte connecté, consigné dans `audit/annexes/catalogue_mcp_tinypages.md` et `audit/annexes/screening_mcp_compte_test.md`, constats préfixés **M-**. Ces éléments relèvent de **deux régimes de preuve différents, à ne jamais confondre**.
+>
+> **1. L'inventaire des 104 actions exposées à l'IA est un inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action.** C'est une source primaire, mais **déclarative** : c'est TinyPages qui décrit TinyPages. **Aucune des 104 actions n'a été confrontée à son schéma**, et les schémas eux-mêmes n'ont pas été extraits. Le risque est concret : un auditeur qui appelle `search_actions` peut trouver un nombre d'entrées différent, ou une action dont le nom ne décrit pas le comportement — et le seul actif que ce dossier présente comme solide deviendrait alors son premier point de doute. Le nombre de 104 est un relevé daté du 18/09/2026, pas une garantie : il ne doit être avancé qu'accompagné de l'export daté du catalogue complet avec ses schémas JSON (section 12).
+>
+> **2. Dix-sept actions distinctes, sur les 104, ont réellement été exécutées** — le 18/09/2026, entre 20:10 et 21:05 UTC, sous dérogation du dirigeant. La liste nominative, avec le résultat de chaque appel, figure dans `screening_mcp_compte_test.md`. Ce sont elles, et elles seules, qui établissent l'état par défaut d'un compte à sa création, **le comportement réel des actions de publication et d'envoi** et **celui de l'écriture du contexte IA persistant**. Les 87 autres actions n'ont jamais été appelées.
 >
 > **Le compte testé est en plan gratuit**, établi par deux refus du serveur en HTTP 402. C'est la seule source de limites de plan réelles dont dispose cet audit : partout ailleurs, les plans et leurs limites restent non vérifiés.
 >
@@ -49,7 +53,7 @@ flowchart TB
 
     BACK["Back-end applicatif TinyPages — CONFIRMÉ qu'il répond derrière le MCP et détient l'état du compte · langage, framework, hébergeur, région NON DÉTERMINÉS"]
 
-    CTX["Contexte IA persistant du compte : businessContext de 10 000 caractères et aiSystemPrompts page et email — CONFIRMÉ, lisibles et modifiables par le canal automatisé"]
+    CTX["Contexte IA persistant du compte : businessContext de 10 000 caractères et aiSystemPrompts page et email — CONFIRMÉ par exécution : écriture acceptée sans aucun contrôle serveur, remise à vide refusée"]
 
     DB[("Base de données — NON DÉTERMINÉ : moteur, hébergeur, région, chiffrement, sauvegardes")]
     OBJ["Stockage des médias, images et vidéos — NON DÉTERMINÉ : fournisseur, URLs signées ou non"]
@@ -62,7 +66,7 @@ flowchart TB
         CDN["CDN et WAF devant les surfaces publiques — NON DÉTERMINÉ : existence et fournisseur"]
     end
 
-    CLA -->|"MCP, 104 actions inventoriées — CONFIRMÉ"| MCPS
+    CLA -->|"MCP — 104 actions relevées par lecture de la description publiée par le serveur, source déclarative · 17 d'entre elles exécutées"| MCPS
     AUT -.->|"compatibilité annoncée, non testée"| MCPS
     ZAP -.->|"modules tiers, API sous-jacente non documentée"| BACK
     MCPS -->|"actions exécutées avec succès sur un compte réel — CONFIRMÉ"| BACK
@@ -89,7 +93,7 @@ flowchart TB
 
 | Composant | Technologie | Fournisseur | Preuve | Statut |
 |---|---|---|---|---|
-| Serveur MCP | Transport HTTP, catalogue à deux niveaux : 24 outils directs + 80 actions via `search_actions` puis `execute_action` | TinyPages, domaine `tinypages.dev` | Inventaire exécuté du catalogue, `audit/annexes/catalogue_mcp_tinypages.md`, 18/09/2026 ; commande d'ajout `claude mcp add --transport http` citée par des sources indexées (A01-003) | **CONFIRMÉ** pour le catalogue et sa structure ; **PROBABLE** pour l'URL et le transport |
+| Serveur MCP | Transport HTTP, catalogue à deux niveaux : 24 outils directs + 80 actions via `search_actions` puis `execute_action` | TinyPages, domaine `tinypages.dev` | Inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action — `audit/annexes/catalogue_mcp_tinypages.md`, 18/09/2026 ; commande d'ajout `claude mcp add --transport http` citée par des sources indexées (A01-003) | **CONFIRMÉ** pour le catalogue **tel que le serveur le déclare** et pour sa structure à deux niveaux — source primaire mais déclarative, 17 actions exécutées sur 104 ; **PROBABLE** pour l'URL et le transport |
 | Back-end applicatif | Non déterminé | Non déterminé | Le MCP a exécuté `get_account`, `list_accounts`, des lectures de pages et de contacts : un back-end répond et détient l'état du compte | **CONFIRMÉ** pour l'existence ; **Non déterminé** pour la technologie |
 | Base de données | Non déterminé | Non déterminé | — | **Non déterminé** |
 | Front vitrine | Next.js, chemins `/_next/image` | Non déterminé | Point de départ de l'audit, non vérifié cette session (A01-002) | **HYPOTHÈSE** |
@@ -101,12 +105,14 @@ flowchart TB
 | Vidéo | Cloudflare Stream | Cloudflare | Vu pour la vidéo de démo selon le point de départ ; aucune preuve pour les formations clients (A01-004) | **HYPOTHÈSE** pour la démo ; **Non déterminé** pour les formations clients |
 | Stockage des médias | Non déterminé | Non déterminé | Le catalogue MCP expose `list_images`, `get_image`, `list_videos`, `get_video` : un stockage existe et est interrogeable | **CONFIRMÉ** pour l'existence d'un stockage média ; **Non déterminé** pour le fournisseur et la signature des URLs |
 | Modèle IA intégré au produit | Non déterminé | Non déterminé | A04-Q8 sans réponse | **Non déterminé** |
-| Contexte IA persistant du compte | Champ `businessContext` de 10 000 caractères et champ `aiSystemPrompts` à deux entrées, `webpage` et `email` | TinyPages | Lecture par `get_business_context`, écriture exposée par `update_business_context`, 18/09/2026 ; les deux champs étaient vides sur le compte observé | **CONFIRMÉ** pour l'existence et pour l'accessibilité en écriture par le canal automatisé (M-015) |
+| Contexte IA persistant du compte | Champ `businessContext` de 10 000 caractères et champ `aiSystemPrompts` à deux entrées, `webpage` et `email` | TinyPages | Lecture par `get_business_context` et **écriture exécutée** par `update_business_context` le 18/09/2026 à 21:05 UTC : écriture acceptée immédiatement, sans confirmation ni restriction de plan ; **remise à vide refusée par le serveur** ; les deux champs étaient vides avant le test | **CONFIRMÉ** pour l'existence et pour l'écriture par le canal automatisé, **par exécution** (M-015, M-018) |
 | Contrôles serveur par plan | Refus en HTTP 402 `PRO_PLAN_REQUIRED` sur deux actions | TinyPages | Tests d'exécution du 18/09/2026 : `create_webpage` avec bloc `codeHtmlBlock` et `send_email` refusés ; publication acceptée | **CONFIRMÉ** (M-011) |
 | DNS, registrar, certificats | Non déterminé | Non déterminé | `dig` et `whois` absents, crt.sh bloqué (A01-Q3, A01-Q4) | **Non déterminé** |
 | Automatisation tierce | Modules Zapier et Make.com | Zapier, Make | Fiches d'intégration remontées par WebSearch, non ouvertes (A07) | **PROBABLE** |
 | API publique REST | Aucune documentation localisée | — | Recherche A07 sans résultat ; l'existence de modules Zapier et Make suggère une interface applicative, sans preuve de son caractère public | **Non déterminé** |
 | CI/CD, tests, préproduction | Non déterminé | Non déterminé | Aucun dépôt public de la société identifié ; le dépôt GitHub homonyme `Borrus-sudo/tinypages` est sans rapport (A01-009) | **Non déterminé** |
+
+**Décompte des trous, recompté ligne à ligne.** Le tableau porte **dix-huit lignes**. **Six** sont intégralement « Non déterminé » sur toutes leurs colonnes : base de données ; CDN et WAF ; modèle IA intégré au produit ; DNS, registrar et certificats ; API publique REST ; CI/CD, tests et préproduction. **Quatre autres** ne le sont que pour partie — back-end applicatif, paiements, vidéo, stockage des médias : leur existence est établie, leur technologie ou leur fournisseur ne l'est pas. Toute reprise de ce décompte ailleurs dans le dossier doit citer **six lignes intégralement vides sur dix-huit**, et non huit.
 
 ---
 
@@ -148,7 +154,7 @@ Le point qui mérite l'attention de l'auditeur : une plateforme multi-locataire 
 
 ### 3.5 Vidéo — **Non déterminé**
 
-Le catalogue permet de lister et de lire des vidéos, pas d'en téléverser (**CONFIRMÉ** sur l'inventaire). Le fournisseur réel pour les formations clients, et surtout le caractère signé et expirant ou non des URLs de lecture, restent inconnus (A01-Q6). Si les URLs ne sont pas signées, le contenu payant des créateurs est exposé — c'est un risque à impact élevé, dont l'état est aujourd'hui indéterminé.
+Le catalogue permet de lister et de lire des vidéos, pas d'en téléverser (**CONFIRMÉ** sur l'inventaire relevé par lecture, non exécuté action par action). Le fournisseur réel pour les formations clients, et surtout le caractère signé et expirant ou non des URLs de lecture, restent inconnus (A01-Q6). Si les URLs ne sont pas signées, le contenu payant des créateurs est exposé — c'est un risque à impact élevé, dont l'état est aujourd'hui indéterminé.
 
 ---
 
@@ -184,8 +190,8 @@ Le catalogue permet de lister et de lire des vidéos, pas d'en téléverser (**C
 | Durées de conservation, purge, suppression d'un compte | — | **Non déterminé** |
 | Export des données par le créateur | Aucune action d'export dans le catalogue MCP | **CONFIRMÉ** pour l'absence côté MCP ; **Non déterminé** pour l'interface web |
 | Double opt-in par défaut | `doubleOptin: false` sur le compte observé, contact enregistré `isSubscribed: true` sans étape de confirmation | **CONFIRMÉ** sur ce compte, à la date d'observation |
-| Contexte IA persistant du compte | `businessContext`, champ libre de 10 000 caractères, et `aiSystemPrompts` à deux entrées, lisibles et modifiables par le canal automatisé. Ce sont des instructions injectées dans toutes les générations futures : qui obtient une écriture sur ces champs oriente durablement ce que l'IA produit pour ce créateur, sans trace dans le contenu généré | **CONFIRMÉ** pour l'existence et l'accès en écriture (M-015) ; portée exacte de l'injection **Non déterminée** |
-| Suppression d'une page ou d'un email par le canal automatisé | Impossible, l'action n'existe pas. Deux objets créés pendant les tests subsistent en brouillon et doivent être supprimés à la main | **CONFIRMÉ** (M-014) |
+| Contexte IA persistant du compte | `businessContext`, champ libre de 10 000 caractères, et `aiSystemPrompts` à deux entrées, lisibles et modifiables par le canal automatisé. Ce sont des instructions injectées dans toutes les générations futures : qui obtient une écriture sur ces champs oriente durablement ce que l'IA produit pour ce créateur, sans trace dans le contenu généré. **L'écriture a été exécutée le 18/09/2026 : elle passe sans aucun contrôle serveur, sur un compte gratuit, et la remise à vide du champ est refusée — l'IA peut écrire ce champ, elle ne peut pas défaire son écriture** | **CONFIRMÉ** pour l'existence, pour l'écriture sans contrôle et pour l'impossibilité d'effacer par le canal automatisé, **par exécution** (M-015, M-018) ; portée exacte de l'injection **Non déterminée** |
+| Suppression d'une page ou d'un email par le canal automatisé | Impossible, l'action n'existe pas. Deux objets créés pendant les tests subsistent en brouillon et doivent être supprimés à la main, comme le contexte métier écrit lors du test de M-018, qui ne peut pas être remis à vide par le même canal | **CONFIRMÉ** (M-014, M-018) |
 | Métriques commerciales exposées au canal automatisé | `get_analytics_summary` renvoie visiteurs, contacts, ventes et revenus sur une période | **CONFIRMÉ** (M-017) |
 
 **Le trou le plus gênant pour une data room.** Sauvegardes, restauration et région de stockage sont trois questions auxquelles tout auditeur technique demandera une réponse documentée dans les premières heures. Cet audit n'apporte aucun élément sur les trois.
@@ -215,7 +221,7 @@ Le seul élément dimensionnant disponible est indirect : un signal, non vérifi
 | Élément | Statut |
 |---|---|
 | Supervision applicative, alerting, astreinte | **Non déterminé** |
-| Journalisation des actions, notamment des actions faites par l'IA | **Non déterminé** — question A04-Q4 restée sans réponse. Le catalogue MCP ne contient aucune action de lecture d'un journal d'audit, ni d'annulation d'une action précédente (**CONFIRMÉ** sur l'inventaire) |
+| Journalisation des actions, notamment des actions faites par l'IA | **Non déterminé** — question A04-Q4 restée sans réponse. Le catalogue MCP ne contient aucune action de lecture d'un journal d'audit, ni d'annulation d'une action précédente (**CONFIRMÉ** sur l'inventaire relevé par lecture, non exécuté action par action) |
 | Traçabilité d'une publication ou d'un envoi déclenché par l'IA, du point de vue du créateur | **Non déterminé** |
 | Page d'état publique, historique d'incidents | **Non déterminé** |
 | `/.well-known/security.txt`, canal de signalement de vulnérabilité | **Non déterminé** (A01-010) ; aucune page de sécurité publique n'est ressortie des recherches |
@@ -235,14 +241,14 @@ Les points ci-dessous sont des dettes **établies** ou **plausibles**. Leur stat
 | D1 | Les pages légales créées et publiées par défaut sur chaque compte sont vides — un titre HTML, rien d'autre — et demandées à l'indexation, alors que la page d'accueil par défaut collecte des emails sans double opt-in | **CONFIRMÉ** (M-007) | C'est un défaut de produit livré à chaque nouveau compte, pas un cas limite. Il crée un écart réglementaire pour le créateur dès la première seconde, et duplique du contenu vide sur tout le domaine partagé |
 | D2 | Un point d'entrée unique `execute_action` couvre 80 actions, dont publier, supprimer et envoyer | **CONFIRMÉ** (M-006) | Le modèle de consentement des clients MCP est neutralisé par construction. Corriger cela demande de découper le catalogue, donc de refaire la surface d'API MCP |
 | D3 | Les garde-fous de publication vivent dans des descriptions en langage naturel adressées au modèle, et rien ne les applique côté serveur | **CONFIRMÉ** (M-010) | Un garde-fou formulé en langage naturel s'écrase d'une phrase de l'utilisateur. Le test l'a démontré : la consigne a été délibérément violée et la page a été publiée. Toute présentation de ces consignes comme une garantie sera démentie en un appel par l'auditeur du fonds |
-| D9 | Les deux seuls contrôles serveur observés sont des barrières de facturation, pas des barrières de risque | **CONFIRMÉ** (M-011) | La brique de contrôle d'accès existe et fonctionne : elle n'est simplement pas branchée sur les actions à risque. Le coût de la remédiation est donc faible, ce qui rend l'écart d'autant plus visible |
-| D10 | Aucune action ne permet de supprimer une page ou un email créés par l'IA | **CONFIRMÉ** (M-014) | Le canal automatisé produit des objets qu'il ne peut pas retirer. Si la limite vaut aussi en interface, l'exécution d'une demande d'effacement devient un problème — point traité au livrable 04 |
-| D11 | Les champs `businessContext` et `aiSystemPrompts` sont modifiables par le canal automatisé et orientent toutes les générations suivantes | **CONFIRMÉ** pour le mécanisme (M-015) | Instructions persistantes sans trace visible dans le contenu produit. À traiter comme un composant d'architecture soumis à contrôle d'accès, pas comme un champ de préférences |
-| D4 | La documentation officielle contredit le produit sur l'envoi d'emails par l'IA | **CONFIRMÉ** pour l'existence des actions d'envoi (M-001) ; la page de documentation n'a pas pu être relue cette session | Une documentation fausse ou périmée sur une capacité centrale est une dette de confiance, et un point que l'auditeur relèvera immédiatement |
-| D5 | Sites clients et application probablement servis sous le même domaine enregistrable | **PROBABLE** (A05-001) | Corriger après coup impose une migration de domaine pour tous les sites clients, avec impact SEO et redirections |
-| D6 | Asymétrie de l'inventaire : `publish_form` existe sans `unpublish_form` | **CONFIRMÉ** sur l'inventaire | L'IA peut mettre un formulaire en ligne sans pouvoir le retirer. Symptôme d'un catalogue construit par ajouts successifs plutôt que par couverture systématique |
-| D7 | Alias `tinypages.vercel.app` accessible en parallèle du domaine de marque | **HYPOTHÈSE** (A01-001) | Si l'alias est actif, il expose potentiellement l'application sans la protection éventuellement placée devant le domaine principal, et brouille la marque |
-| D8 | Aucune action MCP ne couvre le domaine personnalisé, le paiement, les remboursements, l'export, ni les réglages de sécurité | **CONFIRMÉ** (M-003) | Ce n'est pas une dette de sécurité, c'est une dette de promesse : le « pilotage de bout en bout » s'arrête avant l'administration du compte et avant l'argent |
+| D4 | Les deux seuls contrôles serveur observés sont des barrières de facturation, pas des barrières de risque | **CONFIRMÉ** (M-011) | La brique de contrôle d'accès existe et fonctionne : elle n'est simplement pas branchée sur les actions à risque. Le coût de la remédiation est donc faible, ce qui rend l'écart d'autant plus visible |
+| D5 | Aucune action ne permet de supprimer une page ou un email créés par l'IA | **CONFIRMÉ** (M-014) | Le canal automatisé produit des objets qu'il ne peut pas retirer. Si la limite vaut aussi en interface, l'exécution d'une demande d'effacement devient un problème — point traité au livrable 04 |
+| D6 | Les champs `businessContext` et `aiSystemPrompts` sont modifiables par le canal automatisé, orientent toutes les générations suivantes, et **l'écriture ne peut pas être défaite par le même canal** | **CONFIRMÉ par exécution** (M-015, M-018) : écriture acceptée sans aucun contrôle serveur sur un compte gratuit, **remise à vide refusée par le serveur** | Instructions persistantes sans trace visible dans le contenu produit. L'IA peut écrire ce champ mais pas revenir en arrière : une injection persistante écrite par erreur ou par malveillance ne se retire qu'à la main dans l'interface. À traiter comme un composant d'architecture soumis à contrôle d'accès, pas comme un champ de préférences |
+| D7 | La documentation officielle contredit le produit sur l'envoi d'emails par l'IA | **CONFIRMÉ** pour l'existence des actions d'envoi (M-001) ; la page de documentation n'a pas pu être relue cette session | Une documentation fausse ou périmée sur une capacité centrale est une dette de confiance, et un point que l'auditeur relèvera immédiatement |
+| D8 | Sites clients et application probablement servis sous le même domaine enregistrable | **PROBABLE** (A05-001) | Corriger après coup impose une migration de domaine pour tous les sites clients, avec impact SEO et redirections |
+| D9 | Asymétrie de l'inventaire : `publish_form` existe sans `unpublish_form` | **CONFIRMÉ** sur l'inventaire relevé par lecture, non exécuté action par action | L'IA peut mettre un formulaire en ligne sans pouvoir le retirer. Symptôme d'un catalogue construit par ajouts successifs plutôt que par couverture systématique |
+| D10 | Alias `tinypages.vercel.app` accessible en parallèle du domaine de marque | **HYPOTHÈSE** (A01-001) | Si l'alias est actif, il expose potentiellement l'application sans la protection éventuellement placée devant le domaine principal, et brouille la marque |
+| D11 | Aucune action MCP ne couvre le domaine personnalisé, le paiement, les remboursements, l'export, ni les réglages de sécurité | **CONFIRMÉ** (M-003) | Ce n'est pas une dette de sécurité, c'est une dette de promesse : le « pilotage de bout en bout » s'arrête avant l'administration du compte et avant l'argent |
 
 ---
 
@@ -295,9 +301,20 @@ Formule à appliquer dès que ces données existeront, à recouper avec la factu
 
 > coût mensuel ≈ Σ sur chaque créateur de [abonnement du plan + max(0 ; emails envoyés dans le mois − 10 000) × tarif de dépassement]
 
-**Précision apportée par les tests d'exécution.** L'envoi d'emails par l'interface programmatique est refusé en plan gratuit et exige un plan payant (**M-011, CONFIRMÉ**). Le profil chiffré ci-dessus est donc nécessairement celui d'un créateur payant : le coût d'acheminement et le revenu d'abonnement portent bien sur le même client, ce qui rend le calcul conditionnel ci-dessous pertinent plutôt qu'académique. Cela ne dit rien du coût des envois déclenchés depuis l'interface web par un créateur en plan gratuit, dont l'existence même n'est pas établie.
+**Précision apportée par les tests d'exécution.** L'envoi d'emails par l'interface programmatique est refusé en plan gratuit et exige un plan payant (**M-011, CONFIRMÉ**). Le profil chiffré ci-dessus serait donc nécessairement celui d'un créateur payant : coût d'acheminement et revenu d'abonnement porteraient sur le même client. Cela ne dit rien du coût des envois déclenchés depuis l'interface web par un créateur en plan gratuit, dont l'existence même n'est pas établie.
 
-**Calcul conditionnel, à manier avec précaution.** Une source secondaire situe le plan payant de TinyPages à 99 $ par mois, avec une tarification par paliers de contacts — **PROBABLE**, jamais vérifié sur la grille officielle. Si ces deux chiffres se confirmaient tels quels, le seul acheminement des emails du profil ci-dessus coûterait entre 3,5 et 5 fois l'abonnement mensuel. Cela ne démontre pas une marge négative : les paliers de contacts évoqués peuvent précisément servir à recouvrir ce coût, et rien n'établit qu'un créateur de ce profil existe dans le parc. **Ce point doit être tranché avec la grille tarifaire réelle et la facture fournisseur, avant la data room** : c'est l'un des premiers calculs qu'un investisseur refera.
+**Rapport entre ce coût et le prix de l'abonnement : Non déterminé — et volontairement non calculé.** Une version antérieure de ce document dérivait des chiffres ci-dessus un ratio entre le coût d'acheminement et l'abonnement mensuel. **Ce calcul est retiré.** Il empilait quatre inconnues : le fournisseur d'envoi est une **HYPOTHÈSE** ; sa grille tarifaire est **PROBABLE**, relevée via des agrégateurs, page officielle jamais ouverte ; le prix de 99 $ du plan payant de TinyPages est **PROBABLE**, jamais vérifié sur la grille officielle ; et le profil de volume est **posé par l'analyste**, pas mesuré. Publier, sur cette base, un ordre de grandeur défavorable revient à remettre à l'investisseur son propre argument de négociation, tout fait, sans qu'aucune source ne le soutienne. Tant que les pièces manquent, la réponse de ce dossier est **« Non déterminé »**, et la formule ci-dessus est fournie pour qu'elle soit appliquée aux données réelles. **Ce ratio ne doit être cité nulle part**, ni dans ce livrable, ni dans les réponses préparées du livrable 08, tant que les quatre pièces ci-dessous ne sont pas versées.
+
+**Ce qui tranche la question, et rien d'autre** — à réclamer avant la data room, section 12 et pièce DR-138 de l'index :
+
+| Pièce | Ce qu'elle établit |
+|---|---|
+| Facture du fournisseur d'envoi sur 12 mois | Le coût d'acheminement réellement supporté, conditions négociées comprises |
+| Plan réellement souscrit chez ce fournisseur | La grille applicable, au lieu d'une grille supposée |
+| Grille tarifaire officielle de TinyPages | Le prix réel du plan payant et ses paliers de contacts |
+| Distribution des tailles de liste et des volumes d'envoi du parc | Un profil de créateur mesuré, au lieu d'un profil inventé |
+
+C'est l'un des premiers calculs qu'un investisseur refera. Il doit le refaire sur des factures, pas sur les hypothèses de l'audit.
 
 ### 10.2 Autres coûts unitaires
 
@@ -318,7 +335,8 @@ Aucune de ces lignes n'est estimée. Les estimer à partir des sources disponibl
 
 | Domaine | Ce qui est établi | Niveau de preuve dominant |
 |---|---|---|
-| Surface d'action exposée à l'IA | Inventaire complet de 104 actions, leur classification et leurs propriétés structurantes | **CONFIRMÉ** |
+| Surface d'action exposée à l'IA | Inventaire de 104 actions **relevé par lecture de la description publiée par le serveur, non exécuté action par action**, avec leur classification et leurs propriétés structurantes | **CONFIRMÉ** pour ce que le serveur déclare exposer — source primaire mais déclarative ; **17 actions distinctes seulement ont été exécutées** |
+| Contexte IA persistant du compte | Écriture acceptée sans aucun contrôle serveur sur un compte gratuit ; remise à vide refusée par le serveur | **CONFIRMÉ** par exécution (M-015, M-018) |
 | Garde-fous d'exécution | La publication s'exécute sans contrôle ; deux actions seulement sont refusées, pour motif de plan | **CONFIRMÉ** |
 | Limites de plan réelles | Bloc de code personnalisé et envoi d'emails réservés au plan payant, sur un compte gratuit testé | **CONFIRMÉ** pour ces deux actions ; le reste de la grille demeure non vérifié |
 | État par défaut d'un compte à sa création | Cinq pages publiées automatiquement, deux documents légaux vides et indexés, capture d'emails active, double opt-in désactivé | **CONFIRMÉ** sur un compte, à une date |
@@ -357,10 +375,10 @@ Deux chantiers, dans cet ordre.
 | P0 | Configuration Stripe Connect : type de compte, flux de commission, porteur des litiges | Section 3.3 |
 | P0 | Politique de sauvegarde et dernier test de restauration | Section 5 |
 | P0 | Identité de l'entité juridique et du titulaire des domaines | Sections 4, 9 |
-| P1 | Facture du fournisseur d'emails sur 12 mois et plan souscrit | Section 10 |
+| P1 | Facture du fournisseur d'emails sur 12 mois, plan réellement souscrit, grille tarifaire officielle de TinyPages et distribution des tailles de liste du parc | Section 10 — ces quatre pièces sont les seules à pouvoir remplacer le « Non déterminé » du §10.1 |
 | P1 | Modèle IA utilisé, fournisseur, coût unitaire, région de traitement | Sections 2, 9, 10 |
-| P1 | Schémas complets des 80 actions du catalogue interne, avec champs obligatoires et confirmations | Section 3.1 |
-| P1 | Comportement de `send_email` et de la publication sur un **compte Pro** : le refus observé est une barrière de plan, et rien ne dit qu'un compte payant rencontre un contrôle quelconque | Sections 3.1 et 3.4, dette D9 |
+| P1 | Export daté du catalogue complet — les 104 actions — avec leurs schémas JSON, leurs champs obligatoires et leurs confirmations | Sections 2 et 3.1 — c'est la pièce qui fait passer l'inventaire du déclaratif à l'opposable |
+| P1 | Comportement de `send_email` et de la publication sur un **compte Pro** : le refus observé est une barrière de plan, et rien ne dit qu'un compte payant rencontre un contrôle quelconque | Sections 3.1 et 3.4, dette D4 |
 | P1 | Chaîne de déploiement : dépôts, tests, environnements, revue | Section 7 |
 | P2 | Métriques d'usage : comptes actifs, sites publiés, volumes d'emails et de paiements | Sections 6, 10 |
 

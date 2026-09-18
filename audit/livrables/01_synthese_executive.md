@@ -95,7 +95,11 @@ Un auditeur technique reproduira le test de publication en un appel et trouvera 
 3. **Semaines 1 et 2, et cela prime sur tout le reste. Rejouer la collecte avec un accès réseau ouvert.** Une demi-journée d'outils referme la moitié des « Non déterminé », dont les quatre relevés qui décident si trois risques majeurs sont théoriques ou réels.
 4. **Semaines 2 à 4.** Les pièces de société, qui ne demandent qu'une extraction. Le mandat unique au conseil, couvrant les trois qualifications. Les vérifications produit d'une heure chacune. Et la reprise du plan avec un chemin critique, un coût en euros et une hypothèse de renfort chiffrée.
 
-**Sur l'effort.** Le plan P0 représente environ 40 jours-personne, dont 13,5 en actions courtes d'une à deux journées chacune. Mais P0 et P1 cumulés atteignent près de 200 jours-personne, soit environ 39 semaines pour une personne seule en pleine levée. **Ce n'est pas tenable sans renfort, et c'est la première chose qu'un investisseur calculera.** Mieux vaut présenter l'hypothèse de renfort chiffrée comme un usage des fonds que laisser découvrir l'arithmétique.
+**Sur l'effort, et c'est le calcul qu'un investisseur fera avant tout autre.** Après intégration des objections du contre-audit, le plan P0 représente **53,5 jours-personne, soit onze semaines** pour une personne seule. P0 et P1 cumulés atteignent **215 jours-personne, soit environ 43 semaines à plein temps — et le double au rythme réel d'un fondateur en levée.**
+
+Le chemin critique a par ailleurs un plancher d'environ **douze semaines qu'aucun renfort ne compresse** : la chaîne découpage puis confirmation serveur puis test d'intrusion se fait en série, et le délai d'un conseil juridique ne s'achète pas.
+
+**Ce n'est pas tenable seul.** L'hypothèse de renfort est chiffrée dans le plan — deux renforts sur treize semaines, de l'ordre de 78 000 € HT, pour une enveloppe P0 et P1 comprise entre 130 000 et 160 000 € HT, sans devis à ce stade. Mieux vaut la présenter comme un usage des fonds que laisser l'investisseur refaire l'arithmétique lui-même.
 
 ## Pour finir
 

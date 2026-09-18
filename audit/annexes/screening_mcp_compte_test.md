@@ -158,7 +158,7 @@ Deux constats, tous deux CONFIRMÉS :
 
 # Liste nominative des actions réellement exécutées
 
-Exigée par l'objection B-3 du contre-audit. **17 actions distinctes ont été appelées sur les 104 du catalogue.** Le reste de l'inventaire est un relevé de noms publié par le serveur lui-même : source primaire, mais déclarative. Aucune des 87 autres actions n'a été confrontée à son schéma ni à son comportement.
+Exigée par l'objection B-3 du contre-audit. **17 actions distinctes ont été appelées sur les 104 du catalogue, en 18 appels** — `create_webpage` a été appelé deux fois, une fois refusé et une fois accepté. Le tableau ci-dessous compte les appels, pas les actions distinctes. Le reste de l'inventaire est un relevé de noms publié par le serveur lui-même : source primaire, mais déclarative. Aucune des 87 autres actions n'a été confrontée à son schéma ni à son comportement.
 
 | # | Action | Résultat |
 |---|---|---|

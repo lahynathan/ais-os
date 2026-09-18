@@ -1,8 +1,13 @@
 # 09 — Index de la data room
 
-Data room TinyPages · Version 1 du 18 septembre 2026 · Rédigé par l'orchestrateur de l'audit
-Sources : les huit rapports d'agents, `audit/annexes/catalogue_mcp_tinypages.md`, `audit/annexes/screening_mcp_compte_test.md`, `audit/annexes/pieces_internes_a_demander.md`, et les livrables 02 à 08.
-Lecteurs visés : le CEO et le CTO, pour piloter la constitution du dossier. Une fois les pièces réunies, cet index devient le sommaire remis aux investisseurs.
+Data room TinyPages · **Version 2 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
+Sources : les huit rapports d'agents, le contre-audit `audit/rapports/A11.md`, `audit/annexes/catalogue_mcp_tinypages.md`, `audit/annexes/screening_mcp_compte_test.md`, `audit/annexes/pieces_internes_a_demander.md`, et les livrables 01 à 08.
+Lecteurs visés : le CEO et le CTO, pour piloter la constitution du dossier.
+
+> **Ce document est un outil de pilotage interne. Il n'est pas le sommaire remis aux investisseurs.**
+> Le sommaire remis est **l'extrait de cet index limité aux lignes portant la diffusion « Investisseurs »**, produit à partir de la colonne Diffusion ci-dessous. Huit pièces de ce dossier ne sont **jamais** remises, et deux d'entre elles seraient dommageables si elles l'étaient par erreur. La convention de diffusion figure en section 0 et **elle prime sur l'état et sur la priorité** : une pièce « Prête » et « P0 » peut être strictement interne.
+
+**Ce qui change depuis la version 1** — corrections issues du contre-audit A11 : la convention de diffusion en trois niveaux est créée (objection M-13) ; le livrable 08, les trois registres et l'annexe de screening passent en strictement interne ; trois états faux sont corrigés et tous les autres vérifiés fichier par fichier (objection M-14) ; le statut du chiffre de 104 actions est aligné sur la réalité de la collecte (objection B-3) ; le nombre de concurrents dotés d'un serveur MCP officiel passe de cinq à sept (objection M-15) ; le constat M-018 est intégré.
 
 ---
 
@@ -20,6 +25,20 @@ Lecteurs visés : le CEO et le CTO, pour piloter la constitution du dossier. Une
 | **À produire** | La pièce doit être rassemblée, extraite ou rédigée. Elle existe peut-être déjà en interne : l'audit n'a pas pu le vérifier. Du point de vue de la data room, une pièce qui ne peut pas être montrée n'existe pas. |
 | **Absente** | Son objet n'existe pas. L'audit l'a établi, ou l'a établi pour un canal et le présume pour l'autre — la mention **(sauf pièce contraire)** signale ce second cas. Une pièce absente appelle un chantier, pas une extraction. |
 
+### Convention de diffusion
+
+Trois niveaux, et un seul d'entre eux sort de la société. Chaque pièce en porte un dans la colonne **Diffusion**. Le marquage est reporté **en clair et en tête de chaque fichier**, pas seulement dans cet index : un index ne protège pas un document qu'on envoie en pièce jointe.
+
+| Niveau | Ce qu'il signifie exactement | Qui décide |
+|---|---|---|
+| **Investisseurs** | Pièce versée à la data room et lisible par tout destinataire ayant accès. C'est le niveau par défaut de toutes les pièces d'entreprise attendues. | CEO |
+| **Sur demande** | Pièce communiquée après demande motivée, nominativement, sous accord de confidentialité et le plus souvent en séance plutôt qu'en téléchargement. Deux motifs, jamais un autre : la pièce décrit une faiblesse exploitable tant qu'elle n'est pas corrigée (configuration de sécurité, rapport de test d'intrusion, absence de limites de débit), ou elle contient des données personnelles de tiers. | CTO pour le volet technique, CEO pour le reste |
+| **Strictement interne** | **Jamais remise, sous aucune forme, à aucun investisseur ni à son auditeur.** Motif : la pièce contient l'identité réelle du dirigeant et l'état de son compte personnel, ou elle expose la stratégie de réponse plutôt que les faits. | CEO, sans délégation |
+
+**Pourquoi ce niveau existe, dit sans détour.** Le livrable 08 porte en tête « ce document n'est pas destiné à être remis tel quel aux investisseurs » et il contient le dispositif « formulation à ne pas dépasser », qui est un manuel de langage de négociation. La version 1 du présent index le classait pourtant « Prête, P0 » dans la table qui devait devenir le sommaire remis. **Une pièce jointe de trop et le dossier ne portait plus sur TinyPages mais sur la manière dont TinyPages prépare ses réponses.** La même remarque vaut pour les trois registres et l'annexe de screening, qui portent le nom réel du dirigeant, son sous-domaine, son adresse personnelle, l'état de son compte, et la phrase selon laquelle un contre-auditeur lisant les paramètres seuls conclurait que l'audit a outrepassé son mandat.
+
+**Règle de conduite, sans exception.** Aucune pièce « Strictement interne » n'entre dans le répertoire partagé de la data room, même dans un sous-dossier fermé. Les pièces internes restent dans `audit/` ; la data room est un répertoire distinct, alimenté pièce par pièce. Une version épurée des registres et une note de synthèse du contre-audit sont prévues à cet effet (DR-190, DR-191) : ce sont elles, et elles seules, qui portent l'information des registres vers l'extérieur.
+
 ### Convention de responsable
 
 `audit/00_parametres.md` porte : **CTO : Nathan Lahy · CEO : Nathan Lahy · avocat : à mandater**. Les deux premiers rôles sont tenus par la même personne ; cet index les distingue par nature de décision, technique ou société, comme le fait le plan de mise en place. **Deux rôles nécessaires ne sont attribués à personne à ce jour** : l'avocat, qui reste à mandater, et une fonction financière, qu'aucun paramètre ne désigne. Les pièces qui en dépendent portent la mention correspondante : ce sont autant de pièces sans propriétaire, et c'est un point à trancher avant l'ouverture.
@@ -34,31 +53,37 @@ Alignée sur `audit/livrables/07_plan_mise_en_place.md` : **P0** avant l'ouvertu
 
 Ce sont les seules pièces prêtes du dossier. Elles décrivent l'état du produit et du risque ; elles ne remplacent aucune pièce de société.
 
-| # | Pièce | Ce qu'elle apporte | État | Responsable | Priorité |
-|---|---|---|---|---|---|
-| DR-001 | `audit/livrables/01_synthese_executive.md` | Synthèse de deux pages pour l'investisseur | À produire | CEO | P0 |
-| DR-002 | `audit/livrables/02_analyse_technique.md` | Architecture, stack, flux, données, scalabilité, coûts | Prête | CTO | P0 |
-| DR-003 | `audit/livrables/03_analyse_fonctionnelle.md` | Modules, plans, parcours, parité interface / MCP / API, concurrence | Prête | CTO | P0 |
-| DR-004 | `audit/livrables/04_securite_conformite.md` | Posture de sécurité, sous-traitants, matrice réglementaire, questionnaire prérempli | Prête | CTO | P0 |
-| DR-005 | `audit/livrables/05_harnais_ia_mcp.md` | Pilotage par IA, inventaire MCP, menaces, évals | Prête | CTO | P0 |
-| DR-006 | `audit/livrables/06_registre_risques.md` | Risques, mitigations, responsables | Prête | CEO | P0 |
-| DR-007 | `audit/livrables/07_plan_mise_en_place.md` | État cible et remédiation P0, P1, P2 | Prête | CEO | P0 |
-| DR-008 | `audit/livrables/08_qr_investisseurs.md` | 50 questions de due diligence, réponses et pièces attendues | Prête | CEO | P0 |
-| DR-009 | `audit/livrables/09_index_data_room.md` (ce document) | Index des pièces, état, responsables | Prête | CEO | P0 |
-| DR-010 | `audit/annexes/catalogue_mcp_tinypages.md` | Inventaire des 104 actions exposées à l'IA, relevé sur le serveur de production | Prête | CTO | P0 |
-| DR-011 | `audit/annexes/screening_mcp_compte_test.md` | Relevés d'exécution M-007 à M-017, dont le test de publication | Prête | CTO | P0 |
-| DR-012 | `audit/annexes/methodologie.md` | Dispositif, contraintes, dérogations, ce que le dossier ne prouve pas | Prête | CTO | P0 |
-| DR-013 | `audit/annexes/echantillon_sites.md` | Échantillon de sites clients, anonymisé | Prête | CTO | P1 |
-| DR-014 | `audit/annexes/pieces_internes_a_demander.md` | Liste priorisée des pièces internes et de ce qu'elles ferment | Prête | CEO | P0 |
-| DR-015 | `audit/registre/preuves.md` | Registre consolidé des constats et de leurs sources | Prête | CTO | P1 |
-| DR-016 | `audit/registre/contradictions.md` | Contradictions relevées, tranchées ou exposées | Prête | CEO | P0 |
-| DR-017 | `audit/registre/questions_ouvertes.md` | Questions ouvertes, avec responsable et pièce qui y répond | Prête | CEO | P0 |
-| DR-018 | Les huit rapports d'agents `audit/rapports/A01` à `A09` | Matière première et traçabilité des constats | Prête | CTO | P1 |
-| DR-019 | Version anglaise des livrables (`audit/livrables/en/`) | `LANGUE = FR + EN` : exigée si des fonds étrangers participent | À produire | CEO | P1 |
-| DR-020 | Captures d'écran à l'appui des rapports (`audit/annexes/captures/`) | Les dossiers `A02` et `A07` sont vides : aucun parcours n'a pu être capturé | Absente | CTO | P1 |
-| DR-021 | Contre-audit du dossier, avec objections levées | Contrôle qualité prévu par le protocole, non encore exécuté | À produire | CEO | P0 |
+| # | Pièce | Ce qu'elle apporte | État | **Diffusion** | Responsable | Priorité |
+|---|---|---|---|---|---|---|
+| DR-001 | `audit/livrables/01_synthese_executive.md` | Synthèse de deux pages pour l'investisseur | Prête | Investisseurs | CEO | P0 |
+| DR-002 | `audit/livrables/02_analyse_technique.md` | Architecture, stack, flux, données, scalabilité, coûts | Prête | Investisseurs | CTO | P0 |
+| DR-003 | `audit/livrables/03_analyse_fonctionnelle.md` | Modules, plans, parcours, parité interface / MCP / API, concurrence | Prête | Investisseurs | CTO | P0 |
+| DR-004 | `audit/livrables/04_securite_conformite.md` | Posture de sécurité, sous-traitants, matrice réglementaire, questionnaire prérempli | Prête | Investisseurs | CTO | P0 |
+| DR-005 | `audit/livrables/05_harnais_ia_mcp.md` | Pilotage par IA, inventaire MCP, menaces, évals | Prête | Investisseurs | CTO | P0 |
+| DR-006 | `audit/livrables/06_registre_risques.md` | Risques, mitigations, responsables | Prête | Investisseurs | CEO | P0 |
+| DR-007 | `audit/livrables/07_plan_mise_en_place.md` | État cible et remédiation P0, P1, P2 | Prête | Investisseurs | CEO | P0 |
+| DR-008 | `audit/livrables/08_qr_investisseurs.md` | 97 questions de due diligence, réponses, manques et pièces attendues — **et le dispositif « formulation à ne pas dépasser »** | Prête | **Strictement interne — jamais remise** | CEO | P0 *(préparation interne)* |
+| DR-009 | `audit/livrables/09_index_data_room.md` (ce document) | Index des pièces, état, diffusion, responsables | Prête | **Strictement interne** — seul l'extrait « Investisseurs » est remis, comme sommaire | CEO | P0 |
+| DR-010 | `audit/annexes/catalogue_mcp_tinypages.md` | Inventaire des 104 actions exposées à l'IA, **relevé par lecture de la description publiée par le serveur, non exécuté action par action** | Prête | Investisseurs | CTO | P0 |
+| DR-011 | `audit/annexes/screening_mcp_compte_test.md` | Relevés d'exécution M-007 à M-018, dont le test de publication, le test d'écriture du contexte IA, et la liste nominative des **17 actions réellement exécutées** | Prête | **Strictement interne** — le document porte le nom, le sous-domaine et l'adresse personnelle du dirigeant | CTO | P0 |
+| DR-012 | `audit/annexes/methodologie.md` | Dispositif, contraintes, dérogations, ce que le dossier ne prouve pas | Prête | Investisseurs | CTO | P0 |
+| DR-013 | `audit/annexes/echantillon_sites.md` | **Aucun échantillon de sites clients n'existe** ; le fichier est la note qui explique pourquoi et rend le trou visible | **Absente — note d'explication jointe** | Sur demande | CTO | P1 |
+| DR-014 | `audit/annexes/pieces_internes_a_demander.md` | Liste priorisée des pièces internes et de ce qu'elles ferment | Prête | **Strictement interne** — document de pilotage, il énumère ce que la société ne sait pas d'elle-même | CEO | P0 |
+| DR-015 | `audit/registre/preuves.md` | Registre consolidé des constats et de leurs sources | Prête | **Strictement interne** — identité et compte personnel du dirigeant ; voir DR-190 | CTO | P1 |
+| DR-016 | `audit/registre/contradictions.md` | Contradictions relevées, tranchées ou exposées, dont C-026 sur la chaîne de garde | Prête | **Strictement interne** — voir DR-190 | CEO | P0 |
+| DR-017 | `audit/registre/questions_ouvertes.md` | Questions ouvertes, avec responsable et pièce qui y répond | Prête | **Strictement interne** — voir DR-190 | CEO | P0 |
+| DR-018 | Les huit rapports d'agents `audit/rapports/A01` à `A09` | Matière première et traçabilité des constats | Prête | Sur demande — après relecture d'anonymisation | CTO | P1 |
+| DR-019 | Version anglaise des livrables (`audit/livrables/en/`) | `LANGUE = FR + EN` : exigée si des fonds étrangers participent. Le répertoire n'existe pas à ce jour | À produire | Investisseurs | CEO | P1 |
+| DR-020 | Captures d'écran à l'appui des rapports (`audit/annexes/captures/`) | Le dossier `A02` est vide et `A07` ne contient qu'un fichier d'explication : aucun parcours n'a pu être capturé | Absente | Investisseurs *(une fois produites)* | CTO | P1 |
+| DR-021 | `audit/rapports/A11.md` — contre-audit du dossier | Contrôle qualité prévu par le protocole. **Le rapport existe** : 6 objections bloquantes, 15 majeures, 10 mineures, un verdict de non-diffusion, et 50 questions complémentaires | **Prête** | **Strictement interne** — il expose la stratégie de réponse et la chaîne de garde de la preuve ; voir DR-191 | CEO | P0 |
+| DR-190 | Version épurée des trois registres : preuves, contradictions, questions ouvertes | Porte l'information des registres vers l'extérieur sans les noms, sans l'état du compte personnel, sans les jugements de méthode | À produire | Sur demande | CTO | P1 |
+| DR-191 | Note de synthèse du contre-audit, expurgée, avec l'état de chaque objection | Une équipe qui montre son propre contre-audit et l'état de ses objections est plus crédible qu'une équipe qui n'en a pas eu. Ce qui se montre est la synthèse, jamais le rapport brut | À produire | Sur demande | CEO | P0 |
 
-**Deux réserves à porter en tête de dossier, sans les diluer.** D'une part, le compte utilisé pour les relevés d'exécution n'était pas un banc d'essai stérile : il porte le nom réel du dirigeant, son adresse personnelle et des brouillons actifs. Les relevés restent valides — ils portent sur le comportement par défaut de la plateforme — mais un locataire dédié doit être créé pour les tests restants. D'autre part, deux objets de test créés pendant l'audit subsistent en brouillon sur ce compte et doivent être supprimés manuellement, le canal automatisé ne le permettant pas.
+**Trois réserves à porter en tête de dossier, sans les diluer.**
+
+1. **Le compte utilisé pour les relevés d'exécution n'était pas un banc d'essai stérile** : il porte le nom réel du dirigeant, son sous-domaine, son adresse personnelle et des brouillons actifs. Les relevés restent valides — ils portent sur le comportement par défaut de la plateforme — mais un locataire dédié, gratuit et Pro, doit être créé, et le protocole doit y être **rejoué et horodaté** avant toute diffusion. C'est le rejeu qui devient la pièce, pas la session d'origine.
+2. **Trois traces laissées par l'audit subsistent sur ce compte** et aucune n'est effaçable par le canal automatisé : une page en brouillon, un message en brouillon (M-014) et le champ de contexte métier, qui porte désormais `-` au lieu d'être vide (M-018). À nettoyer manuellement en interface, avec capture.
+3. **Le chiffre de 104 actions n'a pas le statut qu'on lui donne spontanément.** L'inventaire est **relevé par lecture de la description publiée par le serveur, non exécuté action par action** : l'existence et le nom des actions sont établis, le comportement ne l'est que pour les **17 actions réellement exécutées**, dont la liste nominative figure en annexe. Aucun livrable ne doit écrire « inventaire exécuté » ni « étendue réelle et vérifiée ».
 
 ---
 

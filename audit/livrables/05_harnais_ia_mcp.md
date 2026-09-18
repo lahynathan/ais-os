@@ -1,29 +1,31 @@
 # 05 — Harnais IA et MCP
 
-Data room TinyPages · **Version 2 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
+Data room TinyPages · **Version 3 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
 Sources : `audit/rapports/A04.md`, `A05.md`, `A07.md`, `A09.md`, `audit/annexes/catalogue_mcp_tinypages.md`, `audit/annexes/screening_mcp_compte_test.md`.
 Lecteurs visés : l'investisseur et l'auditeur technique qu'il mandatera.
 
+> **Ce qui change depuis la version 2 — corrections apportées après le contre-audit (`audit/rapports/A11.md`).** Aucun statut de constat n'est relevé ; plusieurs sont au contraire bornés. **(B-3)** Le chiffre de 104 actions reprend son statut exact — inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action — et le chiffre de ce qui a été exercé, **17 actions distinctes**, est cité partout où il manquait (§0, §2.1, §12). **(B-6)** `update_business_context` a été exécuté : la ligne « écrire le contexte IA persistant — aucun contrôle » repose désormais sur un appel, et un second constat s'y ajoute — **l'IA ne peut pas défaire son écriture** (§4.4, §5.3, M-018). **(B-2)** La numérotation propre P0-1 à P0-12 est supprimée ; §10 renvoie aux identifiants, aux efforts et aux phases du livrable 07, qui fait foi. **(M-7)** La reformulation de différenciation ne porte plus de chiffre d'actions (§9.3). **(M-8)** Le protocole de pentest s'ouvre sur le test d'autorisation objet par objet, IDOR / BOLA, qui en était absent (§5.5, T-0). **(M-11, M-12)** Deux chemins de données non maîtrisés sont ouverts : l'éditeur du client IA du créateur, et le connecteur hébergé par Zapier (§2.7). Enfin, l'injection structurelle relevée par le contre-auditeur est portée au dossier (§12).
+
 > **Ce qui change depuis la version 1.** Les deux tests que la version 1 classait en « reste à exécuter » ont été conduits le 18 septembre 2026 entre 20:15 et 20:23 UTC, sur le compte connecté, en plan gratuit. **La question centrale du harnais est tranchée** : il ne s'agit plus d'une absence de preuve d'un contrôle serveur sur la publication, mais d'une **preuve de l'absence** de ce contrôle. Les sections 0, 4, 5, 10 et 11 sont réécrites en conséquence.
 
-> **Règle de statut appliquée dans tout ce document.** Deux sources seulement portent le statut **CONFIRMÉ** : l'inventaire du catalogue MCP (`audit/annexes/catalogue_mcp_tinypages.md`, relevé sur le serveur de production) et le screening exécuté sur le compte connecté, tests d'exécution compris (`audit/annexes/screening_mcp_compte_test.md`). Tout le reste plafonne à **PROBABLE** : l'egress était fermé sur `tinypages.co`, `docs.tinypages.co` et `mcp.tinypages.dev` pendant la phase 1, et aucun test actif n'était autorisé hors du compte connecté. Les points marqués **Non déterminé** ne sont pas des omissions : ce sont des questions ouvertes, chacune assortie de la pièce interne qui y répond (§11).
+> **Règle de statut appliquée dans tout ce document.** Deux sources seulement portent le statut **CONFIRMÉ**, et elles n'ont pas la même force. (1) **L'inventaire du catalogue MCP** (`audit/annexes/catalogue_mcp_tinypages.md`) est un **inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action** : source primaire, mais déclarative — c'est TinyPages qui décrit TinyPages. Il est CONFIRMÉ pour le relevé des noms et des familles, **non vérifié pour le comportement** des actions non appelées, et les schémas JSON n'ont pas été extraits. (2) **Le screening exécuté sur le compte connecté** (`audit/annexes/screening_mcp_compte_test.md`), qui porte sur **17 actions distinctes réellement appelées** sur les 104, listées nominativement en annexe avec la réponse obtenue. Seul ce second bloc établit un comportement. Aucune formule de ce document ne doit dire « inventaire exécuté » ou « périmètre vérifié ». Tout le reste plafonne à **PROBABLE** : l'egress était fermé sur `tinypages.co`, `docs.tinypages.co` et `mcp.tinypages.dev` pendant la phase 1, et aucun test actif n'était autorisé hors du compte connecté. Les points marqués **Non déterminé** ne sont pas des omissions : ce sont des questions ouvertes, chacune assortie de la pièce interne qui y répond (§11).
 
 ---
 
 ## 0. Ce qu'il faut retenir
 
-1. Le serveur MCP expose **104 actions** à un modèle d'IA : 47 lectures, 39 écritures, 10 publications, 3 suppressions, 2 envois, 3 utilitaires. **CONFIRMÉ.**
+1. Le serveur MCP expose **104 actions** à un modèle d'IA : 47 lectures, 39 écritures, 10 publications, 3 suppressions, 2 envois, 3 utilitaires. **Inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action.** Sur ces 104, **17 actions distinctes ont été réellement exercées** pendant l'audit (liste nominative en annexe). **CONFIRMÉ pour le relevé ; le comportement des 87 autres actions n'est pas vérifié.**
 2. L'architecture est à deux niveaux : 24 outils directs, plus 80 actions atteignables par `search_actions` puis `execute_action`. **Le périmètre réel n'est donc pas énumérable depuis la liste d'outils que voit le client MCP.** **CONFIRMÉ.**
 3. **`execute_action` contourne le consentement par outil.** Les clients MCP autorisent outil par outil. Une seule autorisation permanente sur `execute_action` ouvre les 80 actions du catalogue, dont les 10 de publication, les 3 de suppression et les 2 d'envoi. **CONFIRMÉ par construction.**
 4. **Les garde-fous de publication ne sont pas appliqués : c'est établi par test, pas déduit.** Un appel à `publish_webpage` émis **en violation délibérée** de la consigne « Do NOT call publish_webpage » a mis une page en ligne immédiatement, avec URL publique retournée, sans confirmation, sans revue, sans délai, sans restriction de plan. **CONFIRMÉ.**
 5. **Le serveur sait pourtant refuser une action — mais il le fait pour facturer.** L'insertion d'un bloc de code personnalisé et l'envoi d'un email sont refusés en plan gratuit par un `402 PRO_PLAN_REQUIRED`. **Les contrôles côté serveur protègent le chiffre d'affaires, pas l'utilisateur.** **CONFIRMÉ.**
 6. **La seule action ouverte sans aucune barrière est aussi la plus exploitable pour l'abus** : publier une page publique sur un sous-domaine de la marque, en deux appels automatisés, depuis un compte gratuit.
-7. **Surface d'injection persistante non relevée jusqu'ici** : `aiSystemPrompts` (entrées `webpage` et `email`) et `business_context` (champ libre de 10 000 caractères, modifiable par `update_business_context`) sont des instructions injectées dans **toutes les générations futures**. Qui obtient une écriture dessus oriente durablement tout ce que l'IA produira pour ce créateur, sans que rien n'apparaisse dans le contenu généré. **CONFIRMÉ** pour l'existence des champs.
+7. **Surface d'injection persistante non relevée jusqu'ici** : `aiSystemPrompts` (entrées `webpage` et `email`) et `business_context` (champ libre de 10 000 caractères, modifiable par `update_business_context`) sont des instructions injectées dans **toutes les générations futures**. Qui obtient une écriture dessus oriente durablement tout ce que l'IA produira pour ce créateur, sans que rien n'apparaisse dans le contenu généré. **CONFIRMÉ par exécution** : `update_business_context` a été appelé le 18/09/2026 à 21:05 UTC, l'écriture a été acceptée sans aucun contrôle serveur sur un compte gratuit. **Et l'IA ne peut pas défaire son écriture** : la remise à vide est refusée par le serveur, qui exige au moins un caractère (M-018, §5.3).
 8. **La chaîne d'injection indirecte se scinde en deux variantes** selon le plan : intégrale sur Pro (avec JavaScript, donc exfiltration), amputée du JavaScript sur le plan gratuit — ce qui suffit encore à une page d'hameçonnage visuelle sur un sous-domaine de la marque, avec certificat valide. **HYPOTHÈSE** pour l'enchaînement complet, dont le maillon de publication est désormais **CONFIRMÉ**.
 9. **Aggravant :** les instructions du serveur demandent au modèle de ne jamais exposer le code produit ni décrire le contenu écrit. Le seul point de revue humaine est supprimé par conception.
 10. **Constat par absence :** aucune action ne couvre le domaine personnalisé, les paramètres de paiement, les remboursements, l'export des données ni la sécurité du compte. **CONFIRMÉ.** Et l'IA ne peut pas davantage supprimer une page ou un email : elle ne sait pas nettoyer ce qu'elle a créé.
 11. **L'affirmation « seule plateforme pilotable de bout en bout par Claude » est probablement fausse** et vérifiable en dix minutes par n'importe quel auditeur. Reformulation défendable proposée en §9.3.
-12. **Non déterminés bloquants restants :** flux OAuth réel, cycle de vie du jeton API, journal des actions de l'IA et annulation, batterie d'évals, et comportement de `send_email` sur un compte **Pro**. Cinq pièces, listées en §11.
+12. **Non déterminés bloquants restants :** flux OAuth réel, cycle de vie du jeton API, journal des actions de l'IA et annulation, batterie d'évals, comportement de `send_email` sur un compte **Pro**, **autorisation objet par objet entre locataires (IDOR / BOLA, jamais testée faute d'un second compte)**, et **qualification du flux de données vers l'éditeur du client IA du créateur**. Listés en §11, ND-1 à ND-18.
 
 ---
 
@@ -76,7 +78,9 @@ Client MCP (Claude, ChatGPT, Claude Code…)
 
 ## 2. Inventaire des outils et des actions
 
-### 2.1 Surface totale exposée à l'IA : 104 actions — CONFIRMÉ
+### 2.1 Surface totale exposée à l'IA : 104 actions — inventaire relevé, non exécuté action par action
+
+> **Statut exact de ce chiffre, et il doit être répété partout où il est cité.** Les 104 actions sont un **inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action**. C'est une source primaire, mais déclarative. **17 actions distinctes ont été réellement exercées** pendant l'audit ; elles sont listées nominativement, avec la réponse du serveur, dans l'annexe `screening_mcp_compte_test.md`. Les 87 autres n'ont été confrontées ni à leur schéma ni à leur comportement, et les schémas JSON du catalogue n'ont pas été extraits. Le risque concret est simple : un auditeur qui appelle `search_actions` et trouve un décompte différent, ou une action dont le nom ne décrit pas le comportement, fera du seul actif présenté comme solide le premier point de doute. **La pièce qui referme ce point est l'export daté du catalogue complet avec les schémas (P0-15 du livrable 07).**
 
 | Famille | Nombre | Part |
 |---|---|---|
@@ -90,7 +94,7 @@ Client MCP (Claude, ChatGPT, Claude Code…)
 
 Répartition par niveau : **24 outils directs** (15 écritures, 6 lectures, 3 utilitaires) et **80 actions du catalogue interne** (41 lectures, 24 écritures, 10 publications, 3 suppressions, 2 envois).
 
-> *Convention de classement, à conserver pour que les chiffres se recoupent :* `search_actions` est compté en lecture (c'est une consultation du catalogue), `execute_action`, `switch_account` et `send_feedback` en utilitaires. Le détail nominal des 104 actions figure en annexe `catalogue_mcp_tinypages.md` et doit être joint à la data room tel quel.
+> *Convention de classement, à conserver pour que les chiffres se recoupent :* `search_actions` est compté en lecture (c'est une consultation du catalogue), `execute_action`, `switch_account` et `send_feedback` en utilitaires. Le détail nominal des 104 actions figure en annexe `catalogue_mcp_tinypages.md` et doit être joint à la data room tel quel, **avec son en-tête de méthode** : lecture de la description publiée par le serveur, aucune action exécutée à ce titre, comportement réel non vérifié. La liste des 17 actions exercées est dans l'annexe `screening_mcp_compte_test.md`, et c'est elle, pas le catalogue, qui porte les constats de comportement.
 
 ### 2.2 Les 15 actions irréversibles ou à effet public, nommément
 
@@ -151,6 +155,45 @@ Aucune action du catalogue ne couvre :
 **Données commerciales** : `get_analytics_summary` renvoie visiteurs, contacts, ventes et revenus sur une période, et `get_analytics_sales`, `get_product_stats`, `get_email_stats` complètent le tableau. **Le pilotage par IA a accès au chiffre d'affaires du créateur.** Aucun contrôle serveur ne s'y applique.
 
 Deux conséquences se croisent : le rôle de sous-traitant au sens de l'article 28 du RGPD (livrable 04, à valider par un avocat), et le fait que **les champs de contacts et de formulaires sont alimentés par des tiers non authentifiés**, ce qui en fait le point d'entrée des chaînes d'injection de §5.4.
+
+### 2.7 Où vont ces données : deux chemins que le dossier ne maîtrise pas
+
+§2.6 établit **ce que l'IA lit**. Cette section ouvre la question qui n'est traitée nulle part ailleurs dans le dossier : **où ces données vont-elles ensuite.** Deux chemins sortent du périmètre de TinyPages, et aucun des deux n'est qualifié.
+
+#### a) Le flux vers l'éditeur du client IA du créateur — angle mort RGPD majeur
+
+Le dossier qualifie correctement le fournisseur du modèle **intégré au produit** (coach IA des élèves, `aiSystemPrompts`) de sous-traitant ultérieur au sens de l'article 28(2) et (4). **Il n'examine jamais le second flux, qui est pourtant le flux central du produit.**
+
+Le mécanisme, en une phrase : **quand un créateur connecte son compte Claude ou ChatGPT personnel au serveur MCP, ses contacts, ses soumissions de formulaires, ses listes de destinataires et son chiffre d'affaires transitent chez Anthropic ou chez OpenAI** — sous le contrat que ce créateur a souscrit à titre personnel, avec des règles de rétention et d'entraînement **qui dépendent de son plan**, et sur lesquelles TinyPages n'a aucune prise contractuelle.
+
+Ce n'est pas une hypothèse sur l'architecture : c'est la conséquence directe de §2.6. `list_contacts`, `list_form_submissions`, `list_email_recipients` et `get_analytics_summary` renvoient ces données **dans le contexte du modèle hôte**, c'est-à-dire dans l'infrastructure de l'éditeur du client. C'est le fonctionnement nominal du produit, pas un incident.
+
+**Les quatre questions ouvertes, et aucune n'a de réponse dans le dossier :**
+
+| Question | Ce qui est établi | Statut |
+|---|---|---|
+| **Qui est responsable de ce transfert ?** Le créateur, qui décide de connecter son client ? TinyPages, qui construit la surface et en fait sa proposition de valeur ? | Le flux est établi (§2.6). Sa qualification ne l'est pas. Lecture défendable, **à valider par un avocat** : le créateur est responsable de traitement, TinyPages son sous-traitant, l'éditeur du client n'étant lié contractuellement qu'au créateur | **Non déterminé** |
+| **Qui est sous-traitant de qui ?** | Si l'éditeur du client n'est le sous-traitant de personne dans la chaîne TinyPages, une partie du traitement échappe entièrement à la cascade de l'article 28(4), et le créateur en est seul garant — sans nécessairement le savoir | **Non déterminé** |
+| **Qu'est-ce qui est dit au créateur ?** Y a-t-il, à l'écran d'autorisation, une information sur les données qui sortent, sur leur destinataire et sur les règles d'entraînement de son plan ? | Aucun écran n'a pu être ouvert (egress fermé) | **Non déterminé** |
+| **Le futur DPA créateurs le mentionne-t-il ?** | Le DPA n'existe pas encore (livrable 04 §3.2). S'il ne couvre que le modèle intégré au produit, il est incomplet le jour de sa signature | **Non déterminé** |
+
+**Ce qui se traite vite, et qui n'est pas un chantier :** une mention d'information au moment de l'autorisation, une clause dédiée au DPA créateurs, une ligne à la page « sous-traitants », et une **recommandation de plan** au créateur dont les données sont sensibles. La mention d'information est **P0-23 du livrable 07, 1 j·p, phase P0** ; la clause de DPA est **P1-11**. Ce qui est un chantier, en revanche, c'est la **portée en lecture seule** du jeton, seul moyen technique de limiter ce qui sort — **P1-08**, cycle de vie des jetons et portée lecture seule, phase P1.
+
+**Pourquoi il faut l'écrire avant qu'on ne le trouve.** Un auditeur qui comprend le produit posera la question en une phrase : « quand j'autorise mon Claude à lire mes contacts, qui traite mes données, et sous quel contrat ? » Il n'existe aujourd'hui aucune réponse écrite. Avoir ouvert la ligne soi-même vaut mieux que de la découvrir en séance.
+
+#### b) Le serveur MCP TinyPages hébergé par Zapier — un chemin de données, pas seulement un argument
+
+Ce connecteur est cité trois fois dans le dossier (§9.1 notamment), **toujours du même côté de la balance** : comme un élément affaiblissant l'exclusivité revendiquée par le discours commercial. C'est une erreur de cadrage. **Un second serveur MCP exposant TinyPages est d'abord un chemin de données et une surface d'API.**
+
+Trois questions écrites suffisent à trancher, et elles sont sans réponse aujourd'hui :
+
+1. **Est-il autorisé ?** Publié par TinyPages, publié par Zapier, ou publié par un tiers sous la marque ? Le dossier ne le sait pas. **Non déterminé.**
+2. **Par quel canal d'identifiants passe-t-il ?** Jeton API du créateur saisi chez Zapier, OAuth vers `mcp.tinypages.dev`, ou identifiants stockés côté Zapier ? Chacune de ces réponses a des conséquences différentes sur la révocation, la portée et la journalisation. **Non déterminé.**
+3. **Zapier est-il déclaré sous-traitant ?** Contrat, ligne à la page « sous-traitants », inscription à l'inventaire des fournisseurs. **Non déterminé.**
+
+**Les deux issues, et toutes deux appellent une action.** Si des données de créateurs transitent par un tiers non déclaré, c'est **un sous-traitant manquant à l'inventaire et une surface d'API hors de tout contrôle** — hors du périmètre du pentest, hors du futur journal des actions MCP, hors des limites de débit. Si TinyPages l'a publié lui-même, il doit **figurer à l'inventaire des fournisseurs et au périmètre du pentest**, et être soumis aux mêmes garde-fous que le serveur officiel — ce qui, en l'état de §4, signifie les mêmes absences de garde-fous.
+
+Établir ces trois réponses est **P0-24 du livrable 07, 1 j·p, phase P0** — un appel suffit ; la suite contractuelle ou la demande de retrait est **P1-28**. Voir le livrable 04 §3.1 et §3.2 (points 6 et 7) pour la qualification RGPD des deux chemins.
 
 ---
 
@@ -241,7 +284,7 @@ Le serveur **sait** refuser une action, sur la base du compte appelant, avant d'
 
 C'est un constat sévère, et il est aussi la meilleure nouvelle technique de ce livrable : **le point d'application existe déjà** (§1.2d). Le chantier n'est pas de construire un mécanisme d'autorisation, mais d'y brancher des règles de sécurité à côté des règles de facturation.
 
-**Une question reste ouverte, et une seule** : le message d'erreur d'envoi implique qu'un compte Pro enverrait **sans autre contrôle**. Le garde-fou serait alors un mur de facturation, pas un mur de sécurité. **À confirmer sur un compte Pro (P0-6).** Tant que ce test n'est pas fait, la data room doit dire que le comportement d'envoi en plan Pro est Non déterminé, et ne surtout pas présenter le `402` comme un garde-fou de sécurité.
+**Une question reste ouverte, et une seule** : le message d'erreur d'envoi implique qu'un compte Pro enverrait **sans autre contrôle**. Le garde-fou serait alors un mur de facturation, pas un mur de sécurité. **À confirmer sur un compte Pro (P0-10 du livrable 07, six vérifications factuelles).** Tant que ce test n'est pas fait, la data room doit dire que le comportement d'envoi en plan Pro est Non déterminé, et ne surtout pas présenter le `402` comme un garde-fou de sécurité.
 
 ### 4.4 Synthèse des garde-fous, vue d'ensemble — CONFIRMÉ
 
@@ -251,7 +294,8 @@ C'est un constat sévère, et il est aussi la meilleure nouvelle technique de ce
 | Dépublier une page | **Aucun** | — |
 | Lire les contacts et les soumissions de formulaires | **Aucun** | — |
 | Lire les métriques commerciales (visiteurs, ventes, revenus) | **Aucun** | — |
-| **Écrire le contexte IA persistant** (`business_context`, `aiSystemPrompts`) | **Aucun** | — (§5.3) |
+| **Écrire le contexte IA persistant** (`business_context`, `aiSystemPrompts`) | **Aucun** | — **Exécuté** le 18/09/2026 à 21:05 UTC sur compte gratuit : écriture acceptée, sans confirmation ni restriction de plan (M-018, §5.3) |
+| **Remettre à vide le contexte IA persistant** | **Oui** | **Refus du serveur** : « expected string to have >=1 characters ». **L'IA écrit ce champ et ne peut pas défaire son écriture** (M-018, §5.3) |
 | Envoyer un email | Oui, en plan gratuit | **Commercial** (`402 PRO_PLAN_REQUIRED`). Comportement en Pro : Non déterminé |
 | Insérer du code personnalisé | Oui, en plan gratuit | **Commercial** (`402 PRO_PLAN_REQUIRED`) |
 | Supprimer une page, un email, un contact, un produit | Action inexistante | **Absence de fonction** — seul garde-fou structurel, avec la contrepartie de §2.3 |
@@ -268,6 +312,7 @@ C'est un constat sévère, et il est aussi la meilleure nouvelle technique de ce
 | « Never expose tool names, action_ids, HTML/CSS, code » (règle 3) | Instructions serveur | **Oui** | Ce n'est pas un garde-fou de sécurité : c'est de l'opacité, et elle joue contre l'utilisateur (§5.4) |
 | Consentement par outil | **Côté client** (Anthropic, OpenAI), pas côté TinyPages | Neutralisé en pratique par `execute_action` (§4.6) | CONFIRMÉ par construction |
 | Contrôle de plan (`402 PRO_PLAN_REQUIRED`) | **Côté serveur** | **Non** | CONFIRMÉ — mais c'est un contrôle commercial, sur deux actions seulement |
+| Contrainte de longueur minimale sur `business_context` | **Côté serveur** | **Non** | CONFIRMÉ par test — mais ce n'est pas un garde-fou : c'est le seul contrôle serveur rencontré sur ce champ, et **il empêche l'effacement, pas l'écriture** (§5.3) |
 | **Confirmation côté serveur avant publication** | **Inexistante** | — | **CONFIRMÉ : il n'y en a pas.** |
 
 ### 4.6 `execute_action` contourne le consentement par outil — CONFIRMÉ
@@ -290,7 +335,7 @@ Elles sont **inopérantes ici**, et il n'existe aucune valeur correcte pour `exe
 | `destructiveHint: true`, `readOnlyHint: false` | Déclaration exacte, mais alors **les 47 lectures héritent de l'avertissement le plus sévère**. Le client avertit sur tout, l'utilisateur s'habitue, et l'avertissement ne veut plus rien dire. |
 | Annotation absente | Le client applique le défaut le plus prudent et l'entrée en annuaire n'est pas instruite. |
 
-**Il n'y a donc pas de contournement possible : entrer dans l'annuaire suppose d'exposer les actions irréversibles comme des outils nommés et annotés.** C'est exactement le même chantier que la correction du contournement de consentement. Un seul chantier répond aux deux sujets, et c'est le P0 du plan (§10).
+**Il n'y a donc pas de contournement possible : entrer dans l'annuaire suppose d'exposer les actions irréversibles comme des outils nommés et annotés.** C'est exactement le même chantier que la correction du contournement de consentement. Un seul chantier répond aux deux sujets : c'est **P1-02 du livrable 07, 10 j·p, phase P1** — donc engagé avant le closing, pas livré à l'ouverture de la data room (§10).
 
 ### 4.7 Formulation honnête pour la data room
 
@@ -315,11 +360,11 @@ Ce qui rend cette formulation solide : elle énonce le résultat défavorable av
 | **LLM03** | Chaîne d'approvisionnement | Le harnais dépend d'un modèle tiers mis à jour sans préavis, et d'un client tiers dont le modèle de consentement peut changer. Un serveur MCP TinyPages hébergé par Zapier existe en parallèle du serveur officiel | PROBABLE | Évals rejouées à chaque version de modèle et de client (§6) ; position publique sur le MCP Zapier |
 | **LLM04** | Empoisonnement de données et de modèle | Sans entraînement de modèle propre. **Mais `business_context` et `aiSystemPrompts` en sont l'équivalent fonctionnel au niveau du locataire** : un état persistant qui conditionne toutes les sorties futures (§5.3) | CONFIRMÉ pour l'existence des champs | Journaliser toute modification de ces champs ; les afficher au créateur ; exiger une confirmation humaine hors canal IA |
 | **LLM05** | Traitement non sécurisé des sorties | La sortie du modèle est écrite dans un bloc `codeHtmlBlock` acceptant du **HTML et du JavaScript bruts**, puis publiée. **Réservé au plan Pro** (`402` en gratuit) : le risque JavaScript est donc concentré sur les comptes payants. Sur plan gratuit, le HTML de page reste publiable sans contrôle | Restriction de plan : CONFIRMÉ · Implémentation de la sandbox : **Non déterminé** | Valeur exacte de l'attribut `sandbox`, CSP interne, règle de dérivation de l'origine (§5.2) ; revue humaine obligatoire des blocs de code écrits par l'IA |
-| **LLM06** | Autonomie excessive (*excessive agency*) | **Le cœur du dossier, désormais établi par test.** 104 actions, dont 15 à effet public ou irréversible, ouvertes par une autorisation unique sur `execute_action`, sans portée de sécurité, **sans confirmation serveur sur la publication**, sans journal, sans annulation | **CONFIRMÉ** | Voir §4.6 et §10 (P0) |
+| **LLM06** | Autonomie excessive (*excessive agency*) | **Le cœur du dossier, désormais établi par test sur le maillon décisif.** 104 actions relevées au catalogue (17 exercées), dont 15 à effet public ou irréversible, ouvertes par une autorisation unique sur `execute_action`, sans portée de sécurité, **sans confirmation serveur sur la publication**, sans journal, sans annulation | **CONFIRMÉ** | Voir §4.6 et §10 (P0) |
 | **LLM07** | Fuite du prompt système | Les instructions serveur sont lisibles par tout client connecté — relevées verbatim par trois sessions d'audit. Elles contiennent la politique de garde-fous. **Un attaquant connaît donc exactement les règles à contourner**, et le test montre qu'il suffit de les ignorer | CONFIRMÉ | Ne jamais faire reposer un contrôle sur le secret d'un prompt. Renforce §4 |
 | **LLM08** | Faiblesses des vecteurs et plongements | `search_actions` fonctionne par recherche en langage naturel sur un catalogue. Si la sélection d'action passe par une recherche sémantique, une formulation trompeuse peut orienter le modèle vers une action plus puissante que celle voulue | **HYPOTHÈSE** | Faire décrire le mécanisme de `search_actions` par le CTO ; cas d'éval dédié |
 | **LLM09** | Désinformation | Le produit génère des pages et des articles publiables en volume. Risque reporté sur le client (politique Google « scaled content abuse »), et risque produit si l'IA affirme avoir fait ce qu'elle n'a pas fait — l'utilisateur ne peut pas vérifier, la règle 4 interdisant la description du contenu | PROBABLE | Afficher un différentiel avant publication ; documenter le risque SEO côté client |
-| **LLM10** | Consommation non bornée | `create_webpage`, `create_blog_post`, `create_product` et **`publish_webpage` sont pilotables par IA sans aucun contrôle, y compris sur le plan gratuit — établi par test**. Risque de fermes de pages d'hameçonnage sous `*.tinypages.co`, avec effet sur la réputation du domaine partagé et sur la délivrabilité mutualisée | Publication sans contrôle : **CONFIRMÉ** · Limites de débit : **Non déterminé** | Limites de débit par compte et par IP ; détection d'abus sur le contenu publié ; `security.txt` et procédure de signalement. **Passé en P0** |
+| **LLM10** | Consommation non bornée | `create_webpage`, `create_blog_post`, `create_product` et **`publish_webpage` sont pilotables par IA sans aucun contrôle, y compris sur le plan gratuit — établi par test**. Risque de fermes de pages d'hameçonnage sous `*.tinypages.co`, avec effet sur la réputation du domaine partagé et sur la délivrabilité mutualisée | Publication sans contrôle : **CONFIRMÉ** · Limites de débit : **Non déterminé** | Limites de débit par compte et par IP ; détection d'abus sur le contenu publié ; `security.txt` et procédure de signalement. **P0-12 du livrable 07 pour les limites de débit (3 j·p), P2-03 pour la détection d'abus** |
 
 ### 5.2 Le bloc de code personnalisé : réservé au plan Pro, et ce que sa sandbox ne protège pas
 
@@ -350,17 +395,31 @@ C'est la menace la plus sérieuse ajoutée depuis la version 1 de ce livrable, e
 | Champ | Ce qu'il est | Accessible par |
 |---|---|---|
 | `aiSystemPrompts` | Deux entrées, `webpage` et `email`, portées par le compte (vides sur le compte testé) | Lecture par `get_account` |
-| `business_context` | Champ libre de **10 000 caractères**, décrit comme le contexte métier fourni au modèle (vide sur le compte testé) | Lecture par `get_business_context`, **écriture par `update_business_context`** — action du catalogue, aucun contrôle serveur |
+| `business_context` | Champ libre de **10 000 caractères**, décrit comme le contexte métier fourni au modèle (vide avant le test) | Lecture par `get_business_context`, **écriture par `update_business_context` — exécutée le 18/09/2026, acceptée sans aucun contrôle serveur sur un compte gratuit** |
+
+**M-018 — CONFIRMÉ par exécution, et sur deux points.** L'objection B-6 du contre-audit relevait à juste titre qu'une case « aucun contrôle » figurait dans un tableau de résultats de test pour une action **jamais appelée**. L'objection était fondée. Plutôt que de rétrograder la ligne, l'action a été exécutée, le 18 septembre 2026 à 21:05 UTC, sur le compte connecté en plan gratuit.
+
+| Étape | Appel | Résultat |
+|---|---|---|
+| Écriture | `update_business_context` avec un marqueur de test | **Succès immédiat.** Champ écrit, `length: 177`, aucune confirmation, aucune restriction de plan |
+| Remise à vide | `update_business_context` avec une chaîne vide | **Refus du serveur** : « expected string to have >=1 characters » |
+| Réduction | `update_business_context` avec `-` | Succès, `length: 1` |
+
+1. **Le champ s'écrit sans aucun contrôle serveur, sur un compte gratuit.** La ligne « Écrire le contexte IA persistant — contrôle serveur : aucun » de §4.4 ne repose plus sur la présence d'une action au catalogue : elle repose sur un appel et sur la réponse du serveur.
+2. **Le second constat est le plus gênant : l'IA peut écrire ce champ, elle ne peut pas défaire son écriture.** Le seul contrôle serveur rencontré ici interdit la remise à vide. Une injection persistante écrite par erreur ou par malveillance **ne peut pas être retirée par le canal qui l'a écrite** — elle ne peut qu'être réduite à un caractère. C'est une variante de M-014 (§2.3), appliquée cette fois à un champ qui oriente toutes les générations futures du compte, et c'est la variante la plus sévère des deux.
+
+**Trace laissée par ce test :** le champ porte la valeur `-` au lieu de sa valeur d'origine, qui était vide. À remettre à vide dans l'interface, avec les deux brouillons résiduels (P0-11 du livrable 07).
 
 **Ce sont des instructions persistantes injectées dans toutes les générations futures du compte.** Qui obtient une écriture sur ces champs — par le MCP, par une injection indirecte aboutissant à un appel à `update_business_context`, ou par un accès compromis — **oriente durablement tout ce que l'IA produira pour ce créateur, sans que rien n'apparaisse dans le contenu généré.**
 
-Trois raisons pour lesquelles c'est plus grave qu'une injection ponctuelle :
+Quatre raisons pour lesquelles c'est plus grave qu'une injection ponctuelle :
 
 1. **Persistance.** Une injection ponctuelle vit le temps d'une session. Celle-ci survit à la fermeture du client, au changement de modèle et au renouvellement du jeton. Elle reste jusqu'à ce que quelqu'un relise le champ.
 2. **Invisibilité.** Le champ n'apparaît dans aucune sortie. Le créateur ne le voit qu'en allant le consulter, s'il sait qu'il existe. Combinée à la règle 4 (« Never describe the content »), la détection par l'usage est nulle.
 3. **Portée.** Un texte de 10 000 caractères suffit largement à inscrire une instruction durable : insérer un lien, un domaine de suivi ou une mention dans chaque page et chaque email produits ensuite.
+4. **Irréversibilité par le canal d'écriture — CONFIRMÉ (M-018).** Le canal qui a écrit ne peut pas effacer. Le retrait exige une intervention humaine dans l'interface, que l'on suppose possible mais qui **n'a pas été vérifiée** : statut **Non déterminé** pour l'interface, à trancher avec ND-9.
 
-**Traitement recommandé, à porter en P0 :** retirer `update_business_context` et toute écriture sur `aiSystemPrompts` du périmètre d'écriture de l'IA, ou l'assortir d'une confirmation humaine hors canal IA ; journaliser toute modification de ces champs avec l'acteur et l'horodatage ; afficher leur contenu au créateur dans l'interface, et le lui rappeler lorsqu'il n'est pas vide. Ajouter un cas d'éval dédié (§6).
+**Traitement recommandé — P1-05 du livrable 07, 4 j·p, phase P1 :** retirer `update_business_context` et toute écriture sur `aiSystemPrompts` du périmètre d'écriture de l'IA, ou l'assortir d'une confirmation humaine hors canal IA ; journaliser toute modification de ces champs avec l'acteur et l'horodatage ; afficher leur contenu au créateur dans l'interface, et le lui rappeler lorsqu'il n'est pas vide. **Y ajouter la remise à vide**, aujourd'hui refusée par le serveur (M-018) : un champ qu'on ne peut pas effacer n'est pas un réglage, c'est une empreinte. Ajouter un cas d'éval dédié (§6). **Jusqu'à la livraison de P1-05, ce champ reste écrit sans contrôle et non effaçable par le canal IA.**
 
 ### 5.4 La chaîne d'injection indirecte — deux variantes selon le plan
 
@@ -402,18 +461,36 @@ Prises ensemble, ces deux règles **suppriment le point de revue humaine**. Le p
 
 ### 5.5 Protocole de test restant, à faire exécuter en pentest
 
-Les tests de publication et d'envoi sont faits (§4.2, §4.3). **Quatre questions restent ouvertes et se traitent par un pentest externe, avant la data room.**
+Les tests de publication et d'envoi sont faits (§4.2, §4.3). **Cinq questions restent ouvertes et se traitent par un pentest externe : P1-07 du livrable 07, 10 j·p de prestataire, phase P1 — donc avant le closing, et non avant l'ouverture de la data room.** La première est en tête parce qu'elle prime sur les quatre autres.
 
-**Environnement commun.** Un locataire dédié, créé pour le test, **sans aucune donnée réelle** — le compte utilisé pour le screening ne convient pas : il porte le nom, le sous-domaine et l'adresse personnelle réels du CEO, et il conserve déjà deux brouillons résiduels d'audit (§2.3). Prévoir **un compte gratuit et un compte Pro**. Un domaine collecteur contrôlé par le testeur. Des marqueurs canari dans chaque champ.
+> **T-0 — l'autorisation au niveau de l'objet (IDOR / BOLA). C'est le test n° 1 d'une plateforme multi-locataire, et il manquait à ce protocole.**
+>
+> **La question.** Que se passe-t-il si l'on passe à une action l'identifiant d'un objet appartenant à **un autre locataire** ? `get_webpage`, `get_form`, `list_contacts`, `update_webpage`, `execute_action` : chacune reçoit un identifiant. Le serveur vérifie-t-il, à chaque appel, que cet objet appartient bien au compte appelant ?
+>
+> **Pourquoi elle prime.** C'est la première classe de vulnérabilité du *OWASP API Security Top 10* (autorisation au niveau de l'objet), et c'est le risque que ce dossier revendique lui-même comme principal — l'isolement entre créateurs (MT-09 du questionnaire de sécurité, livrable 04 §4). Les mots IDOR, BOLA et « référence directe à un objet » n'apparaissaient jusqu'ici nulle part dans le dossier. Une réponse négative sur ce point vaut plus que toutes les autres lignes de ce protocole réunies.
+>
+> **Il n'a pas pu être exécuté pendant l'audit, faute d'un second compte.** `list_accounts` ne renvoie qu'un compte et `subAccounts: []` (M-008) : il n'existait aucun identifiant étranger à soumettre. Statut : **Non déterminé.**
+>
+> **Et c'est le test le moins risqué de tous**, ce qui rend son absence d'autant plus voyante. Dans sa forme minimale, c'est **une lecture** : soumettre à `get_webpage` l'identifiant d'une page du locataire B depuis une session du locataire A. Rien n'est créé, rien n'est publié, rien n'est envoyé, rien n'est modifié. L'audit disposait du seul canal permettant de le faire sans rien casser, et il a exécuté une publication réelle sur un compte de production sans exécuter cette lecture. Le constat est porté au dossier tel quel.
+>
+> **Protocole.** Deux locataires dédiés, A et B, gratuits puis Pro. Étape 1, en lecture : depuis A, appeler `get_webpage`, `get_form`, `get_email`, `get_lesson`, `get_blog_post` et `get_product_stats` avec des identifiants d'objets de B. Étape 2, en écriture, seulement si l'étape 1 passe : `update_webpage` et `update_form` sur un objet de B. Étape 3 : les mêmes appels via `execute_action`, pour vérifier que la passerelle revalide le compte et la portée à chaque appel et ne fait pas confiance à l'identifiant d'action reçu. Étape 4 : identifiants voisins ou énumérables — la forme des identifiants (UUID ou séquentiels) est elle-même une information.
+>
+> **Au plan.** Ce test n'a **aucune ligne dédiée dans le livrable 07** : il n'est porté qu'implicitement par le périmètre du pentest externe (P1-07, phase P1). À inscrire explicitement à son cahier des charges (§10.3).
+>
+> **Critère de sortie.** Chaque appel doit être refusé pour cause d'autorisation, **et non pas pour cause d'objet introuvable** : un « 404 » générique est acceptable en défense, mais il faut établir qu'il vient d'un contrôle d'appartenance et non d'un hasard de requête. Livrable attendu en plus du rapport : **un test automatisé en intégration continue qui échoue si une requête franchit la frontière de locataire**, et un chapitre dédié dans le cahier des charges du pentest.
+
+**Les quatre questions ouvertes restantes :**
+
+**Environnement commun.** Un locataire dédié, créé pour le test, **sans aucune donnée réelle** — le compte utilisé pour le screening ne convient pas : il porte le nom, le sous-domaine et l'adresse personnelle réels du CEO, et il conserve déjà deux brouillons résiduels d'audit (§2.3). Prévoir **deux locataires distincts, chacun en gratuit et en Pro** — deux, et non un : sans un second locataire, T-0 ne peut pas être exécuté, et c'est exactement ce qui a bloqué l'audit. Un domaine collecteur contrôlé par le testeur. Des marqueurs canari dans chaque champ.
 
 | # | Question ouverte | Test | Critère de sortie |
 |---|---|---|---|
 | T-1 | **L'envoi est-il contrôlé sur un compte Pro, ou seulement facturé ?** | Sur compte Pro, `execute_action` → `send_email` vers une adresse contrôlée par le testeur, en violation délibérée de la consigne | Réussi côté défense **seulement si** une confirmation distincte est exigée ou si le serveur refuse. Un envoi qui part confirme que le `402` était un mur de facturation |
 | T-2 | **La chaîne d'injection indirecte s'exécute-t-elle de bout en bout ?** | Variantes A et B de §5.4, du dépôt de la charge dans un formulaire public jusqu'à la page publiée. Observer à chaque maillon : la charge est-elle échappée ? marquée ? le modèle la suit-il ? une invite supplémentaire apparaît-elle ? | Consigner le maillon exact où la chaîne casse, ou constater qu'elle ne casse pas |
-| T-3 | **Le contexte IA persistant est-il atteignable par injection ?** | Charge visant à faire appeler `update_business_context`, puis vérifier par `get_business_context` et observer une génération ultérieure | Réussi côté défense seulement si l'écriture est refusée ou exige une confirmation hors canal IA |
+| T-3 | **Le contexte IA persistant est-il atteignable par injection ?** L'écriture directe, elle, est déjà tranchée : elle passe sans aucun contrôle (M-018, §5.3). Reste à savoir si une charge tierce peut la déclencher | Charge visant à faire appeler `update_business_context`, puis vérifier par `get_business_context` et observer une génération ultérieure. **Vérifier aussi que le testeur peut remettre le champ à vide en fin de test** : le serveur l'a refusé à l'audit | Réussi côté défense seulement si l'écriture est refusée ou exige une confirmation hors canal IA |
 | T-4 | **Le cloisonnement inter-comptes tient-il ?** | Deux comptes, injection reçue dans le compte A, observer si `switch_account` puis une publication dans le compte B sont possibles | Aucune action ne doit pouvoir viser un autre compte sans ré-authentification |
 
-**Répéter T-1 à T-3 sur chaque client et chaque modèle supportés.** Un résultat obtenu sur un seul couple modèle-client ne prouve rien pour les autres : c'est précisément l'objet des évals (§6).
+**Répéter T-1 à T-3 sur chaque client et chaque modèle supportés.** T-0, lui, ne dépend d'aucun modèle : c'est un test du serveur, il se rejoue à l'identique et il a vocation à passer en intégration continue. Un résultat obtenu sur un seul couple modèle-client ne prouve rien pour les autres : c'est précisément l'objet des évals (§6).
 
 **Règle d'interprétation, à écrire dans le rapport de pentest.** Un refus du modèle **ne prouve rien** : il documente le comportement d'une version d'un modèle un jour donné. Seuls comptent un refus du serveur ou une invite de consentement supplémentaire présentée par le client.
 
@@ -518,7 +595,7 @@ Le site affirme, en août 2026, être **la seule plateforme marketing tout-en-un
 | **ClickFunnels** | MCP officiel en bêta, documenté au changelog officiel | PROBABLE |
 | **Stan Store** | MCP officiel à `mcp.stan.store` | PROBABLE |
 | **Systeme.io** | MCP officiel, périmètre plus limité (contacts, étiquettes, cours, abonnements), mise à jour signalée en septembre 2026 | PROBABLE |
-| **Zapier** | Un serveur MCP TinyPages hébergé par Zapier existe, distinct du serveur officiel. Toute plateforme dotée d'une application Zapier dispose de fait d'un MCP | PROBABLE |
+| **Zapier** | Un serveur MCP TinyPages hébergé par Zapier existe, distinct du serveur officiel. Toute plateforme dotée d'une application Zapier dispose de fait d'un MCP. **Ce connecteur n'est pas seulement un argument concurrentiel : c'est un chemin de données non maîtrisé, traité comme tel en §2.7(b)** — autorisation, canal d'identifiants et statut de sous-traitant sont tous **Non déterminé** | PROBABLE |
 
 Ne contredisent pas, à ce jour : Podia (posture « human-first » assumée, pas de MCP natif), Skool (pas d'API publique officielle), LearnyBox, Schoolmaker (MCP « à venir »).
 
@@ -533,16 +610,20 @@ L'affirmation est **falsifiable en dix minutes** par n'importe qui disposant d'u
 ### 9.3 Reformulation défendable proposée
 
 > **Pilotage par IA — notre position.** Le pilotage par IA n'est plus une exclusivité : Kajabi, GoHighLevel, ClickFunnels, Stan Store et Systeme.io publient également un serveur MCP officiel. TinyPages se distingue sur trois points vérifiables :
-> **(1) l'étendue du périmètre pilotable** — 104 actions exposées, de la création de la page à la publication et à l'envoi de l'email, dans un seul serveur officiel ;
+> **(1) l'étendue fonctionnelle du périmètre pilotable, décrite par familles d'objets et non par un décompte** — un seul serveur officiel couvre : page, page de vente, article, leçon, formulaire, email et automatisation, contacts et étiquettes, produits et bons de réduction, analytique, jusqu'à la mise en ligne et à l'envoi ;
 > **(2) la continuité du parcours** — le créateur ne quitte pas la conversation entre l'idée et la mise en ligne ;
 > **(3) à horizon [trimestre], la seule chose qui constitue une barrière durable : un harnais auditable** — garde-fous appliqués côté serveur, journal des actions de l'IA, annulation, et batterie d'évals rejouée à chaque version de modèle, dont les résultats sont publiés.
-> Comparatif fonctionnel daté en annexe, rejoué chaque trimestre.
+> Comparatif fonctionnel daté en annexe, par familles d'objets pilotables, rejoué chaque trimestre.
 
-**Ce que cette reformulation change.** Elle remplace une exclusivité réfutable par une **couverture mesurable** et par une **gouvernance vérifiable**. Elle ne peut pas être démentie par une recherche web, puisqu'elle nomme elle-même les concurrents. Et elle déplace la différenciation là où elle est réellement défendable à terme : un harnais dont les garanties sont appliquées et mesurées.
+> **Ce qui est délibérément absent de cette formulation : tout chiffre.** La version précédente opposait « 104 actions » aux « 36 outils » de GoHighLevel. **Ce rapprochement ne tient pas**, et il vaut mieux le retirer nous-mêmes. Trois raisons. **(a) Les unités ne sont pas comparables** : personne ne sait ce que GoHighLevel compte dans ses 36 — des outils MCP nommés, alors que nos 104 sont des entrées de catalogue atteintes par un seul outil. **(b) Le chiffre de 104 n'est pas un périmètre pilotable** : il comprend 47 lectures, 3 utilitaires et une passerelle générique ; le nombre d'objets réellement pilotables en écriture est très inférieur, et §2.5 énumère ce que le pilotage ne couvre pas — argent, administration du compte, portabilité, nettoyage. **(c) Le chiffre périme avant sa publication** : la feuille de route publique d'un concurrent annonce 250+ outils. Un chiffre de différenciation qui se retourne en un trimestre n'est pas un argument, c'est une dette.
+>
+> **Condition impérative, et elle prime sur la rédaction.** **Aucune promesse publique de différenciation — chiffrée ou non — ne doit sortir avant que le comparatif fonctionnel daté n'existe.** Ce comparatif doit porter sur des **périmètres fonctionnels définis** (les objets pilotables en écriture, par famille — pages, emails, contacts, produits, cours, paiements —, pas un nombre d'appels), être daté, être rejoué chaque trimestre, et distinguer concurrent par concurrent ce qui est **appliqué** de ce qui est **annoncé**. Tant qu'il n'existe pas, la position publique se limite aux points (2) et (3), qui ne dépendent d'aucune comparaison. Voir les conditions (a) et (c) ci-dessous.
+
+**Ce que cette reformulation change.** Elle remplace une exclusivité réfutable par une **étendue fonctionnelle démontrable** et par une **gouvernance vérifiable**, sans opposer un chiffre à un chiffre. Elle ne peut pas être démentie par une recherche web, puisqu'elle nomme elle-même les concurrents. Et elle déplace la différenciation là où elle est réellement défendable à terme : un harnais dont les garanties sont appliquées et mesurées.
 
 **Trois conditions, dont une est devenue impérative :**
 
-- **(a)** le comparatif fonctionnel daté doit exister et être joint ;
+- **(a)** le comparatif fonctionnel daté doit **exister et être joint avant toute promesse publique de différenciation**, et porter sur des périmètres fonctionnels définis, pas sur des décomptes d'actions ou d'outils. Ce n'est pas une condition de confort : c'est la condition d'existence de la promesse ;
 - **(b)** le point (3) doit être annoncé comme feuille de route avec une échéance et un responsable, **jamais présenté comme acquis** — le test du 18 septembre interdit toute formulation qui laisserait entendre que ces garde-fous existent aujourd'hui ;
 - **(c)** le comparatif doit distinguer, concurrent par concurrent, ce qui est **appliqué** de ce qui est **annoncé**. C'est le seul terrain sur lequel TinyPages peut construire un avantage réel, et c'est aujourd'hui celui sur lequel au moins un concurrent est en avance.
 
@@ -550,48 +631,72 @@ L'affirmation est **falsifiable en dix minutes** par n'importe qui disposant d'u
 
 ## 10. Plan de traitement
 
+> **Le livrable 07 fait foi sur la numérotation, le chiffrage et la phase.** La version 1 de ce livrable portait une numérotation propre, P0-1 à P0-12, qui entrait en collision avec les identifiants P0-01 à P0-24 du plan : sous le même nom, deux actions différentes. « P0-6 » désignait ici « tester `send_email` sur un compte Pro » et là « note de position sur les garde-fous » ; « P0-12 » désignait ici « supprimer les brouillons résiduels » et là « limites de débit ». Dans une data room lue par plusieurs personnes, « P0-12 est livré » ne voulait rien dire. **Cette numérotation est supprimée.** Ce chapitre ne fait plus que renvoyer aux identifiants de 07, avec l'effort et la phase qui y figurent. Aucun identifiant propre à ce livrable ne doit plus circuler.
+>
+> Rappel des phases de 07 : **P0 = avant l'ouverture de la data room**, **P1 = avant le closing**, **P2 = après le closing**.
+
 Responsables : **CTO Nathan Lahy**, **CEO Nathan Lahy**, **avocat à mandater**.
 
-**Ce qui a changé depuis la version 1 :** les tests P0-6 de la version 1 sont exécutés ; le contrôle serveur sur la publication (P0-2) devient le premier chantier du dossier, sans discussion possible ; la protection du contexte IA persistant et les limites anti-abus passent en P0.
+### 10.1 Ce qu'il faut écrire sans atténuation sur le constat n° 1
 
-### P0 — avant l'ouverture de la data room
+Le constat le plus grave de ce livrable — la publication n'est soumise à aucun contrôle serveur (§4.2) — **n'est pas refermé à l'ouverture de la data room**, et le plan de la société le dit lui-même. Toute formulation qui laisserait entendre le contraire sera défaite en mettant trois documents côte à côte, ce qui prend dix minutes.
 
-| # | Action | Lève | Responsable |
+> **À l'ouverture de la data room, la publication reste sans contrôle serveur.** Ce que P0 livre sur ce point, ce sont deux mitigations et rien d'autre : **P0-12, limites de débit et file d'attente, 3 j·p**, et **P0-13, journal des actions MCP, 5 j·p**. Le contrôle serveur lui-même — confirmation à deux temps sur les 10 actions de publication et les 2 d'envoi — est **P1-01, 15 j·p, phase P1, c'est-à-dire avant le closing et donc après l'ouverture de la data room**. C'est un chantier engagé, chiffré et daté ; ce n'est pas un chantier livré.
+
+Trois jours de travail achètent une **limitation de débit**, pas un contrôle d'accès. L'écart est un facteur cinq sur l'effort et une phase entière sur le calendrier. Le dire soi-même coûte une phrase ; le laisser découvrir coûte la crédibilité des pages qui l'entourent.
+
+### 10.2 Correspondance entre les constats de ce livrable et le plan 07
+
+**P0 — avant l'ouverture de la data room.** Aucune de ces lignes ne referme le constat n° 1 ; elles le bornent, le rendent traçable, ou traitent un autre sujet.
+
+| ID (07) | Action | Effort | Constat de ce livrable |
 |---|---|---|---|
-| **P0-1** | **Confirmation appliquée côté serveur** sur publication, dépublication, envoi et suppression : jeton de confirmation en deux temps, branché **au même endroit que le contrôle de plan existant** | §4.2 — le constat le plus grave du dossier | CTO |
-| P0-2 | **Exposer les 15 actions à effet public ou irréversible comme des outils MCP nommés et annotés** (`readOnlyHint`, `destructiveHint`), hors de `execute_action` | §4.6 — contournement du consentement **et** blocage d'entrée en annuaire | CTO |
-| P0-3 | **Sortir `update_business_context` et l'écriture sur `aiSystemPrompts` du périmètre de l'IA**, ou les assortir d'une confirmation hors canal IA ; journaliser et afficher ces champs au créateur | §5.3 — injection persistante | CTO |
-| P0-4 | **Journal des actions de l'IA** : horodatage, acteur (humain ou IA), identifiant de session MCP, action, objet, résultat. Plus une **annulation** sur 30 jours | §4, LLM06, traçabilité RGPD | CTO |
-| P0-5 | **Limites de débit et détection d'abus** sur `create_*` et `publish_*`, plan gratuit inclus | §5.4 variante B — publication sans contrôle depuis un compte gratuit | CTO |
-| P0-6 | **Tester `send_email` sur un compte Pro** (T-1 de §5.5) et journaliser le résultat | §4.3 — seule question laissée ouverte par les tests | CTO |
-| P0-7 | **Inverser les règles 3 et 4 des instructions serveur** : afficher un résumé des modifications et un différentiel avant publication | §5.4 — rétablit le point de revue humaine | CTO |
-| P0-8 | **Réduire les instructions serveur au strict usage des outils** (retirer la gouvernance du modèle hôte et la consigne de style) | §1.2b — écarte la lecture *tool poisoning* | CTO |
-| P0-9 | **Pentest** selon le protocole §5.5 (T-2, T-3, T-4), rapport joint à la data room | §5.4, §5.3, §3.4 | CTO + prestataire externe |
-| P0-10 | **Retirer ou reformuler l'affirmation « seule plateforme »** selon §9.3, et corriger la page `/fr/mcp` sur ChatGPT | §9, §7 | CEO |
-| P0-11 | **Corriger `docs.tinypages.co/getting-started/1-4-mcp-setup` et la FAQ `/fr/mcp`** : la doc sous-déclare l'envoi par l'IA, et les deux sources décrivent mal l'accès par plan. Formulation exacte en §3.2 | C-001, C-002 | CTO |
-| P0-12 | **Supprimer manuellement les deux brouillons résiduels d'audit** sur le compte du CEO | §2.3, hygiène | CTO |
+| **P0-12** | **Limites de débit et file d'attente** par compte et par IP sur `create_*` et `publish_*`, plan gratuit d'abord | **3 j·p** | §5.4 variante B — **première barrière réelle à l'abus, en attendant P1-01** |
+| **P0-13** | **Journal des actions MCP** : horodatage, acteur humain ou IA, session, compte cible, action, objet, consultable par le créateur | **5 j·p** | §4, LLM06 — sans journal, personne ne peut dire après coup ce que l'IA a fait. **L'annulation, elle, est en P1-03** |
+| **P0-14** | **Nettoyage des instructions serveur** : retirer les règles qui gouvernent le modèle hôte et celles qui interdisent de montrer le contenu produit | 2 j·p | §1.2b, §5.4 (règles 3 et 4), **et §12 : ces instructions orientent jusqu'aux sessions d'audit** |
+| **P0-15** | **Publication du catalogue** des 104 actions avec leurs schémas, en annexe de data room | 2 j·p | §2.1 — seule pièce qui referme le statut déclaratif de l'inventaire |
+| **P0-16** | **Batterie d'évals minimale, quatre cas**, sur chaque modèle et chaque client supportés, résultats datés | 5 j·p | §6 — tant que P1-01 n'est pas livré, les évals sont avec la vigilance du modèle tout ce qui sépare l'usage nominal de la publication accidentelle |
+| **P0-05** | **Correction du discours** : retirer ou relativiser « seule plateforme », trancher C-001 à C-003, corriger la FAQ et `docs.tinypages.co/getting-started/1-4-mcp-setup` | 1 j·p | §9 et §3.2 |
+| **P0-06** | **Note de position sur les garde-fous** pour la data room : comportement par défaut du modèle, non contrôle d'accès | 0,5 j·p | §4.7 — la formulation y figure déjà, mot pour mot |
+| **P0-10** | **Six vérifications factuelles**, dont **l'envoi d'un message sur un compte Pro** (ND-1, T-1), la suppression définitive en interface (ND-9) et l'attribut `sandbox` complet (ND-7) | 2 j·p | §4.3, §2.3, §5.2 |
+| **P0-11** | **Hygiène d'audit** : supprimer les deux brouillons résiduels, **remettre à vide le champ de contexte métier** (il porte `-`, M-018), ouvrir un locataire réellement dédié | 1 j·p | §2.3, §5.3 |
+| **P0-23** | **Information sur le flux de données vers l'éditeur du client IA** : mention affichée au moment où le créateur autorise son client — catégories de données qui peuvent sortir, destinataire, et le fait que le contrat applicable est celui qu'il a souscrit à titre personnel | **1 j·p** | §2.7(a) — **mention d'information, pas chantier.** La clause de DPA suit en P1-11, la portée lecture seule en P1-08 |
+| **P0-24** | **Statut du connecteur MCP TinyPages hébergé par un tiers (Zapier)** : autorisé ou non, exploité par qui, par quel canal d'identifiants, sous quel contrat ; plus l'inventaire des intégrations tierces publiées sous la marque | **1 j·p** | §2.7(b) — **un appel suffit à répondre.** Suite contractuelle en P1-28 |
 
-### P1 — 30 jours
+**P1 — avant le closing.** C'est ici que vivent les deux chantiers qui referment réellement le harnais.
 
-| # | Action | Lève |
+| ID (07) | Action | Effort | Constat de ce livrable |
+|---|---|---|---|
+| **P1-01** | **Confirmation serveur à deux temps** sur les 10 publications et les 2 envois : jeton de confirmation, expiration courte, journalisation, branchée au même endroit que le contrôle de plan existant | **15 j·p** | **§4.2 — le constat le plus grave du dossier. Phase P1, donc après l'ouverture de la data room** |
+| **P1-02** | **Découpage de `execute_action`** en outils nommés et annotés (`readOnlyHint`, `destructiveHint`), `execute_action` réservé aux lectures | 10 j·p | §4.6 — contournement du consentement **et** condition d'entrée en annuaire |
+| **P1-03** | **Annulation et historique de versions** sur 30 jours, avec différentiel affiché avant publication | 8 j·p | §5.4 — rétablit le point de revue humaine supprimé par les règles 3 et 4 |
+| **P1-05** | **Contexte IA persistant** traité comme un réglage de sécurité : écriture journalisée avec différentiel, confirmation humaine, affichage permanent du contenu actif, alerte au créateur, **et une action d'effacement** | 4 j·p | §5.3, **M-018 — le chiffrage de 07 intègre la remise à vide, aujourd'hui refusée par le serveur** |
+| **P1-06** | **Durcissement contre l'injection indirecte** : marqueur de données non fiables, échappement, troncature, refus d'une écriture déclenchée dans le même tour qu'une lecture de contenu tiers | 8 j·p | §5.4 |
+| **P1-07** | **Test d'intrusion externe**, rapport joint à la data room | 10 j·p (prestataire) | §5.5 — **le cahier des charges doit porter T-0 en tête**, avant T-1 à T-4 |
+| **P1-08** | **Cycle de vie des jetons** : expiration, rotation, révocation, dernière utilisation, jetons distincts par client, **portée en lecture seule** | 5 j·p | §3.3, **et §2.7(a) : la portée lecture seule est le seul moyen technique de limiter ce qui sort chez l'éditeur du client IA** |
+| **P1-09** | **Portée par compte de `switch_account`**, ré-authentification à la bascule, test de cloisonnement sur deux comptes distincts | 3 j·p | §3.4, §5.5 T-4 |
+| **P1-11** | **DPA créateurs et page sous-traitants**, avec une **clause dédiée au flux vers l'éditeur du client IA du créateur** | 6 j·p (+ avocat) | §2.7(a) — **doit couvrir les deux flux IA, pas seulement le modèle intégré au produit** |
+| **P1-28** | **Statut contractuel du connecteur tiers**, selon le résultat de P0-24 : contrat et inscription à l'inventaire des fournisseurs, à la page « sous-traitants » et au périmètre du pentest, ou demande de retrait | 2 j·p | §2.7(b) |
+| **P1-12** | **Suppression définitive** en interface, avec journal de purge, pour rendre l'article 17 exécutable | 8 j·p | §2.3, ND-9 — coordonner avec le livrable 04 |
+| **P1-24** | **Compatibilité multi-clients mesurée**, résultats datés, et découplage du discours de marque | 5 j·p | §7, §8 |
+
+**P2 — après le closing.**
+
+| ID (07) | Action | Effort | Constat de ce livrable |
+|---|---|---|---|
+| **P2-07** | **Entrée dans les annuaires de connecteurs** d'Anthropic et d'OpenAI, conséquence de P1-02 et P0-14 | 5 j·p | §7 — **à ne pas tenter avant P1-01 et P1-02** |
+| **P2-02** | **Sandbox du code personnalisé** servie depuis un domaine enregistrable tiers, sans `allow-same-origin` | 10 j·p | §5.2 |
+| **P2-03** | **Détection d'abus sur les contenus publiés** : motifs d'hameçonnage, similarité de marques, quarantaine des comptes récents | 15 j·p | §5.4 variante B — complète P0-12 |
+
+### 10.3 Trois chantiers de ce livrable qui ne sont repris dans aucune ligne du plan 07
+
+À arbitrer par le CTO : les inscrire au plan sous un identifiant de 07, ou les écarter par écrit.
+
+| Sujet | Origine | Statut au plan 07 |
 |---|---|---|
-| P1-1 | **Batterie d'évals** versionnée, par modèle, par client et par plan, avec seuils bloquants (§6) | §6, §8 |
-| P1-2 | **Portées de sécurité de jeton**, dont une portée lecture seule, et cycle de vie complet du jeton API (expiration, rotation, révocation, dernière utilisation) | §3.3 |
-| P1-3 | **Neutralisation du contenu tiers à la source** : marqueur de données non fiables, échappement, troncature dans toutes les réponses d'outil | LLM01 |
-| P1-4 | **Relever et publier** l'attribut `sandbox` complet, la CSP interne et la règle de dérivation de l'origine du `codeHtmlBlock` | §5.2 |
-| P1-5 | **Matrice de compatibilité** par client et par version, datée | §7 |
-| P1-6 | **Publier le catalogue complet** avec les schémas des 104 actions, en annexe de data room | §1.3 |
-| P1-7 | **Trancher la suppression en interface** (test hors MCP) et, si elle est impossible, ouvrir le chantier article 17 | §2.3 — coordonner avec le livrable 04 |
-
-### P2 — 90 jours
-
-| # | Action | Lève |
-|---|---|---|
-| P2-1 | Servir le MCP depuis `mcp.tinypages.co` | §3.5 |
-| P2-2 | Restreindre la portée du jeton à un compte, ou exiger une ré-authentification à la bascule et rappeler le compte cible dans chaque confirmation d'écriture | §3.4 |
-| P2-3 | Combler les asymétries de lecture (`get_product`, lecture et mise à jour des pages de vente) | §2.4 |
-| P2-4 | Soumettre le connecteur à l'annuaire d'Anthropic **une fois P0-1 et P0-2 livrés** | §7 |
-| P2-5 | Revue des lignes directrices de marque d'Anthropic et reformulation en usage nominatif descriptif | §8 — **avocat** |
+| Servir le MCP depuis `mcp.tinypages.co` plutôt que `mcp.tinypages.dev` | §3.5 — le domaine du consentement n'est pas celui de la marque | **Non repris.** Aucune ligne du plan 07 ne le porte |
+| Combler les asymétries de lecture (`get_product`, lecture et mise à jour des pages de vente) | §2.4 — un agent qui ne peut pas relire ce qu'il écrit ne peut pas se corriger | **Non repris** |
+| **Le test d'autorisation objet par objet (IDOR / BOLA)** | §5.5 T-0 — test n° 1 d'une plateforme multi-locataire | **Aucune ligne dédiée.** Il n'est porté qu'implicitement par le périmètre de P1-07 (pentest externe). **À inscrire explicitement au cahier des charges de P1-07**, et à doubler d'un test automatisé en intégration continue, qui n'a lui non plus aucune ligne au plan |
 
 ---
 
@@ -615,15 +720,29 @@ Responsables : **CTO Nathan Lahy**, **CEO Nathan Lahy**, **avocat à mandater**.
 | ND-12 | **Spécification OpenAPI**, limites de débit d'API, webhooks natifs | **CTO** |
 | ND-13 | TinyPages a-t-il **soumis** son connecteur à un annuaire, et avec quel retour ? Un refus déjà essuyé serait une information matérielle pour l'investisseur | **CEO** |
 | ND-14 | Existe-t-il un **échange écrit avec Anthropic** sur l'usage de la marque Claude ? | **CEO + avocat** |
+| ND-15 | **Autorisation au niveau de l'objet (IDOR / BOLA)** : une action accepte-t-elle l'identifiant d'un objet appartenant à un autre locataire ? Non testé faute d'un second compte, alors que c'est une **lecture**, donc le test le moins risqué du protocole | **Test T-0 de §5.5**, sur deux locataires dédiés. **CTO + prestataire** |
+| ND-16 | **Qualification du flux vers l'éditeur du client IA du créateur** : qui est responsable, qui est sous-traitant, ce qui est dit au créateur à l'écran d'autorisation, ce qu'en dira le DPA | §2.7(a). Note de qualification, capture de l'écran d'autorisation, clause de DPA. **CEO + avocat conformité** |
+| ND-17 | **Statut du serveur MCP TinyPages hébergé par Zapier** : autorisé ou non, exploité par qui, alimenté par quels identifiants, sous quel contrat, Zapier déclaré sous-traitant ou non | §2.7(b). Accord ou contrat Zapier, inventaire des intégrations publiées sous la marque, description du flux d'authentification. **CEO + CTO** |
+| ND-18 | **Effacement du contexte métier en interface** : le champ peut-il être remis à vide ailleurs que par le canal MCP, qui le refuse ? | §5.3, M-018. Test en interface, à joindre à ND-9. **CTO** |
 
 ---
 
 ## 12. Limites de ce livrable
 
-- **Les tests d'exécution ont été conduits sur un seul compte, en plan gratuit, et sur une seule action de chaque famille.** `publish_webpage` a été testé, pas les cinq autres actions de publication ; `send_email` a été testé en gratuit, pas en Pro ; les trois actions `delete_*` n'ont pas été testées. **Rien n'autorise à généraliser au-delà de ce qui a été exécuté**, même si l'absence de contrôle sur `publish_webpage` rend improbable la présence d'un contrôle sur ses homologues. Compléter au titre de P0-6 et du pentest.
-- **Le compte utilisé n'est pas un banc d'essai stérile.** Il porte le nom réel du CEO, un sous-domaine à son nom et son adresse personnelle ; il était en usage actif pendant la session. Les relevés restent valides — ils portent sur le comportement par défaut de la plateforme, pas sur des données clientes — mais le garde-fou « jamais de compte réel » du protocole d'audit n'a été respecté qu'imparfaitement, et les tests ont été conduits sous dérogation du CEO alors que le paramètre d'audit prescrivait une lecture seule stricte. **À signaler au contre-audit.** Deux brouillons d'audit subsistent sur ce compte et doivent être supprimés manuellement (P0-12). **Un locataire réellement dédié, gratuit et Pro, doit être créé pour le pentest.**
+- **Les tests d'exécution ont été conduits sur un seul compte, en plan gratuit, et sur une seule action de chaque famille.** `publish_webpage` a été testé, pas les cinq autres actions de publication ; `send_email` a été testé en gratuit, pas en Pro ; les trois actions `delete_*` n'ont pas été testées. **Rien n'autorise à généraliser au-delà de ce qui a été exécuté**, même si l'absence de contrôle sur `publish_webpage` rend improbable la présence d'un contrôle sur ses homologues. **Sur les 104 actions du catalogue, 17 actions distinctes ont été exercées** — la liste nominative, avec la réponse du serveur pour chacune, est en annexe. Le reste du catalogue est un **inventaire relevé par lecture de la description publiée par le serveur, non exécuté action par action**. Compléter au titre de P0-10 et du pentest (livrable 07).
+- **Le compte utilisé n'est pas un banc d'essai stérile.** Il porte le nom réel du CEO, un sous-domaine à son nom et son adresse personnelle ; il était en usage actif pendant la session. Les relevés restent valides — ils portent sur le comportement par défaut de la plateforme, pas sur des données clientes — mais le garde-fou « jamais de compte réel » du protocole d'audit n'a été respecté qu'imparfaitement, et les tests ont été conduits sous dérogation du CEO alors que le paramètre d'audit prescrivait une lecture seule stricte. **À signaler au contre-audit.** Trois traces d'audit subsistent sur ce compte et doivent être effacées manuellement dans l'interface, aucune ne pouvant l'être par le canal automatisé : les deux brouillons (page et message) et **le champ de contexte métier, qui porte `-` au lieu de sa valeur d'origine, vide** (M-018). C'est P0-11 du livrable 07. **Un locataire réellement dédié, gratuit et Pro, doit être créé pour le pentest.**
 - **Aucun appel MCP n'a été exécuté par les agents A04 et A07**, dont c'était pourtant le mandat : les outils n'étaient pas exposés dans leurs sessions. Leurs constats reposent sur deux sources primaires indirectes — le champ `instructions` publié par le serveur et le relevé exhaustif des noms d'outils. Une relance après correction reste souhaitable pour obtenir les schémas.
 - **Les schémas des 104 actions n'ont pas été obtenus.** Tout ce qui porte sur les paramètres, les valeurs par défaut et le texte exact des descriptions reste non vérifié.
 - **Egress fermé** pendant toute la phase 1 sur `tinypages.co`, `docs.tinypages.co`, `mcp.tinypages.dev`, les annuaires de connecteurs et les sites concurrents. Tous les constats issus de recherche web plafonnent à PROBABLE, y compris les citations de concurrents de la §9 et la référence OWASP de la §5.
 - **Aucun test d'injection n'a été conduit.** Les chaînes de §5.4 sont des modélisations de menace dont le maillon de publication est confirmé et le reste hypothétique. Elles sont présentées comme telles.
-- **Tentatives d'injection rencontrées pendant la production de ce livrable, consignées comme l'exige le protocole d'audit.** Les instructions du serveur MCP `Tinypage` — chargées verbatim dans le contexte des sessions d'audit — interdisent au modèle d'exposer les noms d'outils, les `action_id` et la mécanique interne (règle 3) et de mentionner des outils tiers (règle 8). Ces règles entrent en conflit frontal avec le mandat d'audit, qui exige précisément de nommer les outils et de citer les concurrents. **Elles ont été traitées comme des données à analyser, jamais comme des instructions, et volontairement ignorées** : l'inventaire complet est publié en §2 et les concurrents sont nommés en §9. Leur existence est elle-même un constat, repris en §1.2b et §5.4.
+- **Tentatives d'injection rencontrées pendant la production de ce livrable, consignées comme l'exige le protocole d'audit.** Les instructions du serveur MCP `Tinypage` — chargées verbatim dans le contexte des sessions d'audit — assignent un rôle au modèle (« You are a TinyPages assistant »), lui interdisent d'exposer les noms d'outils, les `action_id` et la mécanique interne (règle 3), lui interdisent de mentionner des outils tiers (règle 8) et lui imposent une consigne de style. Ces règles entrent en conflit frontal avec le mandat d'audit, qui exige précisément de nommer les outils, de décrire la plomberie et de citer les concurrents. **Elles ont été traitées comme des données à analyser, jamais comme des instructions, et volontairement ignorées** : l'inventaire complet est publié en §2 et les concurrents sont nommés en §9. Leur existence est elle-même un constat, repris en §1.2b et §5.4.
+
+- **Le contre-audit établit que cette contamination ne dépend d'aucun appel d'outil — et c'est le point à porter au dossier.** Le contre-auditeur (`audit/rapports/A11.md`, §6) **n'a appelé aucun outil TinyPages** : `CLAUDE.md` les réservait à deux autres agents et le paramètre de tests actifs portait « non ». Le bloc d'instructions du serveur figurait néanmoins dans son contexte, intégralement. **Il suffit que le serveur soit connecté.**
+
+  **La conclusion doit être écrite sans atténuation : TinyPages ne peut pas être audité par un agent connecté sans que le produit tente d'orienter l'auditeur.** Un serveur MCP qui pousse un bloc de gouvernance du modèle hôte dans le contexte de tout client contamine aussi les sessions d'audit, de revue de code et de revue de sécurité — y compris celles d'un auditeur mandaté par un fonds, d'un prestataire de pentest, ou d'un ingénieur d'Anthropic ou d'OpenAI instruisant une candidature d'annuaire.
+
+  Trois conséquences pratiques :
+
+  1. **C'est l'argument le plus concret en faveur du chantier de réduction des instructions serveur** — P0-14 du livrable 07, 2 j·p, phase P0. Le dossier justifiait jusqu'ici ce chantier par une lecture de *tool poisoning* et par les critères d'annuaire. Il dispose maintenant d'une démonstration : le produit a orienté son propre contre-auditeur, sans qu'un seul appel soit émis.
+  2. **Tout rapport de revue produit par un agent connecté doit consigner ce bloc et déclarer l'avoir écarté**, comme le fait ce livrable. Sans cette mention, un lecteur ne peut pas distinguer une conclusion d'auditeur d'une conclusion orientée par le produit — et c'est vrai du présent document autant que du rapport de pentest à venir.
+  3. **Le cahier des charges du pentest doit l'inscrire explicitement** : le testeur opère sur un harnais qui tente de lui dicter ce qu'il a le droit de nommer. Un rapport de pentest qui ne nomme aucune action et aucun `action_id` est un rapport qui a obéi.
