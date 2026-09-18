@@ -295,6 +295,8 @@ Formule à appliquer dès que ces données existeront, à recouper avec la factu
 
 > coût mensuel ≈ Σ sur chaque créateur de [abonnement du plan + max(0 ; emails envoyés dans le mois − 10 000) × tarif de dépassement]
 
+**Précision apportée par les tests d'exécution.** L'envoi d'emails par l'interface programmatique est refusé en plan gratuit et exige un plan payant (**M-011, CONFIRMÉ**). Le profil chiffré ci-dessus est donc nécessairement celui d'un créateur payant : le coût d'acheminement et le revenu d'abonnement portent bien sur le même client, ce qui rend le calcul conditionnel ci-dessous pertinent plutôt qu'académique. Cela ne dit rien du coût des envois déclenchés depuis l'interface web par un créateur en plan gratuit, dont l'existence même n'est pas établie.
+
 **Calcul conditionnel, à manier avec précaution.** Une source secondaire situe le plan payant de TinyPages à 99 $ par mois, avec une tarification par paliers de contacts — **PROBABLE**, jamais vérifié sur la grille officielle. Si ces deux chiffres se confirmaient tels quels, le seul acheminement des emails du profil ci-dessus coûterait entre 3,5 et 5 fois l'abonnement mensuel. Cela ne démontre pas une marge négative : les paliers de contacts évoqués peuvent précisément servir à recouvrir ce coût, et rien n'établit qu'un créateur de ce profil existe dans le parc. **Ce point doit être tranché avec la grille tarifaire réelle et la facture fournisseur, avant la data room** : c'est l'un des premiers calculs qu'un investisseur refera.
 
 ### 10.2 Autres coûts unitaires
