@@ -72,7 +72,7 @@ Un seul lien de ce schéma a été exercé. Tout le reste est déduit ou annonc�
 | Domaine | Niveau | Pourquoi |
 |---|---|---|
 | Pilotage par IA et MCP | 🔴 | Écarts avérés : publication non contrôlée, contexte persistant non protégé, aucune trace, aucune éval |
-| Sécurité et multi-tenance | 🔴 | Topologie de domaine à corriger, et 80 des 97 lignes du questionnaire sans réponse |
+| Sécurité et multi-tenance | 🔴 | Topologie de domaine à corriger, et **81 des 100 lignes du questionnaire de sécurité restent sans réponse** |
 | Conformité réglementaire | 🔴 | Écart RGPD avéré dès l'ouverture d'un compte, AI Act art. 50 déjà applicable, paquet DSA absent |
 | Infrastructure | 🔴 | **Rien n'a pu être établi** : ni hébergeur, ni CDN, ni base, ni sauvegardes, ni reprise |
 | Emails et délivrabilité | 🔴 | **Rien n'a pu être vérifié** : ni authentification des domaines, ni isolation de réputation |
