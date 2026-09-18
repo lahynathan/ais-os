@@ -48,7 +48,7 @@ Pour un dossier construit au niveau d'exigence d'une Série A, l'absence de mat�
 
 Le questionnaire de sécurité prérempli (section 4) chiffre ce point : **88 % des lignes restent « inconnue »**. La colonne « à confirmer » se ferme en une demi-journée dès que l'egress est rouvert, avec les commandes déjà écrites en section 6 du rapport A05. La colonne « inconnue » dépend entièrement de pièces internes qu'il faut réclamer maintenant.
 
-### 1.3 Le seul fait établi : M-007, les pages légales vides publiées sur chaque compte
+### 1.3 Premier fait établi : M-007, les pages légales vides publiées sur chaque compte
 
 **Statut : CONFIRMÉ. Impact : élevé. Source : exécution réelle d'actions du catalogue MCP sur le compte connecté, 18/09/2026.**
 
@@ -288,8 +288,12 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 | **MT-13 / MT-14** | Procédure publique de signalement d'abus et délai de traitement ; mécanisme de notification et action au titre du DSA | Aucune trace publique | inconnue | **Obligation DSA malgré le statut PME**, voir § 5. À valider par un avocat |
 | **MT-15 / MT-16** | Surveillance de la réputation du domaine et alerte ; **plan de réponse si `tinypages.co` est signalé comme dangereux par un navigateur majeur** | — | inconnue | CTO. MT-16 est le scénario de crise à préparer en priorité |
 | **MT-17** *(ajout de ce livrable)* | Les pages légales publiées par défaut sur chaque compte sont-elles vides et indexées ? | **Oui.** Politique de confidentialité et conditions d'utilisation publiées, `indexed: true`, contenu limité au titre. Page d'accueil par défaut publiée avec bloc de capture d'emails actif, `doubleOptin: false` | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.3, M-007 |
+| **MT-18** *(ajout)* | La publication d'une page publique est-elle soumise à un contrôle appliqué par le serveur ? | **Non.** Publication réussie en un appel sur un compte gratuit, en violation délibérée de la consigne textuelle. Les garde-fous « ne pas publier » sont du texte adressé au modèle. Les seuls refus serveur sont commerciaux | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.4, M-010 et M-011 |
+| **MT-19** *(ajout)* | Existe-t-il des instructions IA persistantes au niveau du compte, et qui peut les écrire ? | Oui : contexte métier libre de 10 000 caractères et `aiSystemPrompts` (`webpage`, `email`), modifiables par le canal automatisé. Injectés dans toutes les générations futures, invisibles dans le contenu produit | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.4, M-015. À verser au modèle de menaces du volet IA |
 
-### Décompte, sur les 97 lignes d'origine
+### Décompte
+
+Décompte d'origine, sur les **97 lignes** du questionnaire produit par A05 :
 
 | État | Lignes |
 |---|---|
@@ -298,7 +302,9 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 | inconnue | 85 |
 | **Total** | **97** |
 
-Le décompte est en soi un constat : **88 % d'un questionnaire de sécurité standard reste sans réponse**. Un fonds n'y lira pas d'abord une faiblesse technique, il y lira un défaut de documentation. Les deux se corrigent, mais pas dans le même délai. Avec le screening MCP, une ligne « observée » s'ajoute au questionnaire (MT-17), et c'est une mauvaise nouvelle : le premier fait établi de tout le volet est un écart.
+Le décompte est en soi un constat : **88 % d'un questionnaire de sécurité standard reste sans réponse**. Un fonds n'y lira pas d'abord une faiblesse technique, il y lira un défaut de documentation. Les deux se corrigent, mais pas dans le même délai.
+
+Mise à jour après le screening MCP : **sept lignes passent de « inconnue » ou « à confirmer » à « observée »** (AIS-02 partiellement, AIS-04, LOG-02 partiellement, MT-11, MT-17, MT-18, MT-19). C'est une mauvaise nouvelle, pas une bonne : **chacune de ces lignes est un écart, pas une réponse rassurante**. Le premier bloc de faits établis du dossier décrit une plateforme dont les garde-fous de publication sont textuels et dont les seuls contrôles serveur sont commerciaux.
 
 ---
 
@@ -318,7 +324,7 @@ Le décompte est en soi un constat : **88 % d'un questionnaire de sécurité sta
 | **RGPD, droits des personnes** (art. 12 à 22, 28(3)(e)) | Oui | Accès, rectification, effacement, portabilité, opposition ; le sous-traitant assiste le responsable | Non observé. **Signal** : le canal MCP annonce l'impossibilité de supprimer des contacts | **Potentiellement bloquant** si l'effacement est impossible aussi en interface | Vérifier en interface sur le compte de test ; corriger le produit le cas échéant | **Vérification sous 7 j** |
 | **RGPD, violations** (art. 33, 34) | Oui | 72 h vers l'autorité, information des personnes si risque élevé, registre des violations, alerte du sous-traitant vers le responsable | Non observé | Non déterminé | Procédure écrite et testée, délai chiffré dans le DPA | 30 j |
 | **ePrivacy et cookies** (dir. 2002/58/CE art. 5(3) ; loi 78-17 art. 82) | Oui, pour `tinypages.co` **et** les pages des créateurs | Consentement préalable avant tout dépôt ou lecture non strictement nécessaire ; refus aussi simple que l'acceptation ; retrait possible. **Le Pixel Facebook ne bénéficie d'aucune exception** | Non observé. Pixel signalé sur l'accueil, source non vérifiée | Non déterminé, **forte probabilité d'écart si aucun mécanisme de consentement n'est en place** | Charger le site avec un navigateur vierge et relever les requêtes réseau avant toute interaction (5 minutes, une capture) ; installer un mécanisme de consentement ; l'étendre aux sites clients | **Priorité 1, 15 j après réouverture de l'egress** |
-| **DSA, hébergeur** (règl. (UE) 2022/2065, art. 11 à 18) | Oui | Point de contact autorités (art. 11) et destinataires (art. 12) électroniques et publiés ; CGU décrivant restrictions et modération y compris automatisée (art. 14) ; notification et action (art. 16) ; exposé des motifs de toute restriction (art. 17) ; signalement d'infractions pénales graves (art. 18) | Non observé | Non déterminé. Aucune procédure d'abus publique trouvée | Paquet DSA hébergeur : cinq pages et une adresse surveillée | 45 j |
+| **DSA, hébergeur** (règl. (UE) 2022/2065, art. 11 à 18) | Oui | Point de contact autorités (art. 11) et destinataires (art. 12) électroniques et publiés ; CGU décrivant restrictions et modération y compris automatisée (art. 14) ; notification et action (art. 16) ; exposé des motifs de toute restriction (art. 17) ; signalement d'infractions pénales graves (art. 18) | Non observé. **Signal aggravant** : la publication n'est soumise à aucun contrôle serveur (M-010), ce qui rend le mécanisme de notification et action d'autant plus nécessaire | Non déterminé. Aucune procédure d'abus publique trouvée | Paquet DSA hébergeur : cinq pages et une adresse surveillée | 45 j |
 | **DSA, plateforme en ligne** (section 3) | À qualifier, **probablement non** | Signalements prioritaires, recours interne, médiation, transparence publicitaire | Non observé | Sans objet si la qualification d'hébergeur pur est retenue (considérant 13 : exclusion des services d'hébergement web quand la diffusion publique est mineure et accessoire) | Note de qualification motivée | 45 j |
 | **DSA, exemption micro et petite entreprise** (art. 19) et rapports de transparence (art. 15(2)) | À qualifier | **L'art. 19 n'exempte que la section 3.** L'art. 15(2) exempte les micro et petites entreprises du rapport de transparence | Non observé | **Piège à éviter absolument** : croire que l'exemption PME dispense des art. 11 à 18. Elle ne les couvre pas. Ces articles s'appliquent quelle que soit la taille | Documenter le statut PME (< 50 salariés et CA ≤ 10 M€) et ne pas s'en prévaloir au-delà de la section 3 | 45 j |
 | **Représentants UE** (DSA art. 13 ; RGPD art. 27) | À qualifier, dépend de l'entité | Deux désignations écrites distinctes si l'entité est établie hors UE | **Non observé, entité inconnue** | Non déterminé | Trancher dès que l'entité est établie | 15 j après l'établissement de l'entité |
@@ -395,13 +401,13 @@ Plus largement : **aucune source primaire réglementaire n'a été ouverte.** Le
 
 | # | Écart | Pourquoi il coûte le plus | Échéance |
 |---|---|---|---|
-| 1 | **TVA, présomption de l'article 9 bis non qualifiée** | Si la présomption s'applique, TinyPages est redevable de la TVA de chaque pays d'acheteur sur l'intégralité du volume vendu par ses créateurs, pas sur ses seuls abonnements. Le montant en jeu dépasse tout le reste du document réuni | Note fiscale sous **30 j** |
-| 2 | **M-007, pages légales vides publiées et indexées, adossées à une capture d'emails sans double opt-in** | **Seul écart CONFIRMÉ du dossier.** Touche chaque compte dès sa création, met les clients en écart RGPD (art. 12 à 14) du fait du gabarit de la plateforme, et se découvre en ouvrant un compte d'essai | Correctif produit sous **15 j** |
-| 3 | **Domaine enregistrable partagé entre l'application et les sites clients** | SameSite inopérant, cookie tossing, CORS par suffixe, réputation mutualisée. Premier point regardé par un auditeur technique, et seule la séparation de domaine supprime la classe de risque | Verrouillage des cookies sous **15 j** · PSL : mois · Séparation de domaine : chantier daté |
-| 4 | **AI Act, article 50** | 50(1) déjà en retard de 47 jours ; 50(2) à **11 semaines**, avec un marquage lisible par machine à implémenter dans le produit. La seule échéance dure qui approche et qui demande du développement | 50(1) : immédiat · 50(2) : **2 décembre 2026** |
-| 5 | **Absence de contrat de sous-traitance (art. 28(3)) et de liste publiée des sous-traitants** | Pièce demandée systématiquement en due diligence. Sans elle, chaque créateur est en infraction et la plateforme devient un risque juridique pour son propre client. Peu coûteuse à produire, très visible quand elle manque | **30 j** |
+| 1 | **TVA, présomption de l'article 9 bis non qualifiée** | Si la présomption s'applique, TinyPages est redevable de la TVA de chaque pays d'acheteur sur l'intégralité du volume vendu par ses créateurs, pas sur ses seuls abonnements. Le montant en jeu dépasse tout le reste du document réuni. Trois faits suffisent à trancher, aucun n'est établi | Note fiscale sous **30 j** |
+| 2 | **Publication sans aucun contrôle côté serveur, garde-fous purement textuels, seuls refus serveur commerciaux** (M-010, M-011) | **CONFIRMÉ, reproductible en un appel.** Sur un domaine de marque partagé avec l'application, c'est le scénario d'abus de bout en bout : page publiée par l'IA, sans revue, sans limite de plan. Et toute affirmation de garde-fous dans la data room sera démentie devant l'auditeur | Contrôle serveur de publication et limites de débit sous **15 j** ; réécriture immédiate de toute formulation de garde-fou |
+| 3 | **M-007, pages légales vides publiées et indexées, adossées à une capture d'emails sans double opt-in** | **CONFIRMÉ.** Touche chaque compte dès sa création, met les clients en écart RGPD (art. 12 à 14) du fait du gabarit de la plateforme, et se découvre en ouvrant un compte d'essai | Correctif produit sous **15 j** |
+| 4 | **Domaine enregistrable partagé entre l'application et les sites clients** | SameSite inopérant, cookie tossing, CORS par suffixe, réputation mutualisée. Premier point regardé par un auditeur technique, et seule la séparation de domaine supprime la classe de risque. Se combine directement avec l'écart n° 2 | Verrouillage des cookies sous **15 j** · PSL : mois · Séparation de domaine : chantier daté |
+| 5 | **AI Act, article 50** | 50(1) déjà en retard de 47 jours ; 50(2) à **11 semaines**, avec un marquage lisible par machine à implémenter dans le produit. La seule échéance dure qui approche et qui demande du développement | 50(1) : immédiat · 50(2) : **2 décembre 2026** |
 
-Trois écarts suivent de près et ne doivent pas être perdus de vue : le **croisement PCI DSS** (bloc de code libre contre critère d'éligibilité au SAQ A, § 2.4), le **paquet DSA hébergeur** (art. 11 à 18, applicables quelle que soit la taille, § 5), et la **titularité du code** (cessions des fondateurs et des prestataires, blocage de closing classique).
+Quatre écarts suivent de près et ne doivent pas être perdus de vue : l'**absence de contrat de sous-traitance (art. 28(3)) et de liste publiée des sous-traitants** (30 j, bloquant en due diligence), le **croisement PCI DSS** (bloc de code libre sur les comptes Pro contre critère d'éligibilité au SAQ A, § 2.4), le **paquet DSA hébergeur** (art. 11 à 18, applicables quelle que soit la taille, § 5), et la **titularité du code** (cessions des fondateurs et des prestataires, blocage de closing classique).
 
 ---
 
@@ -414,7 +420,7 @@ Par ordre de dépendance, parce que les premières conditionnent les suivantes.
 3. **Le DPA créateurs**, ou les CGU qui en tiennent lieu, et la liste des sous-traitants avec leur rôle et leur localisation.
 4. **Le schéma d'architecture** : hébergeur, CDN, WAF, régions de stockage, isolation des données entre créateurs au niveau de la base.
 5. **Le dernier test d'intrusion** : périmètre (couvrait-il l'isolement multi-tenant ?), date, prestataire, constats, état de remédiation. Sans cette pièce, le questionnaire de sécurité reste majoritairement « inconnue ».
-6. **Les réponses produit vérifiables sur le compte de test** : suppression définitive d'un contact depuis l'interface, export complet, MFA, attributs des cookies, attribut `sandbox` du bloc de code.
+6. **Les réponses produit vérifiables sur un compte de test** : suppression définitive d'un contact **depuis l'interface** (le canal IA ne le permet pas, M-014), export complet, MFA, attributs des cookies, attribut `sandbox` du bloc de code. Et, sur un **compte Pro**, la seule question laissée ouverte par le screening : l'envoi d'emails est-il soumis à un contrôle autre que le mur de facturation ?
 7. **Les cessions de droits** des fondateurs et des prestataires, et l'état des dépôts de marque.
 8. **L'historique d'incidents, de réclamations d'abus et de retraits de contenu depuis le lancement.** La question sera posée telle quelle en due diligence : une réponse préparée vaut mieux qu'une découverte.
 
