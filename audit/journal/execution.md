@@ -7,13 +7,32 @@ Tenu par l'orchestrateur. Une ligne par étape.
 
 ## Contrôle qualité final
 
-- [ ] 100 % des affirmations factuelles sourcées ; chiffres recoupés
-- [ ] Contradictions résolues ou exposées avec un responsable
-- [ ] Aucun superlatif non prouvé ; faits, estimations et plans séparés
-- [ ] Chaque risque a une mitigation et un responsable
-- [ ] Terminologie, dates et chiffres cohérents entre livrables
-- [ ] Aucune donnée personnelle, aucun secret, sites clients anonymisés
-- [ ] Aucune objection bloquante du contre-audit encore ouverte
+Évalué par A00 le 18 septembre 2026 à 21:20 UTC, après le contre-audit A11. **Une case n'est cochée que si la vérification a réellement été faite.**
+
+- [x] **Contradictions résolues ou exposées avec un responsable.** 26 contradictions au registre, chacune avec sa résolution ou son statut ouvert et son responsable. C-001, C-002 et C-006 tranchées par le screening MCP. C-026, qui portait sur la chaîne de garde de la preuve, régularisée dans `00_parametres.md`.
+- [x] **Chaque risque a une mitigation et un responsable.** 42 risques cotés au livrable 06, aucun orphelin.
+- [x] **Aucun superlatif non prouvé ; faits, estimations et plans séparés.** Corrigé en version 2 de la synthèse après l'objection B-1 du contre-audit, qui a relevé une phrase de quitus sans base.
+- [ ] **100 % des affirmations factuelles sourcées ; chiffres recoupés.** *Non atteint à ce jour.* Le contre-audit a établi qu'une lecture de catalogue était présentée comme une exécution dans trois livrables (B-3), et qu'une action jamais appelée figurait comme résultat de test (B-6). La seconde a été résolue par exécution effective. La première est en cours de correction. **À recocher après vérification indépendante.**
+- [ ] **Terminologie, dates et chiffres cohérents entre livrables.** *Non atteint à ce jour.* Divergences relevées par le contre-audit et en cours de traitement : jalons ViDA, nombre de concurrents dotés d'un MCP officiel, durée de P0 pour une personne, décompte du questionnaire de sécurité, collision de numérotation des actions P0 entre deux livrables.
+- [ ] **Aucune donnée personnelle, aucun secret, sites clients anonymisés.** *Non atteint, et c'est délibéré.* Les trois registres et l'annexe de screening contiennent l'identité et le compte personnel du dirigeant, parce que la réserve sur la nature du compte de test devait être traçable. **Conséquence : ces pièces sont strictement internes et ne sont jamais remises aux investisseurs.** La convention de diffusion figure au livrable 09. Aucun site client n'apparaît, pour la raison simple qu'aucun n'a pu être observé.
+- [ ] **Aucune objection bloquante du contre-audit encore ouverte.** *Non atteint.* Six objections bloquantes ont été émises. B-6 est résolue par exécution (M-018), B-4 partiellement par la régularisation des paramètres. B-1, B-2, B-3 et B-5 sont en cours de correction. **Un second passage du contre-audit est nécessaire avant toute diffusion.**
+
+**Conclusion du contrôle qualité : le dossier n'est pas diffusable en l'état.** Trois cases sur sept sont acquises. Les quatre autres décrivent exactement ce qui reste à faire, et le contre-audit en a fixé l'ordre.
+
+## Phases 3 et 4 — rédaction et contre-audit
+
+| Horodatage | Agent | Action | Résultat | Fichiers produits |
+|---|---|---|---|---|
+| 2026-09-18 20:50 UTC | A00 | Délégation de la rédaction | 6 agents sur les registres et les livrables 02 à 09 | audit/livrables/ |
+| 2026-09-18 21:05 UTC | A00 | Relance de deux agents | Livrables 02, 03 et 05 rédigés avant les tests d'exécution, corrigés par leurs auteurs | 02, 03, 05 |
+| 2026-09-18 21:10 UTC | A00 | Synthèse exécutive, méthodologie, pièces internes, échantillon | Quatre documents écrits par l'orchestrateur | 01, annexes |
+| 2026-09-18 21:12 UTC | A00 | Régularisation des paramètres | La dérogation D-5 et les deux écarts assumés y sont désormais écrits, après signalement par l'agent de consolidation | 00_parametres.md |
+| 2026-09-18 20:42 UTC | A11 | Contre-audit lancé | — | — |
+| 2026-09-18 20:58 UTC | A11 | Contre-audit rendu | **6 objections bloquantes, 15 majeures, 10 mineures. Verdict : dossier non prêt pour la data room.** | audit/rapports/A11.md |
+| 2026-09-18 21:05 UTC | A00 | Traitement de B-6 par exécution | `update_business_context` testé : écriture sans contrôle, remise à vide refusée. M-018 CONFIRMÉ. | annexes/screening |
+| 2026-09-18 21:15 UTC | A00 | Traitement de B-3 | Liste nominative des 17 actions réellement exécutées sur les 104 du catalogue | annexes/screening |
+| 2026-09-18 21:20 UTC | A00 | Synthèse exécutive version 2 | B-1, B-2, B-3, B-5, M-4 et M-5 traités : bandeau d'auto-évaluation, suppression de la phrase de quitus, alignement du plan, dix risques revus, échelle de couleurs définie | 01 |
+| 2026-09-18 21:20 UTC | A00 | Délégation des corrections | 4 agents sur les livrables 02 à 09 pour les objections restantes | audit/livrables/ |
 
 ## Phase 0 — plan d'enquête
 

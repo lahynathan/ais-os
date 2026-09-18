@@ -1,27 +1,39 @@
 # Synthèse exécutive — audit technique TinyPages
 
-Date de référence : 18 septembre 2026. Destinataires : investisseurs et auditeur technique mandaté.
+Date de référence : 18 septembre 2026. Version 2, révisée après contre-audit.
 
-> **Base de preuve.** Cet audit a été conduit sans accès réseau aux sites de TinyPages ni à aucune source officielle externe, et sans aucune pièce interne. **Aucune page de TinyPages n'a été ouverte.** La quasi-totalité des constats plafonne donc au statut PROBABLE. Une seule source primaire a été exploitée : le serveur MCP de production, interrogé sur un compte réel avec autorisation écrite. Les constats qui en découlent, préfixés `M-`, sont les seuls CONFIRMÉS — et ce sont aussi les plus lourds. La méthode, ses dérogations et ses limites sont détaillées dans `annexes/methodologie.md`. **Ce dossier est une cartographie externe assortie d'un sondage technique ciblé, pas une due diligence complète.**
+> ## Nature de ce document
+>
+> **Travaux d'auto-évaluation produits en interne pour TinyPages, sans intervention d'un tiers indépendant.** Le commanditaire, l'audité, le relecteur et l'unique responsable des remédiations sont la même personne. **Ces documents ne constituent pas un rapport d'audit au sens professionnel du terme.** Les deux points les plus critiques — le harnais IA et l'isolement multi-locataire — doivent faire l'objet d'un mandat externe dont le rapport sera joint.
+>
+> ## Base de preuve
+>
+> L'audit s'est déroulé sans accès réseau aux sites de TinyPages ni à aucune source officielle externe, et sans aucune pièce interne. **Aucune page de TinyPages n'a été ouverte. Aucune pièce d'entreprise n'a été vue.**
+>
+> Une seule source primaire a été exploitée : le serveur MCP de production, interrogé sur le compte du dirigeant avec autorisation écrite. **17 actions y ont été réellement exécutées, sur un catalogue de 104.** Les 87 autres sont un inventaire de noms publié par le serveur lui-même — source primaire, mais déclarative : c'est TinyPages qui décrit TinyPages, et aucune de ces actions n'a été confrontée à son schéma.
+>
+> Tout le reste plafonne au statut PROBABLE. La méthode, ses quatre dérogations et ses écarts assumés sont détaillés dans `annexes/methodologie.md`.
+>
+> **Ce dossier est une note de cadrage assortie d'un sondage technique ciblé. Il ne remplace pas une due diligence, et il n'est pas prêt à être remis en l'état.**
 
 ## TinyPages en bref
 
 Plateforme marketing tout-en-un pour créateurs, formateurs et coachs : site, pages de vente, produits numériques, espace membre, emails, blog, formulaires. Association des fondateurs en août 2024, lancement en janvier 2025, bascule vers l'IA en 2025. Le différenciateur revendiqué est le pilotage de bout en bout par Claude via un serveur MCP officiel.
 
-Ce pilotage est réel et il est large : **104 actions** sont exposées à l'IA — 47 lectures, 39 écritures, 10 publications, 3 suppressions, 2 envois. C'est un périmètre considérable, et c'est le principal actif technique de la société.
+Ce pilotage est réel et son périmètre est large : **104 actions exposées à l'IA** — 47 lectures, 39 écritures, 10 publications, 3 suppressions, 2 envois, 3 utilitaires. C'est le principal actif technique de la société.
 
 ## Architecture, vue d'ensemble
 
 ```mermaid
 flowchart LR
-  U["Créateur"] --> IA["Client IA<br/>Claude, ChatGPT<br/>CONFIRMÉ pour Claude"]
-  IA -->|"OAuth"| MCP["Serveur MCP<br/>mcp.tinypages.dev<br/>104 actions"]
+  U["Créateur"] --> IA["Client IA du créateur<br/>Claude, ChatGPT<br/>contrat personnel du créateur"]
+  IA -->|"OAuth"| MCP["Serveur MCP<br/>104 actions au catalogue<br/>17 exécutées par l'audit"]
   MCP ==>|"CONFIRMÉ"| BE["Back-end TinyPages"]
-  BE -.->|"NON DÉTERMINÉ"| H["Hébergement<br/>Vercel — HYPOTHÈSE"]
-  BE --> CTX["Contexte IA persistant<br/>businessContext 10 000 car.<br/>aiSystemPrompts"]
+  BE --> CTX["Contexte IA persistant<br/>écrit sans contrôle — CONFIRMÉ"]
   BE --> S["Sites clients<br/>*.tinypages.co<br/>même domaine que l'app"]
-  BE -.->|"HYPOTHÈSE"| P["Postmark — emails"]
-  BE -.->|"HYPOTHÈSE"| ST["Stripe Connect"]
+  BE -.->|"NON DÉTERMINÉ"| H["Hébergement"]
+  BE -.->|"HYPOTHÈSE"| P["Emails"]
+  BE -.->|"HYPOTHÈSE"| ST["Paiements"]
   U2["Acheteur, élève"] --> S
 ```
 
@@ -29,54 +41,64 @@ Un seul lien de ce schéma a été exercé. Tout le reste est déduit ou annonc�
 
 ## Ce qui est solide
 
-- **L'étendue du pilotage par IA est réelle et vérifiée.** 104 actions, couvrant pages, produits, espace membre, contacts, emails, automatisations, formulaires, coupons, analytics. Peu de concurrents en font autant dans un seul serveur officiel.
-- **Le serveur applique déjà des vérifications par action et par compte.** Les refus `402` observés le prouvent. Le point d'application existe : sécuriser les actions sensibles est une **extension** d'un mécanisme en place, pas une construction de zéro. C'est ce qui rend le plan de remédiation crédible.
+- **L'étendue du pilotage par IA est large et le catalogue est documenté.** 104 actions couvrant pages, produits, espace membre, contacts, emails, automatisations, formulaires, coupons, analytics.
+- **Le serveur applique déjà des vérifications par action et par compte.** Les refus `402` observés le prouvent. **Le point d'application existe** : sécuriser les actions sensibles est une extension d'un mécanisme en place, pas une construction de zéro. C'est ce qui rend le plan crédible.
 - **Le produit est cohérent et livré.** Un compte neuf reçoit 5 pages, 15 modèles dont une séquence de lancement en 7 emails, et un espace membre fonctionnel.
-- **L'audit n'a révélé aucune fraude, aucun mensonge délibéré, aucun passif caché.** Les écarts constatés sont des défauts de jeunesse et de priorisation, pas des problèmes de probité.
+- **Le dossier établit par test le constat qui le dessert le plus.** C'est une qualité, pas un aveu : un investisseur finance une équipe qui sait dire « nous avons testé, ça ne tient pas, voici le plan ».
+
+> **Périmètre de cette section.** Elle ne porte que sur ce qui a pu être observé, c'est-à-dire le canal MCP. **Aucune conclusion ne peut être tirée de cet audit sur les comptes, les contrats, les engagements, les litiges ou la situation financière de la société : aucune de ces pièces n'a été consultée.**
 
 ## Les dix risques majeurs
 
-| # | Risque | Statut | Impact | Traitement |
+| # | Risque | Statut | Impact | Traitement et phase |
 |---|---|---|---|---|
-| 1 | **Publier une page ne passe par aucun contrôle serveur.** Prouvé en violant délibérément la consigne « ne pas publier » : la page est partie en ligne en un appel, depuis un compte gratuit. Les garde-fous annoncés sont du texte adressé à un modèle tiers. | **CONFIRMÉ** | Bloquant | Contrôle serveur sur les actions de publication et d'envoi, limites de débit. 3 j·p, avant la data room |
+| 1 | **Publier une page ne passe par aucun contrôle serveur.** Prouvé en violant délibérément la consigne « ne pas publier » : la page est partie en ligne en un appel, depuis un compte gratuit. Les garde-fous annoncés sont du texte adressé à un modèle tiers. | **CONFIRMÉ** | Bloquant | **À l'ouverture de la data room, la publication reste sans contrôle serveur.** P0 livre les limites de débit (3 j·p) et le journal des actions (5 j·p). Le contrôle serveur lui-même est un chantier de **15 j·p, livré avant le closing** |
 | 2 | **Les seuls contrôles serveur observés sont commerciaux.** Le bloc de code et l'envoi sont refusés faute de plan Pro ; la publication ne l'est pas. Les contrôles protègent le chiffre d'affaires, pas l'utilisateur. | **CONFIRMÉ** | Bloquant | Même chantier que le risque 1 |
-| 3 | **La plateforme publie des pages légales vides sur chaque compte**, indexées, à côté d'un formulaire de collecte d'emails sans double opt-in. Chaque créateur est en écart RGPD art. 12-14 dès l'ouverture. | **CONFIRMÉ** | Élevé | Gabarit réel, publication conditionnée, `noindex`, rétro-traitement du parc. 2 j·p |
-| 4 | **Exposition TVA au titre de l'article 9 bis** du règlement UE 282/2011. Si la présomption s'applique, TinyPages est redevable de la TVA de chaque pays d'acheteur sur l'intégralité du volume vendu par ses créateurs. | PROBABLE | Bloquant si avéré | Trois questions de fait tranchent, puis note d'un avocat fiscaliste. 1 j·p + mandat |
-| 5 | **L'affirmation « seule plateforme pilotable de bout en bout par Claude » est contredite.** Kajabi, GoHighLevel, ClickFunnels, Stan Store et Systeme.io publient un MCP officiel. Vérifiable par un investisseur en dix minutes. | PROBABLE | Élevé | Reformuler sur la couverture mesurable et la gouvernance vérifiable. 1 j·p |
-| 6 | **Application et sites clients partagent le même domaine enregistrable.** `SameSite` est inopérant entre les deux, le cookie tossing devient possible, et un signalement Safe Browsing retirerait d'un coup tout le parc. Toute l'industrie comparable sépare les deux plans. | PROBABLE | Élevé | Verrouillage des cookies en urgence, PSL, puis séparation de domaine en chantier daté |
-| 7 | **Injection persistante par le contexte IA.** `businessContext` (10 000 caractères) et `aiSystemPrompts` sont injectés dans toutes les générations futures, modifiables par l'IA, sans contrôle. Une écriture hostile survit à la session et n'apparaît nulle part. | **CONFIRMÉ** pour l'existence | Élevé | Contrôle d'écriture et journalisation. 2 j·p |
-| 8 | **Ni évals, ni journal des actions de l'IA, ni annulation.** Tous les garde-fous reposent sur un modèle tiers mis à jour sans préavis, et rien ne permet de savoir après coup ce que l'IA a fait. | Non déterminé | Élevé | Journal horodaté et batterie d'évals minimale. 10 j·p |
-| 9 | **Entité juridique non établie**, titularité du code antérieur à l'association non documentée. Point de blocage classique de closing. | Non déterminé | Bloquant en due diligence | Pièces d'entité et recensement des cessions de droits. 3 j·p |
-| 10 | **Personne clé.** CTO et CEO sont la même personne. C'est aussi ce qui détermine le délai réel du plan de remédiation. | CONFIRMÉ | Élevé | Documentation de continuité, puis recrutement ou association technique |
+| 3 | **La plateforme publie des pages légales vides sur chaque compte**, indexées, à côté d'un formulaire de collecte d'emails sans double opt-in. Chaque créateur est en écart RGPD art. 12-14 dès l'ouverture. | **CONFIRMÉ** | Élevé | Gabarit réel, publication conditionnée, `noindex`, rétro-traitement du parc. 4 j·p, P0 |
+| 4 | **Le contexte de génération persistant s'écrit sans aucun contrôle, et ne s'efface pas.** `businessContext` et `aiSystemPrompts` sont injectés dans toutes les générations futures. L'IA peut y écrire, elle ne peut pas défaire son écriture. | **CONFIRMÉ** | Élevé | Contrôle d'écriture, journalisation, remise à vide possible. P0 |
+| 5 | **Exposition TVA au titre de l'article 9 bis** du règlement UE 282/2011. Les trois mêmes faits commandent aussi la qualification comptable principal/agent — qui décide si le chiffre d'affaires se compte brut ou net — et l'identité du vendeur au sens du droit de la consommation. | PROBABLE | Bloquant si avéré | Trois questions de fait, puis mandat unique couvrant les trois qualifications. P0 |
+| 6 | **L'affirmation « seule plateforme pilotable de bout en bout par Claude » est contredite.** Sept concurrents publient un MCP officiel. Vérifiable par un investisseur en dix minutes. | PROBABLE | Élevé | Reformuler et produire le comparatif daté avant toute promesse. P0 |
+| 7 | **Application et sites clients partagent le même domaine enregistrable.** `SameSite` est inopérant entre les deux, et un signalement Safe Browsing retirerait d'un coup tout le parc. Toute l'industrie comparable sépare les deux plans. | PROBABLE | Élevé | Verrouillage des cookies en P0, séparation de domaine en chantier daté |
+| 8 | **AI Act article 50.** L'alinéa 1 est applicable depuis le 2 août 2026 et n'est pas respecté. L'alinéa 2, marquage lisible par machine des contenus générés, tombe le **2 décembre 2026** — pendant la levée, et c'est la seule échéance dure qui demande du développement. | PROBABLE | Élevé | Mention IA en P0, marquage en chantier daté avant le 2 décembre |
+| 9 | **Aucun contrat de sous-traitance proposé aux créateurs, et consentement cookies non vérifié.** TinyPages héberge les contacts de ses clients sans DPA constaté. Bloquant en due diligence. | Non déterminé | Bloquant en DD | DPA, liste des sous-traitants, mécanisme de consentement fourni aux créateurs. P0 |
+| 10 | **Ni évals, ni journal des actions de l'IA, ni annulation.** Les garde-fous reposent sur un modèle tiers mis à jour sans préavis, et rien ne permet de savoir après coup ce que l'IA a fait. | Non déterminé | Élevé | Journal horodaté et batterie d'évals minimale. 10 j·p, P0 |
+
+**Immédiatement derrière** : aucune preuve de sauvegarde ni de restauration n'a pu être obtenue, ce qui est le trou le plus gênant pour une data room ; l'entité juridique n'est pas établie ; et le CTO et le CEO sont la même personne, ce qui détermine le délai réel de toute remédiation.
 
 ## Niveau de préparation par domaine
 
+**Échelle.** 🟢 établi et documenté, preuves disponibles · 🟠 écarts identifiés, correctifs chiffrés et datés · 🔴 écart avéré non corrigé, **ou domaine dont rien n'a pu être établi**.
+
 | Domaine | Niveau | Pourquoi |
 |---|---|---|
-| Pilotage par IA et MCP | 🔴 Rouge | Le différenciateur du produit est aussi son point le plus faible : garde-fous non appliqués, aucune trace, aucune éval |
-| Sécurité et multi-tenance | 🔴 Rouge | Topologie de domaine à corriger, 85 des 97 lignes du questionnaire sans réponse |
-| Conformité réglementaire | 🔴 Rouge | Écart RGPD dès l'ouverture d'un compte, AI Act art. 50 déjà applicable, paquet DSA absent |
-| Fiscalité et paiements | 🟠 Orange | Une question tranche l'essentiel ; le reste est documentable rapidement |
-| Infrastructure | 🟠 Orange | Non pas défaillante, mais **non documentée** : rien n'a pu être vérifié |
-| Emails et délivrabilité | 🟠 Orange | Coûts modélisés, authentification et isolation de réputation non vérifiées |
-| Fonctionnel | 🟢 Vert | Périmètre large, cohérent, et le catalogue en donne une preuve directe |
-| Marché et différenciation | 🟠 Orange | Le marché existe, l'argument d'exclusivité ne tient pas |
+| Pilotage par IA et MCP | 🔴 | Écarts avérés : publication non contrôlée, contexte persistant non protégé, aucune trace, aucune éval |
+| Sécurité et multi-tenance | 🔴 | Topologie de domaine à corriger, et 80 des 97 lignes du questionnaire sans réponse |
+| Conformité réglementaire | 🔴 | Écart RGPD avéré dès l'ouverture d'un compte, AI Act art. 50 déjà applicable, paquet DSA absent |
+| Infrastructure | 🔴 | **Rien n'a pu être établi** : ni hébergeur, ni CDN, ni base, ni sauvegardes, ni reprise |
+| Emails et délivrabilité | 🔴 | **Rien n'a pu être vérifié** : ni authentification des domaines, ni isolation de réputation |
+| Fiscalité et paiements | 🟠 | Une question tranche l'essentiel, le reste est documentable rapidement |
+| Fonctionnel | 🟠 | Le catalogue donne une ossature solide, mais **aucune page d'interface n'a été ouverte** |
+| Marché et différenciation | 🟠 | Le marché existe, l'argument d'exclusivité ne tient pas |
 
-Aucun domaine n'est rouge par défaillance technique avérée. Ils le sont parce que **ce qui est annoncé n'est pas appliqué**, ou parce que rien ne permet de le vérifier.
+Cinq domaines sur huit sont rouges. Trois le sont par écart avéré, deux parce que **rien n'a pu être établi** — et dans une data room, l'absence de preuve se traite comme un défaut jusqu'à preuve du contraire.
 
 ## Recommandation
 
-**Ne pas ouvrir la data room en l'état.** Un auditeur technique reproduira le test de publication en un appel et trouvera l'affirmation « seule plateforme » fausse en dix minutes. Ces deux découvertes, faites par lui plutôt que présentées par la société, coûteraient davantage que les défauts eux-mêmes.
+**Ne pas ouvrir la data room en l'état, et ne pas diffuser ces documents avant les corrections listées ci-dessous.**
 
-Le plan P0 représente **environ 40 jours-personne**, dont **13,5 tenables en une à deux journées chacun**. Les corrections les plus visibles — pages légales, double opt-in, reformulation du discours, points de contact — sont aussi les moins coûteuses.
+Un auditeur technique reproduira le test de publication en un appel et trouvera l'affirmation « seule plateforme » fausse en dix minutes. Ces deux découvertes, faites par lui plutôt que présentées par la société, coûteraient davantage que les défauts eux-mêmes.
 
-Deux sujets ne se referment pas avant l'ouverture : l'isolation de domaine et la qualification TVA. Ils doivent être **exposés chiffrés et datés** dans la data room, pas corrigés dans l'urgence ni dissimulés.
+**Ordre de traitement, établi par le contre-audit :**
 
-La trajectoire produit est bonne et l'actif technique est réel. Ce qui manque n'est pas de l'ingénierie difficile, c'est de la gouvernance : appliquer côté serveur ce qui est aujourd'hui promis en langage naturel, et tracer ce que l'IA fait. C'est précisément ce qu'un investisseur attend de voir traité avant d'entrer.
+1. **48 heures, sans dépendance externe.** Réécrire les formulations qui engagent, marquer la diffusion de chaque pièce, recompter ce qui doit l'être. Les registres et le document de questions-réponses **ne sont pas remis aux investisseurs** : ils contiennent l'identité et le compte personnel du dirigeant, et un manuel de formulations.
+2. **Semaine 1.** Régulariser la chaîne de garde de la preuve : dérogation écrite, locataire de test dédié en gratuit et en Pro, **rejeu horodaté des trois tests décisifs**, suppression des traces laissées par l'audit. Une heure de travail retire une objection de recevabilité.
+3. **Semaines 1 et 2, et cela prime sur tout le reste. Rejouer la collecte avec un accès réseau ouvert.** Une demi-journée d'outils referme la moitié des « Non déterminé », dont les quatre relevés qui décident si trois risques majeurs sont théoriques ou réels.
+4. **Semaines 2 à 4.** Les pièces de société, qui ne demandent qu'une extraction. Le mandat unique au conseil, couvrant les trois qualifications. Les vérifications produit d'une heure chacune. Et la reprise du plan avec un chemin critique, un coût en euros et une hypothèse de renfort chiffrée.
 
-## Suite immédiate
+**Sur l'effort.** Le plan P0 représente environ 40 jours-personne, dont 13,5 en actions courtes d'une à deux journées chacune. Mais P0 et P1 cumulés atteignent près de 200 jours-personne, soit environ 39 semaines pour une personne seule en pleine levée. **Ce n'est pas tenable sans renfort, et c'est la première chose qu'un investisseur calculera.** Mieux vaut présenter l'hypothèse de renfort chiffrée comme un usage des fonds que laisser découvrir l'arithmétique.
 
-1. Traiter les risques 1, 2 et 3 : ce sont des faits établis, pas des hypothèses.
-2. Répondre aux trois questions de fait sur l'article 9 bis, puis mandater l'avocat fiscaliste.
-3. Reformuler l'argument de différenciation avant toute diffusion.
-4. Ouvrir les accès internes et rejouer l'audit : **le réseau fermé et l'absence de pièces internes laissent des trous entiers**, dont l'échantillon de sites clients, l'infrastructure et tout le volet coûts et métriques.
+## Pour finir
+
+La trajectoire produit est bonne et l'actif technique est réel. Ce qui manque n'est pas de l'ingénierie difficile : c'est de la gouvernance. Appliquer côté serveur ce qui est aujourd'hui promis en langage naturel, tracer ce que l'IA fait, et documenter ce qui existe déjà.
+
+Le principal risque de ce dossier n'est aucun des dix ci-dessus. C'est l'écart entre ce que les documents détaillés établissent et ce que le document de tête laisse entendre. Cette version corrige cet écart ; toute réécriture ultérieure devra le préserver.
