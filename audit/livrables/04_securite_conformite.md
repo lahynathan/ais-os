@@ -72,12 +72,34 @@ Quatre conséquences, toutes à faire trancher :
 3. **Réputation de domaine et référencement.** `indexed: true` sur des pages vides, répliquées sur chaque sous-domaine de `*.tinypages.co` : du contenu mince à grande échelle sur un domaine partagé. Croise directement le risque de réputation mutualisée de la section 2.
 4. **Éclairage sur une contradiction relevée par A02.** Les CGV d'un site client affirment qu'« aucune commission n'est prélevée », en contradiction avec les 15 % annoncés sur le plan gratuit. Le gabarit livré par la plateforme étant vide, **la piste du gabarit fourni par TinyPages est écartée pour ce point précis**. L'origine du texte reste à établir.
 
-**Pourquoi ce constat compte plus que sa taille apparente :** c'est le seul élément de tout le volet qui soit établi, reproductible, et corrigible sans dépendre d'une pièce interne. Un correctif produit (gabarit juridique réellement rempli ou page non publiée par défaut, `indexed: false` tant que la page est vide, double opt-in proposé à l'activation du bloc de capture) est mesurable en jours. À l'inverse, s'il subsiste à l'ouverture de la data room, il sera trouvé par n'importe quel auditeur en ouvrant un compte d'essai, et il donnera le ton de tout l'examen.
+**Pourquoi ce constat compte plus que sa taille apparente :** c'est un élément établi, reproductible, et corrigible sans dépendre d'une pièce interne. Un correctif produit (gabarit juridique réellement rempli ou page non publiée par défaut, `indexed: false` tant que la page est vide, double opt-in proposé à l'activation du bloc de capture) est mesurable en jours. À l'inverse, s'il subsiste à l'ouverture de la data room, il sera trouvé par n'importe quel auditeur en ouvrant un compte d'essai, et il donnera le ton de tout l'examen.
 
-### 1.4 Deux constats connexes du même screening
+### 1.4 Les garde-fous réellement appliqués : ce que les tests d'exécution ont établi
 
-- **M-008, CONFIRMÉ.** `list_accounts` renvoie un seul compte et `subAccounts: []`. La mécanique multi-comptes existe, son cloisonnement n'a pas pu être éprouvé faute d'un second compte. À reprendre dès qu'un second compte de test existe.
-- **M-009, à vérifier.** Un produit porte `price: 100` et `installments: 3` avec `installmentAmount: 33`, soit 99. Anecdotique seul ; révélateur si la règle d'arrondi de la dernière échéance n'est pas gérée.
+Des tests d'exécution ont été menés le 18/09/2026 sur le compte connecté, sous dérogation D-5, en appelant délibérément des actions que la description des outils demande au modèle de ne pas appeler. L'objet du test est précisément de **distinguer un garde-fou appliqué par le serveur d'une consigne adressée au modèle**. Les résultats sont CONFIRMÉS et ils commandent une partie de l'analyse de sécurité qui suit.
+
+| Action | Contrôle côté serveur | Nature du contrôle |
+|---|---|---|
+| Publier une page | **Aucun** | — |
+| Dépublier une page | Aucun | — |
+| Lire les contacts | Aucun | — |
+| Lire les métriques commerciales (visiteurs, ventes, revenus) | Aucun | — |
+| Écrire le contexte IA persistant | Aucun | — |
+| Envoyer un message | Oui | **Commercial** (`402 PRO_PLAN_REQUIRED`) |
+| Insérer du code personnalisé | Oui | **Commercial** (`402 PRO_PLAN_REQUIRED`) |
+| Supprimer une page ou un email | Action inexistante | Absence de fonction |
+
+**M-010, CONFIRMÉ, impact bloquant. La publication n'est soumise à aucun contrôle.** Création par `create_webpage`, puis `publish_webpage` appelé en violation délibérée de la consigne « Do NOT call publish_webpage » : **succès immédiat, URL publique retournée**. Aucune confirmation, aucune revue, aucun délai, aucune restriction de plan. Les mentions « saved as a draft », « the user decides when to publish » sont **exclusivement du texte adressé à un modèle que TinyPages ne contrôle pas**. Pour la data room, la conséquence est une règle de rédaction : toute formulation présentant ces consignes comme une garantie sera démentie en un appel par l'auditeur du fonds. La formulation défendable est qu'il s'agit d'un **comportement par défaut du modèle, pas d'un contrôle d'accès**.
+
+**M-011, CONFIRMÉ. Le serveur sait refuser, et il refuse deux choses payantes.** L'envoi d'email et l'insertion de code personnalisé renvoient `402 PRO_PLAN_REQUIRED`. Le serveur sait donc opposer un refus ; il le fait pour deux actions facturées et pas pour la publication. **Les contrôles côté serveur protègent le chiffre d'affaires, pas l'utilisateur.** L'action la plus exploitable pour l'abus, publier une page publique sur un sous-domaine de la marque, est la seule des trois à n'avoir aucune barrière. Le message d'erreur d'envoi laisse entendre qu'un compte Pro enverrait sans autre contrôle : **à confirmer sur un compte Pro**, c'est la seule question que ce screening laisse ouverte sur ce point.
+
+**M-014, CONFIRMÉ. L'IA ne peut pas nettoyer derrière elle.** Aucune action ne supprime une page ni un email. Les deux objets créés pour les tests subsistent en brouillon et ne peuvent pas être supprimés par le canal automatisé ; ils sont à supprimer manuellement en interface. Ce résidu documente le canal IA, il ne tranche pas l'interface : la question de l'article 17 du RGPD reste ouverte (§ 3.2).
+
+**M-015, surface d'injection persistante.** `get_business_context` expose un champ libre de 10 000 caractères, modifiable par `update_business_context`, décrit comme le contexte métier fourni au modèle ; le compte porte aussi `aiSystemPrompts` avec deux entrées (`webpage`, `email`). **Ce sont des instructions persistantes injectées dans toutes les générations futures.** Qui obtient une écriture sur ces champs, par le MCP, par une injection indirecte ou par un accès compromis, oriente durablement tout ce que l'IA produira pour ce créateur, **sans que rien n'apparaisse dans le contenu généré**. À verser au modèle de menaces du volet IA et au questionnaire de sécurité (MT-19 ci-dessous).
+
+**M-017.** Le canal automatisé lit les métriques commerciales du créateur (visiteurs, contacts, ventes, revenus) sans contrôle particulier. À croiser avec la portée des jetons OAuth (IAM-10).
+
+**Deux constats mineurs du même screening.** M-008 : `list_accounts` renvoie un seul compte et `subAccounts: []`, la mécanique multi-comptes existe mais son cloisonnement n'a pas pu être éprouvé faute d'un second compte. M-009, à vérifier : un produit porte `price: 100`, `installments: 3` et `installmentAmount: 33`, soit 99 ; anecdotique seul, révélateur si la règle d'arrondi de la dernière échéance n'est pas gérée.
 
 ---
 
@@ -104,6 +126,8 @@ Tant que `tinypages.co` n'est pas inscrit à la section PRIVATE de la Public Suf
 
 Le bloc `codeHtmlBlock` accepte du HTML et du JavaScript bruts, décrits dans les schémas MCP comme exécutés « in an ISOLATED sandbox iframe on a separate origin ».
 
+**Précision établie par les tests d'exécution (M-011) :** ce bloc est **réservé au plan Pro** (`402 PRO_PLAN_REQUIRED` sur un compte gratuit). Cela réduit la surface d'abus par des comptes jetables, mais ne réduit en rien le risque technique : les comptes Pro sont précisément ceux qui vendent, donc ceux dont les pages portent un tunnel de paiement. La question de l'isolement reste entière, et le croisement PCI du § 2.4 s'en trouve resserré, pas affaibli.
+
 **Ambiguïté de vocabulaire lourde de conséquences.** « Origine séparée » est vrai au sens de la politique de même origine et faux au sens de la portée des cookies. Si la sandbox est servie depuis un sous-domaine de `tinypages.co` **et** que l'attribut `sandbox` contient `allow-same-origin`, l'origine opaque disparaît et l'isolement contre le vol de cookies tombe.
 
 Trois issues possibles, à trancher par un relevé de deux minutes sur une page publiée :
@@ -124,7 +148,7 @@ Ce croisement est le plus coûteux du document après le sujet fiscal, parce qu'
 
 - **Règle, PROBABLE.** Une page de paiement **hébergée par Stripe** (Checkout en redirection) relève du **SAQ A**. Stripe Elements ou un formulaire servi depuis l'infrastructure du marchand, même avec tokenisation, relèvent du **SAQ A-EP**, nettement plus lourd.
 - **Règle, PROBABLE.** Depuis le **31 mars 2025**, les exigences PCI DSS v4.0.1 **6.4.3** (inventaire, autorisation et contrôle d'intégrité de tous les scripts de la page de paiement) et **11.6.1** (détection hebdomadaire de falsification de la page et des scripts) sont obligatoires. Elles ont été **retirées du SAQ A** et remplacées par un **critère d'éligibilité** : le marchand doit attester que son site **n'est pas exposé aux attaques par script**.
-- **Tension, HYPOTHÈSE.** Deux signaux entrent en conflit avec ce critère : un Pixel Facebook annoncé sur le site TinyPages, et surtout le bloc `codeHtmlBlock` qui accepte du HTML et du JavaScript bruts fournis par le créateur. **Si un tel bloc peut se trouver sur une page portant un formulaire de paiement, l'attestation « site non exposé aux attaques par script » devient très difficile à tenir**, et l'inventaire de scripts du 6.4.3 devient un inventaire ouvert et non maîtrisé.
+- **Tension, HYPOTHÈSE.** Deux signaux entrent en conflit avec ce critère : un Pixel Facebook annoncé sur le site TinyPages, et surtout le bloc `codeHtmlBlock` qui accepte du HTML et du JavaScript bruts fournis par le créateur. **Si un tel bloc peut se trouver sur une page portant un formulaire de paiement, l'attestation « site non exposé aux attaques par script » devient très difficile à tenir**, et l'inventaire de scripts du 6.4.3 devient un inventaire ouvert et non maîtrisé. Le fait que ce bloc soit réservé au plan Pro (CONFIRMÉ, M-011) ne desserre pas la tension : il la concentre sur les comptes qui encaissent.
 
 **Question à trancher, formulée telle quelle pour le CTO :** le bloc HTML/JS peut-il coexister avec le formulaire de paiement sur la même page et la même origine ? Si oui, quel est le plan de traitement documenté ? Aucune page de paiement n'a pu être observée, ni en production ni en mode test (Stripe mode test non créé). Le fond du sujet paiements relève du livrable qui porte ce volet, à partir de `audit/rapports/A02.md`.
 
@@ -142,11 +166,15 @@ Point de conception à documenter : si chaque site client reçoit son propre cer
 
 Parce que le domaine enregistrable est partagé, **un signalement portant sur `tinypages.co` peut retirer d'un coup tous les sites clients, l'application et la vitrine**, et dégrader la délivrabilité de tout email contenant un lien vers ces hôtes. C'est un risque de continuité d'activité, pas seulement de sécurité.
 
-Le cumul qui rend ce scénario crédible : **plan gratuit + code personnalisé + création de pages pilotée par IA via MCP**. Cette combinaison abaisse le coût marginal de production d'une page frauduleuse crédible à presque zéro, sur un domaine de confiance. Si le domaine personnalisé est réservé au plan Pro, alors le gisement d'abus le plus probable se concentre par construction sur `*.tinypages.co`. La littérature sectorielle sur l'abus de plateformes SaaS légitimes documente l'ampleur du phénomène et la lenteur des retraits ; ces sources datent de 2022 à 2024 et sont signalées comme possiblement périmées quant aux ordres de grandeur.
+**Correction apportée par les tests d'exécution.** Le rapport A05 fondait ce risque sur la combinaison « plan gratuit + code personnalisé + création de pages par IA ». **Cette combinaison ne tient pas** : le bloc de code est réservé au plan Pro (M-011, CONFIRMÉ). La correction est consignée ici plutôt que gommée.
+
+Le risque réel tient, et se reformule sur des faits établis : **plan gratuit + pilotage par IA + publication sans aucun contrôle côté serveur** (M-010, CONFIRMÉ). Une page d'hameçonnage purement visuelle, sans une ligne de JavaScript, sur un sous-domaine de la marque avec certificat valide, reste créable et publiable **en deux appels automatisés**, sans revue, sans délai, sans limite de plan. Le JavaScript n'est pas nécessaire pour tromper un visiteur, et c'est ce qui rend cette reformulation plus grave que la version d'origine : elle ne dépend plus d'une fonctionnalité payante, et elle est vérifiée, pas supposée.
+
+Si le domaine personnalisé est réservé au plan Pro, le gisement d'abus se concentre par construction sur `*.tinypages.co`, c'est-à-dire sur le domaine qui porte aussi l'application. La littérature sectorielle sur l'abus de plateformes SaaS légitimes documente l'ampleur du phénomène et la lenteur des retraits ; ces sources datent de 2022 à 2024 et sont signalées comme possiblement périmées quant aux ordres de grandeur.
 
 M-007 aggrave ce tableau d'un cran : des pages vides, indexées, répliquées sur chaque sous-domaine, ajoutent un signal de faible qualité sur le même domaine partagé.
 
-Contre-mesures attendues : limites de création par compte et par IP sur le plan gratuit, vérification d'email et de moyen de paiement, détection de similarité de marques, mise en file d'attente de la publication au-delà d'un seuil, journal des publications effectuées par l'IA, surveillance quotidienne de la réputation, et **un plan de crise écrit pour le scénario « `tinypages.co` signalé comme dangereux par un navigateur majeur »**. Ce plan n'existe pas à notre connaissance.
+Contre-mesures attendues, dans cet ordre : **un contrôle de publication appliqué par le serveur** et non par une consigne textuelle (limites de création et de publication par compte et par IP sur le plan gratuit, vérification d'email et de moyen de paiement, mise en file d'attente au-delà d'un seuil), puis détection de similarité de marques, journal des publications effectuées par l'IA, surveillance quotidienne de la réputation, et **un plan de crise écrit pour le scénario « `tinypages.co` signalé comme dangereux par un navigateur majeur »**. Ce plan n'existe pas à notre connaissance.
 
 ### 2.7 Plan de traitement, dans l'ordre
 
@@ -188,7 +216,7 @@ TinyPages cumule trois casquettes réglementaires distinctes, et aucune n'est v�
 4. **Une matrice des rôles par traitement**, une ligne par traitement, un rôle justifié. Pièce de data room attendue.
 5. **Une réponse écrite à la question de la finalité propre.** Les données des contacts des créateurs servent-elles à autre chose qu'à exécuter le service : statistiques produit, amélioration, évaluation ou entraînement de modèles, prospection croisée ? Toute réponse positive fait sortir TinyPages du rôle de sous-traitant pour ces usages et exige une base légale propre et une information.
 
-**Signal à lever en priorité.** Les instructions du serveur MCP énoncent « You cannot delete contacts, products, webpages, blog posts, forms, lessons, or emails ». Si cette impossibilité vaut aussi en interface, et pas seulement par le canal IA, le créateur ne peut pas exécuter une demande d'effacement et TinyPages ne peut pas l'assister comme l'exige l'art. 28(3)(e). **La restriction observée porte explicitement sur le canal IA ; rien ne dit qu'elle vaut en interface.** Statut HYPOTHÈSE, à vérifier sur le compte de test sous 7 jours. Ce constat ne doit pas circuler hors de cet audit tant qu'il n'est pas tranché.
+**Signal à lever en priorité.** Les instructions du serveur MCP énoncent « You cannot delete contacts, products, webpages, blog posts, forms, lessons, or emails », et les tests d'exécution le confirment pour le canal automatisé : **aucune action ne supprime une page ni un email, les objets créés pour les tests subsistent en brouillon** (M-014, CONFIRMÉ). Ce qui est établi, c'est donc l'absence de fonction de suppression **par le canal IA**. Ce qui ne l'est pas, c'est l'interface : rien ne dit que la restriction y vaut aussi. Si elle y valait, le créateur ne pourrait pas exécuter une demande d'effacement et TinyPages ne pourrait pas l'assister comme l'exige l'art. 28(3)(e). Statut HYPOTHÈSE pour l'interface, **à trancher par un test en interface sous 7 jours**, que le canal MCP ne permet pas. Ce point ne doit pas circuler hors de cet audit tant qu'il n'est pas tranché.
 
 ---
 
@@ -206,8 +234,9 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 |---|---|---|---|---|
 | **A&A-01 à 03** | Certification SOC 2 Type II, ISO 27001 ou équivalent ; audit interne périodique ; rapport communicable | Aucune mention publique trouvée | inconnue | CTO |
 | **AIS-01** | En-têtes de sécurité déployés (CSP, HSTS, `frame-ancestors`) | Non relevable, egress fermé | **à confirmer** | A05 section 6, commandes prêtes |
-| **AIS-02** | Les utilisateurs peuvent-ils injecter du HTML et du JavaScript ? | Oui, bloc de code annoncé, exécuté en iframe sandbox sur une « origine séparée » | **à confirmer** (description PROBABLE, implémentation non vérifiée) | Relevé sur page publiée, § 2.3 |
-| **AIS-03 / AIS-04** | Isolation exacte de ce code (jetons `sandbox`, origine, CSP interne) ; revue, file d'attente ou limitation par plan | — | inconnue | CTO |
+| **AIS-02** | Les utilisateurs peuvent-ils injecter du HTML et du JavaScript ? | Oui. Bloc de code exécuté en iframe sandbox sur une « origine séparée », **réservé au plan Pro** (`402 PRO_PLAN_REQUIRED` en gratuit) | **observée** pour l'existence et le gating (MCP, 18/09/2026) ; **à confirmer** pour l'implémentation de la sandbox | Relevé sur page publiée, § 2.3 |
+| **AIS-03** | Isolation exacte de ce code : jetons `sandbox`, domaine enregistrable de la sandbox, CSP interne | — | inconnue | CTO. **Question la plus déterminante du volet sécurité** |
+| **AIS-04** | Le code personnalisé est-il revu, mis en file d'attente ou limité ? | Limité par **plan** (Pro), pas par revue ni par file d'attente. Aucune revue observée | **observée** (MCP, 18/09/2026) | CTO pour la revue éventuelle côté Pro |
 | **AIS-05** | Revue de sécurité du code et analyse statique dans la chaîne d'intégration | — | inconnue | CTO, dépôt |
 | **AIS-06** | Politique CORS de l'API : liste blanche explicite ou correspondance de suffixe | — | inconnue | CTO |
 | **AIS-07** | Protection CSRF : jetons synchronisés, ou SameSite seul | — | inconnue | CTO. **SameSite seul serait insuffisant ici**, voir § 2.2 |
@@ -237,7 +266,7 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 | **IPY-01 / IPY-02** | Export complet des données du créateur dans un format ouvert ; devenir d'un site publié après résiliation | — | inconnue | Produit. Croise le Data Act et § 2.5 |
 | **IVS-01 à 03** | Pare-feu applicatif et protection anti-déni de service ; segmentation réseau et exposition des bases ; durcissement et mises à jour | — | inconnue | CTO |
 | **LOG-01, 03, 05** | Journaux d'audit des actions sensibles et rétention ; accessibles au créateur ; intégrité et protection contre l'altération | — | inconnue | CTO |
-| **LOG-02** | Journal des actions effectuées par l'IA via MCP, annulation possible | — | inconnue | Volet MCP |
+| **LOG-02** | Journal des actions effectuées par l'IA via MCP, annulation possible | Annulation : **non**. Aucune action de suppression n'existe par le canal automatisé ; les objets créés subsistent en brouillon (M-014). Journal : non observé | **observée** pour l'annulation ; inconnue pour le journal | CTO |
 | **LOG-04** | Alerte sur comportement anormal, création en masse, pics d'échecs de connexion | — | inconnue | CTO. **Directement lié au cumul d'abus, § 2.6** |
 | **SEF-01 à 05** | Plan de réponse à incident écrit et rôles ; délai d'engagement de notification aux clients ; procédure de notification de violation sous 72 h ; incidents survenus depuis le lancement ; exercice de crise | — | inconnue | CTO, CEO. SEF-03 à valider par un avocat |
 | **STA-01** | Inventaire des fournisseurs critiques | Stripe, PayPal, Postmark, Cloudflare Stream annoncés, non vérifiés | **à confirmer** | § 3.1 |
@@ -254,7 +283,8 @@ Rappel : en mode dégradé, aucune ligne ne peut porter « observée » sur un r
 | **MT-08** | Émission de certificat conditionnée à la vérification, ou à la simple résolution DNS | — | inconnue | CTO |
 | **MT-09** | Isolation des données entre créateurs au niveau de la base : clé de locataire, sécurité au niveau des lignes, tests automatisés | — | inconnue | CTO. Attendu : un test qui échoue si une requête franchit la frontière de locataire |
 | **MT-10** | Les acheteurs et élèves ont-ils une identité globale réutilisée entre créateurs ? | — | inconnue | Produit. **Point de conception potentiellement majeur** : identité globale + JavaScript libre par créateur = un créateur peut viser les acheteurs des autres |
-| **MT-11 / MT-12** | Limites anti-abus sur le plan gratuit ; détection de contenu frauduleux, automatisée ou sur signalement | — | inconnue | § 2.6 |
+| **MT-11** | Limites anti-abus sur le plan gratuit | **Aucune sur la publication.** `publish_webpage` réussit immédiatement sur un compte gratuit, sans confirmation ni délai (M-010). Les seuls refus serveur observés sont commerciaux (M-011) | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.4, § 2.6 |
+| **MT-12** | Détection de contenu frauduleux, automatisée ou sur signalement | Aucune détection observée à la publication | **à confirmer** (une modération asynchrone reste possible) | CTO |
 | **MT-13 / MT-14** | Procédure publique de signalement d'abus et délai de traitement ; mécanisme de notification et action au titre du DSA | Aucune trace publique | inconnue | **Obligation DSA malgré le statut PME**, voir § 5. À valider par un avocat |
 | **MT-15 / MT-16** | Surveillance de la réputation du domaine et alerte ; **plan de réponse si `tinypages.co` est signalé comme dangereux par un navigateur majeur** | — | inconnue | CTO. MT-16 est le scénario de crise à préparer en priorité |
 | **MT-17** *(ajout de ce livrable)* | Les pages légales publiées par défaut sur chaque compte sont-elles vides et indexées ? | **Oui.** Politique de confidentialité et conditions d'utilisation publiées, `indexed: true`, contenu limité au titre. Page d'accueil par défaut publiée avec bloc de capture d'emails actif, `doubleOptin: false` | **observée** (MCP, 18/09/2026, CONFIRMÉ) | § 1.3, M-007 |
