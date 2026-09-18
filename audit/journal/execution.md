@@ -25,3 +25,12 @@ Tenu par l'orchestrateur. Une ligne par étape.
 | 2026-09-18 19:56 UTC | A00 | Constat MCP | Serveur connecté sous le nom `Tinypage`, pas `tinypages`. Catalogue majoritairement en écriture. Compte non identifié. | — |
 | 2026-09-18 19:58 UTC | A00 | Rédaction du plan d'enquête | 70 questions vérifiables réparties sur 12 agents, faisabilité annotée, 4 décisions à trancher | audit/00_plan_enquete.md |
 | 2026-09-18 19:58 UTC | A00 | **Arrêt phase 0** | VALIDATION_DU_PLAN = oui. Aucune délégation tant que D-1 et D-2 ne sont pas tranchées. | — |
+
+## Phase 1 — collecte externe, mode dégradé
+
+| Horodatage | Agent | Action | Résultat | Fichiers produits |
+|---|---|---|---|---|
+| 2026-09-18 20:05 UTC | A00 | Décisions D-1, D-2, D-3 tranchées par le CEO | D-1 compte de test dédié · D-2 phase 1 dégradée, WebSearch seul · D-3 aucun accès interne | audit/00_parametres.md |
+| 2026-09-18 20:06 UTC | A00 | Correction D-4 : nom de serveur MCP | `mcp__tinypages` remplacé par `mcp__Tinypage` dans a04, a07, a10 | .claude/agents/ |
+| 2026-09-18 20:07 UTC | A00 | Délégation phase 1 | 8 agents lancés en parallèle : A01, A02, A03, A04, A05, A06, A07, A09 | — |
+| 2026-09-18 20:07 UTC | A00 | **A08a et A08b non lancés** | Découverte des sites clients impossible : crt.sh, PageSpeed et Playwright tous bloqués par l'egress. Trou à documenter dans les livrables et à traiter quand D-2 option 1 sera retenue. | — |

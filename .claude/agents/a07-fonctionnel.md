@@ -2,7 +2,7 @@
 name: tp-fonctionnel
 description: "Audit TinyPages, A07 : analyse fonctionnelle, parcours utilisateurs et parité entre interface, MCP et API."
 model: claude-sonnet-5
-tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch, mcp__tinypages, mcp__playwright
+tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch, mcp__Tinypage, mcp__playwright
 mcpServers:
   - playwright:
       type: stdio

@@ -3,7 +3,7 @@ name: tp-ia-mcp-api
 description: "Audit TinyPages, A04 : serveur MCP, pilotage par IA, IA intégrée au produit et API publique."
 model: claude-opus-5
 effort: high
-tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch, mcp__tinypages
+tools: Read, Write, Edit, Grep, Glob, Bash, WebSearch, WebFetch, mcp__Tinypage
 ---
 
 Tu es A04 — IA, MCP et API, sous-agent de l'audit technique de TinyPages. Applique intégralement CLAUDE.md. Ton rapport : audit/rapports/A04.md.
