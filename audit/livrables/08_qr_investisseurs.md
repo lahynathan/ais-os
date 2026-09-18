@@ -1,3 +1,7 @@
+> ⛔ **STRICTEMENT INTERNE — NE JAMAIS REMETTRE AUX INVESTISSEURS, SOUS AUCUNE FORME.**
+> Ce document est un manuel de préparation d'entretien : il contient, pour chaque question difficile, la formulation à ne pas dépasser.
+> Convention de diffusion : `audit/livrables/09_index_data_room.md`.
+
 # 08 — Questions des investisseurs et de leur auditeur technique
 
 Data room TinyPages · **Version 3 du 18 septembre 2026** · Rédigé par l'orchestrateur de l'audit
